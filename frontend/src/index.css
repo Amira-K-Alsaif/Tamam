@@ -1,0 +1,25 @@
+@import 'tailwindcss';
+
+/* Tamam design tokens. Every color and font in the app comes from here. */
+@theme {
+  --color-bg: #f5f7f6;
+  --color-surface: #ffffff;
+  --color-ink: #13232b;
+  --color-muted: #55676e;
+  --color-line: #dce4e1;
+  --color-accent: #0e7a62;
+  --color-accent-soft: #e2f2ec;
+  --color-gold: #b7791f;
+  --color-danger: #b4412e;
+
+  --font-display: 'Readex Pro', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
+  --font-body: 'IBM Plex Sans Arabic', Tahoma, 'Segoe UI', sans-serif;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  line-height: 1.8;
+}
