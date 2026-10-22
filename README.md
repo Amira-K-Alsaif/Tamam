@@ -62,9 +62,8 @@ cd backend && ruff check . && ruff format --check . && pytest
 1. اسحبي آخر نسخة من `main`، وافتحي فرع باسم وحدتك: `feat/chat/citations`
 2. اشتغلي داخل مجلد وحدتك فقط (`backend/app/modules/<وحدتك>` و `frontend/src/modules/<وحدتك>`)
 3. افتحي Pull Request على `main`
-4. ثلاث أشياء تصير تلقائياً أو مطلوبة قبل الدمج:
+4. شيئين مطلوبين قبل الدمج:
    - **CI**: يشغّل lint والاختبارات والـ build للواجهة والخادم. لازم يكون أخضر.
-   - **AI PR Review**: Claude يراجع التغيير ويكتب تعليق فيه مستوى الخطر (LOW / MEDIUM / HIGH) والملاحظات. أي ملاحظة HIGH لازم تنحل أو تنرد عليها.
    - **مراجعة زميلة**: وحدة من البنات تراجع وتوافق.
 5. بعدها ادمجي في `main`.
 
@@ -72,7 +71,6 @@ cd backend && ruff check . && ruff format --check . && pytest
 
 ---
 
-## إعداد المراجعة الآلية (مرة وحدة، صاحبة الريبو)
 ## حماية `main`
 
 من **Settings ← Rules ← Rulesets** أنشئي قاعدة على `main` تمنع الدفع المباشر وتشترط PR بموافقة واحدة ونجاح فحوصات CI (`Frontend` و `Backend`).
