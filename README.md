@@ -73,14 +73,6 @@ cd backend && ruff check . && ruff format --check . && pytest
 ---
 
 ## إعداد المراجعة الآلية (مرة وحدة، صاحبة الريبو)
-
-1. ثبّتي تطبيق Claude على الريبو: https://github.com/apps/claude
-2. في جهازك شغّلي `claude setup-token` وانسخي التوكن (يحتاج اشتراك Claude Pro أو Max).
-3. في GitHub: **Settings ← Secrets and variables ← Actions ← New repository secret**
-   - الاسم: `CLAUDE_CODE_OAUTH_TOKEN`
-   - القيمة: التوكن
-4. المراجعة تستهلك من حصة اشتراك صاحبة التوكن، مو من رصيد API.
-
 ## حماية `main`
 
 من **Settings ← Rules ← Rulesets** أنشئي قاعدة على `main` تمنع الدفع المباشر وتشترط PR بموافقة واحدة ونجاح فحوصات CI (`Frontend` و `Backend`).
