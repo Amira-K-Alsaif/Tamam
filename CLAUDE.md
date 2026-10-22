@@ -30,9 +30,7 @@ Read the relevant scoped file before making changes in that area.
   - `docs/...`
 - A pull request is merged only after:
   1. CI is green, and
-  2. another team member has reviewed it, and
-  3. the AI PR Review comment has been read and any HIGH-risk finding is resolved
-     or explicitly answered in the pull request.
+  2. another team member has reviewed it.
 - After creating or editing a pull request, verify that its base branch is `main`.
 
 ---
