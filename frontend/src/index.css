@@ -1,25 +1,70 @@
 @import 'tailwindcss';
 
-/* Tamam design tokens. Every color and font in the app comes from here. */
+/*
+ * Tamam design tokens ("Aurora" identity). Every color and font in the app comes
+ * from here. Reference screens: https://claude.ai/artifact/HgaMHyE9pcE3qRGCWjXqPB
+ */
 @theme {
-  --color-bg: #f5f7f6;
-  --color-surface: #ffffff;
-  --color-ink: #13232b;
-  --color-muted: #55676e;
-  --color-line: #dce4e1;
-  --color-accent: #0e7a62;
-  --color-accent-soft: #e2f2ec;
-  --color-gold: #b7791f;
-  --color-danger: #b4412e;
+  /* Grounds, darkest first */
+  --color-night: #070b0a;
+  --color-sidebar: #0b110f;
+  --color-sunken: #0d1412;
+  --color-surface: #111917;
+  --color-raised: #1a2622;
+  --color-paper: #f3f5f1;
 
-  --font-display: 'Readex Pro', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
+  /* Text */
+  --color-ink: #eaf2ee;
+  --color-soft: #c9d6d0;
+  --color-muted: #a9bbb3;
+  --color-faint: #8fa39b;
+
+  /* Brand */
+  --color-mint: #3df2a6;
+  --color-teal: #19c6c1;
+  --color-blue: #2f6bff;
+  --color-blue-soft: #8cb0ff;
+
+  /* States */
+  --color-warning: #f2c46b;
+  --color-danger: #f59a88;
+
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-line-strong: rgb(255 255 255 / 0.16);
+
+  --font-display: 'Alexandria', 'IBM Plex Sans Arabic', Tahoma, sans-serif;
   --font-body: 'IBM Plex Sans Arabic', Tahoma, 'Segoe UI', sans-serif;
+}
+
+/* The aurora gradient is reserved for AI moments: the assistant, AI actions, completion. */
+@utility bg-aurora {
+  background-image: linear-gradient(225deg, var(--color-mint), var(--color-teal) 45%, var(--color-blue));
+}
+
+@utility bg-aurora-glow {
+  background-image:
+    radial-gradient(50% 120% at 85% 0%, rgb(61 242 166 / 0.3) 0%, rgb(25 198 193 / 0.1) 45%, transparent 75%),
+    radial-gradient(40% 100% at 0% 100%, rgb(47 107 255 / 0.32) 0%, transparent 70%);
 }
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  background: var(--color-night);
   color: var(--color-ink);
   font-family: var(--font-body);
   line-height: 1.8;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: 2px;
+}
+
+/* App shell: the side menu stacks above the page on narrow screens. */
+@utility side-column {
+  flex: 1 1 240px;
+}
+
+@utility main-column {
+  flex: 999 1 560px;
 }
