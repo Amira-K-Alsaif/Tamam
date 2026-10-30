@@ -4,7 +4,7 @@
 
 ## الوحدة
 
-- [ ] chat · [ ] knowledge · [ ] procedures · [ ] procedure-map · [ ] onboarding · [ ] career · [ ] مشترك
+- [ ] chat · [ ] knowledge · [ ] procedures · [ ] org-map · [ ] onboarding · [ ] career · [ ] مشترك
 
 ## إذا لمستِ ملف مشترك أو عقد في docs/team.md
 

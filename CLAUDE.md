@@ -44,7 +44,7 @@ Product modules (one owner each, see `docs/team.md`):
 | `chat` | اسأل عن إجراء | `backend/app/modules/chat/` | `frontend/src/modules/chat/` |
 | `knowledge` | مصنع المعرفة | `backend/app/modules/knowledge/` | `frontend/src/modules/knowledge/` |
 | `procedures` | اختر الإجراء | `backend/app/modules/procedures/` | `frontend/src/modules/procedures/` |
-| `procedure-map` | خريطة الإجراءات | `backend/app/modules/procedure_map/` | `frontend/src/modules/procedure-map/` |
+| `org-map` | خريطة الشركة | `backend/app/modules/org_map/` | `frontend/src/modules/org-map/` |
 | `onboarding` | مساري التأهيلي | `backend/app/modules/onboarding/` | `frontend/src/modules/onboarding/` |
 | `career` | مساري المهني | `backend/app/modules/career/` | `frontend/src/modules/career/` |
 

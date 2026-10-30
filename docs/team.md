@@ -12,9 +12,30 @@ Replace each "Member N" with a name and GitHub username.
 | 1 | `chat` | اسأل عن إجراء | Member 1 | Tech lead: repository and merges |
 | 2 | `knowledge` | مصنع المعرفة | Member 2 | Evaluation question set (`data/eval/`) |
 | 3 | `procedures` | اختر الإجراء | Member 3 | Design tokens and app shell |
-| 4 | `procedure-map` | خريطة الإجراءات | Member 4 | Deployment (Vercel, Railway) |
+| 4 | `org-map` | خريطة الشركة | Member 4 | Deployment (Vercel, Railway) |
 | 5 | `onboarding` | مساري التأهيلي | Member 5 | Auth and the shared employee profile |
 | 6 | `career` | مساري المهني | Member 6 | Competitor research and the final presentation |
+
+## What modules 4 and 5 do
+
+Screens for every module: https://claude.ai/artifact/HgaMHyE9pcE3qRGCWjXqPB
+
+**4 · `org-map` (خريطة الشركة)** — the company's structure: the CEO, each department
+with its head and teams, and the people in each team. Each person shows their title,
+their relation to the viewer (manager, mentor), contact details, what to contact them
+about, and the procedures they approve. Search answers "who do I talk to about X?".
+
+**5 · `onboarding` (مساري التأهيلي)** — a roadmap of everything a new employee is
+missing, built from a starting assessment:
+
+- **Knowledge gaps**: diagnostic questions score each topic; low topics become lessons
+  with a short quiz, and the roadmap says why each one was added.
+- **Missing access**: the systems and permissions the employee's job title needs, each
+  with its status (active, requested, missing), why it is needed, and the steps to get
+  it (form, approver, expected time).
+- **People to meet**: key contacts from the company map (mentor, approvers).
+
+The roadmap is grouped by week and reorders as quizzes are retaken and access is granted.
 
 ## Milestones
 
@@ -32,15 +53,33 @@ Agree on these in the first team meeting and write them here. Until then, each m
 uses mock data in exactly this shape. A change here needs approval from every module
 that uses the contract.
 
-### Employee profile (owner: 5, used by 3, 5, 6)
+### Employee profile (owner: 5, used by 3, 4, 5, 6)
 
-    id, full_name, department, job_title, years_of_experience, role (employee | admin)
+    id, full_name, department_id, team, job_title, manager_id, years_of_experience,
+    role (employee | admin)
 
-### Document (owner: 2, used by 1, 3, 4)
+### Department (owner: 4, used by 4, 5)
+
+    id, name, head_id, parent_id, teams[]
+
+### Contact responsibility (owner: 4, used by 3, 4, 5)
+
+    employee_id, topic, procedure_id (optional)
+
+### Access item (owner: 5, used by 3, 5)
+
+    id, system_name, required_for_job_titles[], procedure_id, approver_role, expected_days
+    per employee: status (active | requested | missing)
+
+### Assessment result (owner: 5, used by 5, 6)
+
+    employee_id, topic, score (0-100), taken_at
+
+### Document (owner: 2, used by 1, 3)
 
     id, title, kind (policy | procedure | form | faq), department, file_path, status, updated_at
 
-### Chunk (owner: 2, used by 1, 3, 4, 5)
+### Chunk (owner: 2, used by 1, 3, 5)
 
     id, document_id, section_title, page, text, embedding (vector)
 

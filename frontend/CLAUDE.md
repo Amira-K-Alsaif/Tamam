@@ -11,7 +11,7 @@ Read the root `CLAUDE.md` first. This file adds the frontend rules.
       index.css           Tailwind import and the design tokens
       test/setup.ts       test setup
 
-- Module folders use the kebab-case ids from `modules.ts` (`procedure-map`, not `procedureMap`).
+- Module folders use the kebab-case ids from `modules.ts` (`org-map`, not `orgMap`).
 - A component shared by two or more modules goes in `src/components/`, and only once
   a second module actually needs it.
 
