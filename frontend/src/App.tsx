@@ -1,43 +1,26 @@
-import { useEffect, useState } from 'react'
-import { getHealth } from './lib/api'
-import { MODULES } from './modules/modules'
-
-type BackendState = 'checking' | 'online' | 'offline'
-
-const BACKEND_LABEL: Record<BackendState, string> = {
-  checking: 'جارٍ التحقق من الخادم…',
-  online: 'الخادم متصل',
-  offline: 'الخادم غير متصل',
-}
+import { Navigate, Route, Routes } from 'react-router'
+import { AppShell } from './components/AppShell'
+import CareerPage from './modules/career/CareerPage'
+import ChatPage from './modules/chat/ChatPage'
+import KnowledgePage from './modules/knowledge/KnowledgePage'
+import OnboardingPage from './modules/onboarding/OnboardingPage'
+import OrgMapPage from './modules/org-map/OrgMapPage'
+import ProceduresPage from './modules/procedures/ProceduresPage'
+import HomePage from './pages/HomePage'
 
 export default function App() {
-  const [backend, setBackend] = useState<BackendState>('checking')
-
-  useEffect(() => {
-    getHealth()
-      .then(() => setBackend('online'))
-      .catch(() => setBackend('offline'))
-  }, [])
-
   return (
-    <main className="mx-auto flex max-w-5xl flex-col gap-8 px-4 py-10">
-      <header className="flex flex-col gap-2">
-        <h1 className="font-display text-4xl font-bold">تمّام</h1>
-        <p className="text-muted">رفيقك الذكي لفهم أنظمة الشركة، من أول سؤال إلى أول إنجاز.</p>
-        <p role="status" className={backend === 'online' ? 'text-accent' : 'text-muted'}>
-          {BACKEND_LABEL[backend]}
-        </p>
-      </header>
-
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {MODULES.map(({ id, title, summary, icon: Icon }) => (
-          <li key={id} className="flex flex-col gap-2 rounded-xl border border-line bg-surface p-5">
-            <Icon aria-hidden className="size-6 text-accent" />
-            <h2 className="font-display text-lg">{title}</h2>
-            <p className="text-sm text-muted">{summary}</p>
-          </li>
-        ))}
-      </ul>
-    </main>
+    <Routes>
+      <Route element={<AppShell />}>
+        <Route index element={<HomePage />} />
+        <Route path="chat" element={<ChatPage />} />
+        <Route path="procedures" element={<ProceduresPage />} />
+        <Route path="org-map" element={<OrgMapPage />} />
+        <Route path="onboarding" element={<OnboardingPage />} />
+        <Route path="career" element={<CareerPage />} />
+        <Route path="knowledge" element={<KnowledgePage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
   )
 }

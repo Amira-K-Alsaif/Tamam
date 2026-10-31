@@ -44,7 +44,7 @@ Product modules (one owner each, see `docs/team.md`):
 | `chat` | اسأل عن إجراء | `backend/app/modules/chat/` | `frontend/src/modules/chat/` |
 | `knowledge` | مصنع المعرفة | `backend/app/modules/knowledge/` | `frontend/src/modules/knowledge/` |
 | `procedures` | اختر الإجراء | `backend/app/modules/procedures/` | `frontend/src/modules/procedures/` |
-| `procedure-map` | خريطة الإجراءات | `backend/app/modules/procedure_map/` | `frontend/src/modules/procedure-map/` |
+| `org-map` | خريطة الشركة | `backend/app/modules/org_map/` | `frontend/src/modules/org-map/` |
 | `onboarding` | مساري التأهيلي | `backend/app/modules/onboarding/` | `frontend/src/modules/onboarding/` |
 | `career` | مساري المهني | `backend/app/modules/career/` | `frontend/src/modules/career/` |
 
@@ -65,6 +65,7 @@ Do not silently replace, upgrade, or introduce alternatives to these technologie
 - Node.js `24.20.0`, npm `11.19.0`
 - Tailwind CSS `4.3.3` via `@tailwindcss/vite`
 - Lucide React `1.61.0` — the only icon library
+- React Router `7.18.5` — the only router
 - Vitest + Testing Library for tests, oxlint for linting
 
 ### Backend
@@ -191,6 +192,19 @@ These rules are what make Tamam trustworthy. Do not weaken them.
 - Never edit a migration that has already been applied to the shared database; add a new one.
 - Never change the shared Supabase schema by hand in the dashboard.
 - Shared tables (employee profile, documents, chunks) are contracts: see `docs/team.md`.
+
+---
+
+## Design authority
+
+The Tamam design canvas is the visual source of truth for every screen:
+https://claude.ai/artifact/HgaMHyE9pcE3qRGCWjXqPB
+
+- Build each screen from its board on the canvas: same layout, hierarchy, states, and copy.
+- Use the tokens in `frontend/src/index.css` and the shared components in
+  `frontend/src/components/`. Do not invent a new look for one module.
+- If a requirement does not fit the design, raise it with the team instead of
+  redesigning the screen alone.
 
 ---
 

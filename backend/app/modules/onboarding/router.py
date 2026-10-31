@@ -1,4 +1,4 @@
-"""Onboarding path. Owned by one team member; see docs/team.md."""
+"""Onboarding roadmap: knowledge gaps, missing access, people to meet. See docs/team.md."""
 
 from fastapi import APIRouter
 
