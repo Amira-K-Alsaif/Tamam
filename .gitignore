@@ -21,6 +21,8 @@ data/private/
 
 # OS / editors
 .DS_Store
+*.log
+*.local
 Thumbs.db
 .vscode/
 .idea/
