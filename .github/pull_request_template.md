@@ -1,17 +1,17 @@
-## وش تغيّر؟
+## What changed?
 
-<!-- جملة أو جملتين -->
+<!-- One or two sentences -->
 
-## الوحدة
+## Module
 
-- [ ] chat · [ ] knowledge · [ ] procedures · [ ] org-map · [ ] onboarding · [ ] career · [ ] مشترك
+- [ ] chat · [ ] knowledge · [ ] procedures · [ ] org-map · [ ] onboarding · [ ] career · [ ] shared
 
-## إذا لمستِ ملف مشترك أو عقد في docs/team.md
+## Shared files or contracts
 
-<!-- ليش؟ ومين وافقت من صاحبات الوحدات المتأثرة؟ اكتبي "لا ينطبق" إذا ما لمستِ شي مشترك -->
+<!-- If you changed a shared file or a contract in docs/team.md: why, and which module owners agreed? Otherwise write "None". -->
 
-## الاختبار
+## Testing
 
-- [ ] أضفت أو حدّثت الاختبارات
-- [ ] شغّلت الفحوصات محلياً ونجحت
-- [ ] جرّبت الواجهة بالعربي و RTL (إذا فيه واجهة)
+- [ ] I added or updated tests
+- [ ] I ran the checks locally and they passed
+- [ ] I checked the screen in Arabic and RTL (if there is UI)
