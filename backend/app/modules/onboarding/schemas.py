@@ -48,3 +48,37 @@ class AssessmentResult(BaseModel):
     topic: str
     score: int = Field(ge=0, le=100)
     taken_at: datetime
+
+
+# Response shapes for the onboarding roadmap (module 5 only, not shared contracts).
+
+RoadmapKind = Literal["lesson", "access", "person"]
+
+
+class RoadmapItem(BaseModel):
+    """One thing the new employee is missing, and why it is on the roadmap."""
+
+    kind: RoadmapKind
+    title: str
+    reason: str
+    week: int = Field(ge=1)
+    # lesson
+    score: int | None = None
+    # access
+    access_item_id: str | None = None
+    status: AccessStatus | None = None
+    procedure_id: str | None = None
+    approver_role: str | None = None
+    expected_days: int | None = None
+    # person
+    employee_id: str | None = None
+
+
+class RoadmapWeek(BaseModel):
+    week: int
+    items: list[RoadmapItem]
+
+
+class Roadmap(BaseModel):
+    employee_id: str
+    weeks: list[RoadmapWeek]
