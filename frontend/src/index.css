@@ -55,9 +55,12 @@ body {
   line-height: 1.8;
 }
 
-:focus-visible {
-  outline: 2px solid var(--color-mint);
-  outline-offset: 2px;
+/* In the base layer so a component can replace it, e.g. with a focus style on its container. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--color-mint);
+    outline-offset: 2px;
+  }
 }
 
 /* App shell: the side menu stacks above the page on narrow screens. */

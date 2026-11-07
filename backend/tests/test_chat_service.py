@@ -42,6 +42,13 @@ def test_returns_only_the_cited_sources(monkeypatch, close_chunks):
     assert [source.document_id for source in result.sources] == ["doc-leave"]
 
 
+def test_renumbers_citations_to_match_the_returned_sources(monkeypatch, close_chunks):
+    result = answer_with(monkeypatch, "تقدر تشتغل من البيت يومين [2].")
+
+    assert result.answer == "تقدر تشتغل من البيت يومين [1]."
+    assert [source.document_id for source in result.sources] == ["doc-remote"]
+
+
 def test_rejects_an_answer_without_citations(monkeypatch, close_chunks):
     result = answer_with(monkeypatch, "إجازتك ٣٠ يوماً.")
 
