@@ -2,7 +2,6 @@
 
 from . import mock_data
 from .schemas import (
-    AccessStatus,
     AssessmentResult,
     EmployeeProfile,
     Roadmap,
@@ -16,12 +15,6 @@ PASSING_SCORE = 70
 LESSONS_PER_WEEK = 2
 # The approver_role value that means "the employee's own manager".
 DIRECT_MANAGER_ROLE = "المدير المباشر"
-
-STATUS_LABELS: dict[AccessStatus, str] = {
-    "active": "مفعّلة",
-    "requested": "تم الطلب، بانتظار الموافقة",
-    "missing": "ناقصة، تحتاج طلب",
-}
 
 
 def get_employee(employee_id: str) -> EmployeeProfile:
@@ -77,7 +70,7 @@ def missing_access(employee: EmployeeProfile) -> list[RoadmapItem]:
             RoadmapItem(
                 kind="access",
                 title=access.system_name,
-                reason=f"مطلوبة لمسمى {employee.job_title}. الحالة: {STATUS_LABELS[status]}.",
+                reason=f"مطلوبة لمسمى {employee.job_title}.",
                 week=1,
                 access_item_id=access.id,
                 status=status,
