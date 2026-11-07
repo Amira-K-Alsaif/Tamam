@@ -23,6 +23,12 @@ rag = [
   "sentence-transformers==6.2.0",
 ]
 
+knowledge = [
+  "docling==2.148.0",
+  "python-dotenv==1.2.4",
+  "supabase==2.34.1",
+]
+
 [tool.setuptools.packages.find]
 include = ["app*"]
 

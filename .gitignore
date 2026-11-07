@@ -26,3 +26,6 @@ data/private/
 Thumbs.db
 .vscode/
 .idea/
+
+# Generated knowledge processing files
+data/processed/
