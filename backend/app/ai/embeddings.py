@@ -1,15 +1,31 @@
 """Turns text into vectors. The only place that loads the embedding model."""
 
 import re
+import unicodedata
 from functools import lru_cache
 
 MODEL_NAME = "intfloat/multilingual-e5-small"
 
+_DIACRITICS = re.compile(r"[ؐ-ًؚ-ٰٟۖ-ۭ]")
+_SPACES = re.compile(r"\s+")
+_LETTERS = str.maketrans(
+    {
+        "أ": "ا",  # أ → ا
+        "إ": "ا",  # إ → ا
+        "آ": "ا",  # آ → ا
+        "ٱ": "ا",  # ٱ → ا
+        "ى": "ي",  # ى → ي
+        "ة": "ه",  # ة → ه
+        "ـ": "",  # tatweel
+    }
+)
+
 
 def normalize_arabic(text: str) -> str:
-    text = re.sub(r"[\u064B-\u0652\u0640]", "", text)  # diacritics and tatweel
-    text = re.sub("[إأآ]", "ا", text)
-    return text.replace("ى", "ي").replace("ة", "ه")
+    """The one Arabic normalization for documents and questions alike. See CLAUDE.md."""
+    text = unicodedata.normalize("NFKC", text)
+    text = _DIACRITICS.sub("", text).translate(_LETTERS)
+    return _SPACES.sub(" ", text).strip().casefold()
 
 
 @lru_cache
