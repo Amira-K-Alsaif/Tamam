@@ -40,7 +40,7 @@ Activate the environment (Windows: `.venv\Scripts\activate`, macOS/Linux:
 `source .venv/bin/activate`), then:
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev]"      # add ,rag to work on the AI features: ".[dev,rag]"
 uvicorn app.main:app --reload --port 8000
 ```
 
@@ -201,9 +201,7 @@ Design reference for every screen: https://claude.ai/artifact/HgaMHyE9pcE3qRGCWj
 1. Pull the latest `main` and create a branch named after your module: `feat/chat/citations`.
 2. Work inside your module's folders.
 3. Open a pull request against `main`.
-4. Before merging:
-   - **CI** runs lint, tests, and the build for both apps. It must be green.
-   - **A teammate** reviews and approves.
+4. Wait for **CI**, which runs lint, tests, and the build for both apps. It must be green.
 5. Merge into `main`.
 
 Never push directly to `main`.
@@ -211,7 +209,7 @@ Never push directly to `main`.
 ## Protecting `main`
 
 In **Settings → Rules → Rulesets**, add a rule on `main` that blocks direct pushes and
-requires a pull request with one approval and passing CI checks (`Frontend` and `Backend`).
+requires a pull request and passing CI checks (`Frontend` and `Backend`).
 
 > Rulesets on private repositories need GitHub Pro, which students get free through the
 > GitHub Student Developer Pack.

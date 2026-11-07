@@ -28,9 +28,7 @@ Read the relevant scoped file before making changes in that area.
   - `fix/<module>/...`
   - `chore/...`
   - `docs/...`
-- A pull request is merged only after:
-  1. CI is green, and
-  2. another team member has reviewed it.
+- A pull request is merged only after CI is green. Peer review is optional.
 - After creating or editing a pull request, verify that its base branch is `main`.
 
 ---
@@ -78,9 +76,15 @@ Do not silently replace, upgrade, or introduce alternatives to these technologie
 
 - PostgreSQL on Supabase, with `pgvector` for embeddings
 - Supabase Auth and Supabase Storage
-- LLM: Claude API, behind `backend/app/ai/`
-- Embeddings: BGE-M3 (multilingual, strong on Arabic)
+- LLM: Google Gemini (`gemini-3.6-flash`), behind `backend/app/ai/`
+- RAG tooling: LangChain for text splitting, model access, and prompt templates.
+  Tamam's own rules stay in our code: Arabic normalization, the "not found" threshold,
+  citation checks, and evaluation.
+- Embeddings: BGE-M3 (multilingual, strong on Arabic). Local development may use the
+  smaller `intfloat/multilingual-e5-small`.
 - Document parsing: Docling
+- Approved when a module needs them: `bge-reranker-v2-m3` (reranking), RAGAS (evaluation),
+  Langfuse (tracing)
 
 ### Deployment
 
