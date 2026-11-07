@@ -40,7 +40,7 @@ Activate the environment (Windows: `.venv\Scripts\activate`, macOS/Linux:
 `source .venv/bin/activate`), then:
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[dev]"      # add ,rag to work on the AI features: ".[dev,rag]"
 uvicorn app.main:app --reload --port 8000
 ```
 

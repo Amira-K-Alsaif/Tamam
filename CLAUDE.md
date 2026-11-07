@@ -78,9 +78,15 @@ Do not silently replace, upgrade, or introduce alternatives to these technologie
 
 - PostgreSQL on Supabase, with `pgvector` for embeddings
 - Supabase Auth and Supabase Storage
-- LLM: Claude API, behind `backend/app/ai/`
-- Embeddings: BGE-M3 (multilingual, strong on Arabic)
+- LLM: Google Gemini (`gemini-3.6-flash`), behind `backend/app/ai/`
+- RAG tooling: LangChain for text splitting, model access, and prompt templates.
+  Tamam's own rules stay in our code: Arabic normalization, the "not found" threshold,
+  citation checks, and evaluation.
+- Embeddings: BGE-M3 (multilingual, strong on Arabic). Local development may use the
+  smaller `intfloat/multilingual-e5-small`.
 - Document parsing: Docling
+- Approved when a module needs them: `bge-reranker-v2-m3` (reranking), RAGAS (evaluation),
+  Langfuse (tracing)
 
 ### Deployment
 
