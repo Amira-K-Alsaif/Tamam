@@ -5,7 +5,7 @@ from functools import lru_cache
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from app.ai import embeddings, llm
+from app.ai import embeddings, llm, reranker
 
 from .prompts import SYSTEM_PROMPT, build_user_prompt
 from .sample_documents import DOCUMENTS
@@ -15,6 +15,8 @@ from .schemas import AskResponse, Source
 # citation check do the real filtering. Raise it after switching to BGE-M3.
 MIN_SCORE = 0.70
 TOP_K = 3
+# How many chunks the fast search hands to the slower, more accurate reranker.
+CANDIDATES = 10
 NOT_FOUND = "ما لقيت هذي المعلومة في وثائق الشركة."
 
 splitter = RecursiveCharacterTextSplitter(
@@ -76,11 +78,16 @@ def to_source(chunk: dict) -> Source:
 
 
 def answer(question: str) -> AskResponse:
-    results = [(score, chunk) for score, chunk in search(question, TOP_K) if score >= MIN_SCORE]
+    results = [
+        (score, chunk) for score, chunk in search(question, CANDIDATES) if score >= MIN_SCORE
+    ]
     if not results:
         return not_found()
 
-    chunks = [chunk for _, chunk in results]
+    candidates = [chunk for _, chunk in results]
+    scores = reranker.rerank(question, [chunk["text"] for chunk in candidates])
+    ranked = sorted(zip(scores, candidates, strict=True), key=lambda pair: pair[0], reverse=True)
+    chunks = [chunk for _, chunk in ranked[:TOP_K]]
     text = llm.generate(SYSTEM_PROMPT, build_user_prompt(question, chunks))
 
     cited = {int(n) for n in re.findall(r"\[(\d+)\]", text)}
