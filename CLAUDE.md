@@ -28,9 +28,7 @@ Read the relevant scoped file before making changes in that area.
   - `fix/<module>/...`
   - `chore/...`
   - `docs/...`
-- A pull request is merged only after:
-  1. CI is green, and
-  2. another team member has reviewed it.
+- A pull request is merged only after CI is green. Peer review is optional.
 - After creating or editing a pull request, verify that its base branch is `main`.
 
 ---

@@ -5,16 +5,14 @@ https://claude.ai/artifact/Pyo1HYmJhwXu1tAfVBk5Ln
 
 ## Owners
 
-Replace each "Member N" with a name and GitHub username.
-
 | # | Module | Arabic name | Owner | Shared duty |
 |---|---|---|---|---|
-| 1 | `chat` | اسأل عن إجراء | Member 1 | Tech lead: repository and merges |
-| 2 | `knowledge` | مصنع المعرفة | Member 2 | Evaluation question set (`data/eval/`) |
-| 3 | `procedures` | اختر الإجراء | Member 3 | Design tokens and app shell |
-| 4 | `org-map` | خريطة الشركة | Member 4 | Deployment (Vercel, Railway) |
-| 5 | `onboarding` | مساري التأهيلي | Member 5 | Auth and the shared employee profile |
-| 6 | `career` | مساري المهني | Member 6 | Competitor research and the final presentation |
+| 1 | `chat` | اسأل عن إجراء | Amira (`Amira-K-Alsaif`) | Tech lead: repository and merges |
+| 2 | `knowledge` | مصنع المعرفة | Gamar (`gamaraljaliy`) | Evaluation question set (`data/eval/`) |
+| 3 | `procedures` | اختر الإجراء | Shoog (`shoog4321`) | Design tokens and app shell |
+| 4 | `org-map` | خريطة الشركة | Sara (`saraalmazroa`) | Deployment (Vercel, Railway) |
+| 5 | `onboarding` | مساري التأهيلي | Gala (`ghalaIter`) | Auth and the shared employee profile |
+| 6 | `career` | مساري المهني | Batool (`batool2044`) | Competitor research and the final presentation |
 
 ## What modules 4 and 5 do
 
