@@ -87,6 +87,10 @@ def answer(question: str) -> AskResponse:
     if not cited or not cited <= set(range(1, len(chunks) + 1)):
         return not_found()
 
+    # Renumber the citations 1..n so they match the order of the returned sources.
+    new_numbers = {old: new for new, old in enumerate(sorted(cited), start=1)}
+    text = re.sub(r"\[(\d+)\]", lambda match: f"[{new_numbers[int(match[1])]}]", text)
+
     return AskResponse(
         answer=text,
         found=True,
