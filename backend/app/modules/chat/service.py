@@ -7,6 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app.ai import embeddings, llm, reranker
 
+from . import retrieval
 from .prompts import SYSTEM_PROMPT, build_user_prompt
 from .sample_documents import DOCUMENTS
 from .schemas import AskResponse, Source
@@ -46,8 +47,18 @@ def split_documents() -> list[dict]:
 
 
 @lru_cache
+def all_chunks() -> list[dict]:
+    return split_documents()
+
+
+@lru_cache
+def keyword_index() -> list[list[str]]:
+    return [retrieval.tokenize(chunk["text"]) for chunk in all_chunks()]
+
+
+@lru_cache
 def indexed_chunks() -> tuple[list[dict], list[list[float]]]:
-    chunks = split_documents()
+    chunks = all_chunks()
     vectors = embeddings.embed_passages([chunk["text"] for chunk in chunks])
     return chunks, vectors
 
@@ -61,6 +72,27 @@ def search(question: str, k: int = 3) -> list[tuple[float, dict]]:
     ]
     scored.sort(key=lambda pair: pair[0], reverse=True)
     return scored[:k]
+
+
+def keyword_search(question: str, k: int = 3) -> list[tuple[float, dict]]:
+    scores = retrieval.bm25(retrieval.tokenize(question), keyword_index())
+    scored = [
+        (score, chunk) for score, chunk in zip(scores, all_chunks(), strict=True) if score > 0
+    ]
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return scored[:k]
+
+
+def retrieve(question: str) -> list[dict]:
+    """Hybrid search: chunks close in meaning plus chunks sharing exact words, merged by rank."""
+    by_meaning = [chunk for score, chunk in search(question, CANDIDATES) if score >= MIN_SCORE]
+    by_words = [chunk for _, chunk in keyword_search(question, CANDIDATES)]
+
+    chunks_by_id = {chunk["id"]: chunk for chunk in by_meaning + by_words}
+    merged = retrieval.reciprocal_rank_fusion(
+        [[chunk["id"] for chunk in by_meaning], [chunk["id"] for chunk in by_words]]
+    )
+    return [chunks_by_id[chunk_id] for chunk_id in merged[:CANDIDATES]]
 
 
 def not_found() -> AskResponse:
@@ -78,13 +110,10 @@ def to_source(chunk: dict) -> Source:
 
 
 def answer(question: str) -> AskResponse:
-    results = [
-        (score, chunk) for score, chunk in search(question, CANDIDATES) if score >= MIN_SCORE
-    ]
-    if not results:
+    candidates = retrieve(question)
+    if not candidates:
         return not_found()
 
-    candidates = [chunk for _, chunk in results]
     scores = reranker.rerank(question, [chunk["text"] for chunk in candidates])
     ranked = sorted(zip(scores, candidates, strict=True), key=lambda pair: pair[0], reverse=True)
     chunks = [chunk for _, chunk in ranked[:TOP_K]]

@@ -9,7 +9,7 @@ MODEL_NAME = "intfloat/multilingual-e5-small"
 def normalize_arabic(text: str) -> str:
     text = re.sub(r"[\u064B-\u0652\u0640]", "", text)  # diacritics and tatweel
     text = re.sub("[إأآ]", "ا", text)
-    return text.replace("ى", "ي")
+    return text.replace("ى", "ي").replace("ة", "ه")
 
 
 @lru_cache
