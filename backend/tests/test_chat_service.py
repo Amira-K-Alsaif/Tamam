@@ -25,10 +25,8 @@ CHUNKS = [
 
 @pytest.fixture
 def close_chunks(monkeypatch):
-    monkeypatch.setattr(
-        service, "search", lambda question, k=3: [(0.9, CHUNKS[0]), (0.8, CHUNKS[1])]
-    )
-    # Keeps the search order: the first chunk gets the highest score.
+    monkeypatch.setattr(service, "retrieve", lambda question: [CHUNKS[0], CHUNKS[1]])
+    # Keeps the retrieval order: the first chunk gets the highest score.
     monkeypatch.setattr(
         reranker, "rerank", lambda question, texts: [len(texts) - i for i in range(len(texts))]
     )
@@ -77,6 +75,7 @@ def test_rejects_an_answer_citing_an_unknown_source(monkeypatch, close_chunks):
 
 def test_skips_the_model_when_nothing_is_close(monkeypatch):
     monkeypatch.setattr(service, "search", lambda question, k=3: [(0.5, CHUNKS[0])])
+    monkeypatch.setattr(service, "keyword_search", lambda question, k=3: [])
 
     def must_not_call(system, user):
         raise AssertionError("the model should not be called")
@@ -84,3 +83,19 @@ def test_skips_the_model_when_nothing_is_close(monkeypatch):
     monkeypatch.setattr(llm, "generate", must_not_call)
 
     assert not service.answer("وش أحسن مطعم؟").found
+
+
+def test_retrieve_adds_keyword_matches_the_meaning_search_missed(monkeypatch):
+    monkeypatch.setattr(service, "search", lambda question, k=3: [(0.9, CHUNKS[0])])
+    monkeypatch.setattr(service, "keyword_search", lambda question, k=3: [(2.0, CHUNKS[1])])
+
+    ids = [chunk["id"] for chunk in service.retrieve("VPN")]
+
+    assert set(ids) == {"a", "b"}
+
+
+def test_retrieve_drops_meaning_matches_below_the_threshold(monkeypatch):
+    monkeypatch.setattr(service, "search", lambda question, k=3: [(0.5, CHUNKS[0])])
+    monkeypatch.setattr(service, "keyword_search", lambda question, k=3: [(2.0, CHUNKS[1])])
+
+    assert [chunk["id"] for chunk in service.retrieve("VPN")] == ["b"]
