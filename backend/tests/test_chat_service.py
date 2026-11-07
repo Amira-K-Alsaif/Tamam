@@ -1,6 +1,6 @@
 import pytest
 
-from app.ai import llm
+from app.ai import llm, reranker
 from app.modules.chat import service
 
 CHUNKS = [
@@ -28,6 +28,10 @@ def close_chunks(monkeypatch):
     monkeypatch.setattr(
         service, "search", lambda question, k=3: [(0.9, CHUNKS[0]), (0.8, CHUNKS[1])]
     )
+    # Keeps the search order: the first chunk gets the highest score.
+    monkeypatch.setattr(
+        reranker, "rerank", lambda question, texts: [len(texts) - i for i in range(len(texts))]
+    )
 
 
 def answer_with(monkeypatch, model_text):
@@ -40,6 +44,15 @@ def test_returns_only_the_cited_sources(monkeypatch, close_chunks):
 
     assert result.found
     assert [source.document_id for source in result.sources] == ["doc-leave"]
+
+
+def test_uses_the_reranker_order(monkeypatch, close_chunks):
+    # The reranker prefers the second chunk, so it becomes source [1].
+    monkeypatch.setattr(reranker, "rerank", lambda question, texts: [0.1, 0.9])
+
+    result = answer_with(monkeypatch, "تقدر تشتغل من البيت يومين [1].")
+
+    assert [source.document_id for source in result.sources] == ["doc-remote"]
 
 
 def test_renumbers_citations_to_match_the_returned_sources(monkeypatch, close_chunks):
