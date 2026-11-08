@@ -1,0 +1,11 @@
+﻿id,code,ladder_ar,ladder_en,level_ar,level_en,name_ar,name_en,next_title_code,postings_count,keywords_ar,keywords_en,esco_occupation_uri
+1.0,SWE-1,هندسة البرمجيات,engineering,متوسط,mid,مطوّر برمجيات,Software Developer,SWE-2,19.0,مطور برمجيات، مهندس برمجيات، مطور ويب,"Software Developer, Software Engineer, Full Stack Developer",
+2.0,SWE-2,هندسة البرمجيات,engineering,قيادي,lead,قائد فريق تقني,Tech Lead / Team Lead,,11.0,قائد فريق تقني، قائد فريق التطوير، مدير فريق برمجيات,"Tech Lead, Team Lead Software, Engineering Team Lead",
+3.0,HR-1,الموارد البشرية,hr,متوسط,mid,أخصائي موارد بشرية,HR Specialist,HR-2,19.0,أخصائي موارد بشرية، أخصائي شؤون موظفين، أخصائي استقطاب,"HR Specialist, HR Generalist, Talent Acquisition Specialist",
+4.0,HR-2,الموارد البشرية,hr,مدير,manager,مدير موارد بشرية,HR Manager,,16.0,مدير موارد بشرية، مدير الموارد البشرية,"HR Manager, Human Resources Manager, HR Business Partner Manager",
+5.0,MKT-1,التسويق,marketing,متوسط,mid,أخصائي تسويق رقمي,Digital Marketing Specialist,MKT-2,19.0,أخصائي تسويق رقمي، أخصائي تسويق إلكتروني، أخصائي سوشال ميديا,"Digital Marketing Specialist, Performance Marketing Specialist",
+6.0,MKT-2,التسويق,marketing,مدير,manager,مدير تسويق,Marketing Manager,,19.0,مدير تسويق رقمي، مدير التسويق الإلكتروني,"Digital Marketing Manager, Head of Digital Marketing",
+7.0,FIN-1,المالية,finance,متوسط,mid,محاسب,Accountant,FIN-2,19.0,محاسب، محاسب عام,"Accountant, General Accountant",
+8.0,FIN-2,المالية,finance,مدير,manager,مدير مالي,Finance Manager,,16.0,مدير مالي، المدير المالي,"Finance Manager, Financial Manager",
+9.0,SAL-1,المبيعات,sales,متوسط,mid,أخصائي مبيعات,Sales Specialist,SAL-2,19.0,أخصائي مبيعات، مندوب مبيعات,"Sales Specialist, Sales Executive",
+10.0,SAL-2,المبيعات,sales,مدير,manager,مدير مبيعات,Sales Manager,,19.0,مدير مبيعات,Sales Manager,
