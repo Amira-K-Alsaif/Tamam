@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173"]
     google_api_key: str = ""
     llm_model: str = "gemini-3.6-flash"
+    # Needs the `rag` extra installed. Off by default so the server starts without it.
+    warm_up_models: bool = False
 
 
 @lru_cache

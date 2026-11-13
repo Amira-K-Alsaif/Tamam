@@ -20,6 +20,9 @@ def _client():
         model=settings.llm_model,
         google_api_key=settings.google_api_key,
         temperature=0,  # Policy answers should be repeatable, not creative.
+        # Answering from given sources needs no extended reasoning. Turning it off cut the
+        # average answer time from about 24 s to 8 s with the same answers.
+        thinking_budget=0,
         timeout=30,
         max_retries=2,
     )

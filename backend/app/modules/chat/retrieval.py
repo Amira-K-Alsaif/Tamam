@@ -34,6 +34,13 @@ def _keyword_index() -> list[list[str]]:
     return [ranking.tokenize(chunk.text) for chunk in all_chunks()]
 
 
+def warm_up() -> None:
+    """Loads both models and builds both indexes now, so the first question is fast."""
+    _vectors()
+    _keyword_index()
+    reranker.warm_up()
+
+
 def semantic_search(question: str, k: int) -> list[tuple[float, Chunk]]:
     """The `k` chunks closest in meaning to the question, with their cosine similarity."""
     query = embeddings.embed_query(question)

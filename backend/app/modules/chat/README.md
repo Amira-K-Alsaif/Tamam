@@ -144,8 +144,11 @@ pip install -e ".[dev,rag]"
 uvicorn app.main:app --reload --reload-dir app --port 8000
 ```
 
-Then open http://localhost:8000/docs and try `POST /api/chat/ask`. The first question
-takes longer while the embedding and reranker models load.
+Then open http://localhost:8000/docs and try `POST /api/chat/ask`.
+
+Loading the embedding and reranker models takes from a few seconds to over a minute. Set
+`TAMAM_WARM_UP_MODELS=true` in `backend/.env` to load them while the server starts, so
+the first question is as fast as the rest. Do this before a demo.
 
 Tests never call a real model; they replace it with `monkeypatch`.
 
