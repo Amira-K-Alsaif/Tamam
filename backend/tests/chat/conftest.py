@@ -2,7 +2,7 @@
 
 import pytest
 
-from app.modules.chat.chunking import Chunk
+from app.modules.chat.corpus import Chunk
 
 
 @pytest.fixture

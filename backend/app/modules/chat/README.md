@@ -9,6 +9,9 @@ from the company's documents**, shows **where each fact came from**, and says
 This is Retrieval-Augmented Generation (RAG): find the right passages first, then let a
 language model write the answer from those passages alone.
 
+**Result:** on the team's 50 evaluation questions, the right document is among the three
+passages the model reads for **48 of 50 (96%)**, and ranked first for 44 (88%).
+
 ---
 
 ## How a question is answered
@@ -16,7 +19,7 @@ language model write the answer from those passages alone.
 ```
 "أبي أشتغل من البيت"
         │
- 1. Chunking ─────────── documents were split once into small chunks that know their source
+ 1. Corpus ───────────── the knowledge module's chunks, each knowing its document and section
         │
  2. Hybrid search ────── meaning search (embeddings) + keyword search (BM25), merged by rank
         │                → up to 10 candidates
@@ -41,15 +44,15 @@ language model write the answer from those passages alone.
 
 | File | Step | What it does |
 |---|---|---|
-| `router.py` | — | `POST /api/chat/ask`. Validates the question and returns 503 if the model is not configured. |
+| `router.py` | — | `POST /api/chat/ask`. Validates the question, and returns 503 when the service is not set up or the model's quota is used up. |
 | `schemas.py` | — | The API contract: `AskRequest`, `AskResponse`, `Source`. |
 | `service.py` | all | Runs the pipeline and builds the response. |
-| `sample_documents.py` | 1 | Three fictional documents used until the knowledge module's corpus is connected. |
-| `chunking.py` | 1 | `Chunk` and `split_documents()`: splits each section into ≤400-character chunks. |
+| `corpus.py` | 1 | `Chunk` and `load_chunks()`: reads the chunks the knowledge module prepared. |
 | `ranking.py` | 2 | Pure algorithms: `tokenize`, `bm25`, `reciprocal_rank_fusion`. |
 | `retrieval.py` | 2–3 | `semantic_search`, `keyword_search`, `hybrid_search`, `rerank`. |
 | `prompts.py` | 4 | The system prompt and `build_user_prompt()`. |
 | `citations.py` | 6 | `check_citations()` and `renumber()`. |
+| `evaluate.py` | — | Measures retrieval and answers on `data/eval/knowledge_questions.json`. |
 
 ### Shared AI layer — `backend/app/ai/`
 
@@ -61,7 +64,7 @@ without touching the modules.
 | `arabic.py` | `normalize_arabic()`: one normalization for documents and questions alike. |
 | `embeddings.py` | `embed_passages()` / `embed_query()` with `multilingual-e5-small`. |
 | `reranker.py` | `rerank()` with `bge-reranker-v2-m3`. |
-| `llm.py` | `generate()` with Gemini through LangChain. |
+| `llm.py` | `generate()` with Gemini through LangChain. Turns a used-up quota into `LLMUnavailableError`. |
 
 ### Frontend — `frontend/src/modules/chat/`
 
@@ -79,10 +82,16 @@ The request itself is `askQuestion()` in `frontend/src/lib/api.ts`.
 
 ## Design decisions
 
-**Chunk per section, ≤400 characters, 50 overlapping.** A chunk never mixes two pages,
-so every citation names one exact page. The overlap keeps a sentence's context when a
-section is split. Splitting uses LangChain's `RecursiveCharacterTextSplitter`, which tries
-paragraph, line, sentence, then word boundaries.
+**Read the knowledge module's chunks; don't re-split.** Ingestion belongs to the knowledge
+module (Gamar): it splits the 28 company documents by heading into 88 chunks and writes
+`data/processed/chunks.jsonl`. The chat reads that file and the manifest, so the two
+modules share the Chunk contract from `docs/team.md`, not code.
+
+**Search with titles, cite with text.** Many chunks are one short sentence that does not
+say what it is about, such as «المدة المتوقعة ثلاثة أيام عمل». Search reads
+`Chunk.search_text`, the chunk prefixed with its document and section titles. This one
+change raised retrieval from 84% to 96% on the evaluation questions. Citations still quote
+only the chunk's own text.
 
 **Arabic normalization in one place.** «إجازة», «اجازة», and «إِجَازَة» must look the same to
 the search. `normalize_arabic()` removes diacritics and tatweel, unifies alef forms,
@@ -120,7 +129,18 @@ citation check turns it into «ما لقيت».
 
 ## What the experiments showed
 
-Measured on the sample documents while building the module:
+On the 50 evaluation questions (`python -m app.modules.chat.evaluate`):
+
+| Version | Right document ranked first | Right document in the top 3 |
+|---|---|---|
+| Chunk text only | 41 (82%) | 42 (84%) |
+| With document and section titles | 44 (88%) | **48 (96%)** |
+
+The two remaining misses are a question about recording attendance, and a question about
+a suspicious link that retrieved the phishing guide instead of the information-security
+policy, which is a reasonable answer too.
+
+Earlier experiments on three sample documents:
 
 | Question | Before | After |
 |---|---|---|
@@ -144,29 +164,44 @@ pip install -e ".[dev,rag]"
 uvicorn app.main:app --reload --reload-dir app --port 8000
 ```
 
-Then open http://localhost:8000/docs and try `POST /api/chat/ask`. The first question
-takes longer while the embedding and reranker models load.
+First prepare the knowledge module's chunk file, which the chat reads:
+
+```bash
+python -m app.modules.knowledge.cli
+```
+
+Then open http://localhost:8000/docs and try `POST /api/chat/ask`.
+
+Gemini's free tier allows only about 20 answers per day per model. When the quota is used
+up, the chat shows «خدمة الإجابة غير متاحة حالياً». For a demo, keep a spare key or enable
+billing.
+
+Loading the embedding and reranker models takes from a few seconds to over a minute. Set
+`TAMAM_WARM_UP_MODELS=true` in `backend/.env` to load them while the server starts, so
+the first question is as fast as the rest. Do this before a demo.
 
 Tests never call a real model; they replace it with `monkeypatch`.
 
 ```bash
-pytest tests/chat tests/test_ai_arabic.py
+pytest tests/chat tests/test_ai_arabic.py tests/test_ai_llm.py
+python -m app.modules.chat.evaluate            # retrieval accuracy, no Gemini calls
+python -m app.modules.chat.evaluate --answers  # also checks Gemini's answers (uses quota)
 ```
 
 | Test file | Covers |
 |---|---|
-| `test_chat_chunking.py` | Chunks keep their source, respect the size limit, and have unique ids. |
+| `test_chat_corpus.py` | Reading chunks with their titles, and the message when the file is missing. |
 | `test_chat_ranking.py` | Tokenizing, BM25, and rank fusion. |
 | `test_chat_retrieval.py` | Hybrid merging, the threshold, and reranking. |
 | `test_chat_citations.py` | Accepting, rejecting, and renumbering citations. |
 | `test_chat_service.py` | The full pipeline, including both «not found» paths. |
-| `test_chat_router.py` | The HTTP contract, validation, and the 503 path. |
+| `test_chat_router.py` | The HTTP contract, validation, and the 503 paths. |
+| `test_chat_warm_up.py` | Loading the models at startup when enabled. |
 
 ---
 
 ## Next steps
 
-- Answer from the knowledge module's 30 documents instead of `sample_documents.py`, and
-  measure accuracy with `data/eval/knowledge_questions.json`.
+- Measure the answers themselves with `evaluate --answers` once there is enough quota.
 - Rewrite dialect questions into standard Arabic before searching.
 - Stream the answer as it is generated.
