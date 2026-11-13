@@ -19,12 +19,13 @@ def _client():
     return ChatGoogleGenerativeAI(
         model=settings.llm_model,
         google_api_key=settings.google_api_key,
-        temperature=0,
+        temperature=0,  # Policy answers should be repeatable, not creative.
         timeout=30,
         max_retries=2,
     )
 
 
 def generate(system: str, user: str) -> str:
+    """Sends the instructions and the user message, and returns the model's reply text."""
     response = _client().invoke([("system", system), ("human", user)])
     return response.text

@@ -1,8 +1,12 @@
-"""Reorders retrieved chunks by reading each one together with the question."""
+"""Scores how well each text answers a question by reading the two together.
+
+More accurate than comparing embeddings, but too slow to run on every chunk, so it
+only reorders the shortlist that the fast search returns.
+"""
 
 from functools import lru_cache
 
-from app.ai.embeddings import normalize_arabic
+from app.ai.arabic import normalize_arabic
 
 MODEL_NAME = "BAAI/bge-reranker-v2-m3"
 
@@ -16,5 +20,6 @@ def _model():
 
 
 def rerank(question: str, texts: list[str]) -> list[float]:
+    """Returns one relevance score per text, in the same order as `texts`."""
     pairs = [(normalize_arabic(question), normalize_arabic(text)) for text in texts]
     return _model().predict(pairs).tolist()

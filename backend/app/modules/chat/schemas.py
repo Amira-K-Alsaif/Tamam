@@ -1,3 +1,5 @@
+"""The chat API contract. The frontend mirrors these shapes in src/lib/api.ts."""
+
 from pydantic import BaseModel, Field
 
 
@@ -6,6 +8,9 @@ class AskRequest(BaseModel):
 
 
 class Source(BaseModel):
+    """Where a part of the answer came from. Matches the Source citation contract in
+    docs/team.md."""
+
     document_id: str
     document_title: str
     page: int
@@ -15,5 +20,6 @@ class Source(BaseModel):
 
 class AskResponse(BaseModel):
     answer: str
+    # False when the answer is the "not found" message; `sources` is then empty.
     found: bool
     sources: list[Source]
