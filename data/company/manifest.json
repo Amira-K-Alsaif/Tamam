@@ -1,0 +1,254 @@
+[
+  {
+    "id": "annual-leave",
+    "title": "سياسة الإجازات السنوية",
+    "kind": "policy",
+    "department": "الموارد البشرية",
+    "file_path": "documents/annual-leave.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "emergency-leave",
+    "title": "إجراء الإجازة الاضطرارية",
+    "kind": "procedure",
+    "department": "الموارد البشرية",
+    "file_path": "documents/emergency-leave.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "remote-work",
+    "title": "سياسة العمل عن بُعد",
+    "kind": "policy",
+    "department": "الموارد البشرية",
+    "file_path": "documents/remote-work.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "attendance",
+    "title": "سياسة الحضور وساعات العمل",
+    "kind": "policy",
+    "department": "الموارد البشرية",
+    "file_path": "documents/attendance.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "probation",
+    "title": "دليل فترة التجربة",
+    "kind": "faq",
+    "department": "الموارد البشرية",
+    "file_path": "documents/probation.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "employee-onboarding",
+    "title": "دليل الموظف الجديد",
+    "kind": "procedure",
+    "department": "الموارد البشرية",
+    "file_path": "documents/employee-onboarding.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "code-conduct",
+    "title": "مدونة السلوك الوظيفي",
+    "kind": "policy",
+    "department": "الموارد البشرية",
+    "file_path": "documents/code-conduct.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "data-privacy",
+    "title": "سياسة الخصوصية الداخلية",
+    "kind": "policy",
+    "department": "الموارد البشرية",
+    "file_path": "documents/data-privacy.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "infosec",
+    "title": "سياسة أمن المعلومات",
+    "kind": "policy",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/infosec.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "system-access",
+    "title": "إجراء طلب صلاحية نظام",
+    "kind": "procedure",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/system-access.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "mfa-password",
+    "title": "إرشادات كلمات المرور والتحقق الثنائي",
+    "kind": "policy",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/mfa-password.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "phishing",
+    "title": "إجراء الإبلاغ عن التصيد",
+    "kind": "procedure",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/phishing.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "vpn",
+    "title": "دليل تفعيل الاتصال الآمن VPN",
+    "kind": "procedure",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/vpn.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "devices",
+    "title": "سياسة الأجهزة المؤسسية",
+    "kind": "policy",
+    "department": "تقنية المعلومات",
+    "file_path": "documents/devices.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "classification",
+    "title": "سياسة تصنيف البيانات",
+    "kind": "policy",
+    "department": "البيانات والتحليلات",
+    "file_path": "documents/classification.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "warehouse",
+    "title": "إجراء صلاحية مستودع البيانات",
+    "kind": "procedure",
+    "department": "البيانات والتحليلات",
+    "file_path": "documents/warehouse.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "dashboards",
+    "title": "معايير لوحات مؤشرات الأداء",
+    "kind": "policy",
+    "department": "البيانات والتحليلات",
+    "file_path": "documents/dashboards.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "metrics",
+    "title": "الأسئلة الشائعة عن البيانات",
+    "kind": "faq",
+    "department": "البيانات والتحليلات",
+    "file_path": "documents/metrics.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "reimbursements",
+    "title": "إجراء تعويض مصاريف العمل",
+    "kind": "procedure",
+    "department": "المالية",
+    "file_path": "documents/reimbursements.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "business-travel",
+    "title": "سياسة السفر لمهام العمل",
+    "kind": "policy",
+    "department": "المالية",
+    "file_path": "documents/business-travel.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "procurement",
+    "title": "إجراء طلب شراء أدوات",
+    "kind": "procedure",
+    "department": "المالية",
+    "file_path": "documents/procurement.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "id-badge",
+    "title": "إجراء إصدار بطاقة دخول المبنى",
+    "kind": "procedure",
+    "department": "العمليات",
+    "file_path": "documents/id-badge.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "office-support",
+    "title": "دليل خدمات المكتب",
+    "kind": "faq",
+    "department": "العمليات",
+    "file_path": "documents/office-support.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "incident",
+    "title": "إجراء الإبلاغ عن حادث سلامة",
+    "kind": "procedure",
+    "department": "العمليات",
+    "file_path": "documents/incident.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "leave-request-form",
+    "title": "نموذج طلب إجازة سنوية",
+    "kind": "form",
+    "department": "الموارد البشرية",
+    "file_path": "documents/leave-request-form.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "handover-form",
+    "title": "نموذج تسليم المهام",
+    "kind": "form",
+    "department": "الموارد البشرية",
+    "file_path": "documents/handover-form.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "training-request",
+    "title": "إجراء طلب تدريب خارجي",
+    "kind": "procedure",
+    "department": "الموارد البشرية",
+    "file_path": "documents/training-request.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  },
+  {
+    "id": "learning-faq",
+    "title": "الأسئلة الشائعة عن التدريب",
+    "kind": "faq",
+    "department": "الموارد البشرية",
+    "file_path": "documents/learning-faq.md",
+    "status": "ready",
+    "updated_at": "2026-10-28"
+  }
+]
