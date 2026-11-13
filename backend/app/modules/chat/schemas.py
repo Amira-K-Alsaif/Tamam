@@ -13,7 +13,7 @@ class Source(BaseModel):
 
     document_id: str
     document_title: str
-    page: int
+    page: int | None  # None for documents without pages, such as Markdown
     section_title: str
     quote: str
 

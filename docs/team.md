@@ -84,3 +84,5 @@ that uses the contract.
 ### Source citation in any AI answer (owner: 1, used by everyone who shows sources)
 
     document_id, document_title, page, section_title, quote
+
+`page` is null for documents without pages, such as Markdown.

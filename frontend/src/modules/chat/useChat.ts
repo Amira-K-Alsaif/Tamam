@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { askQuestion, type AskResponse, type Source } from '../../lib/api'
+import { ApiError, askQuestion, type AskResponse, type Source } from '../../lib/api'
 
 export type Message = { role: 'user'; text: string } | { role: 'assistant'; reply: AskResponse }
 
@@ -22,8 +22,13 @@ export function useChat() {
     try {
       const reply = await askQuestion(text)
       setMessages((current) => [...current, { role: 'assistant', reply }])
-    } catch {
-      setError('تعذّر الوصول للخادم. تأكد إنه شغال وحاول مرة ثانية.')
+    } catch (caught) {
+      setError(
+        // 503: the server is up but the answering service is busy or not set up.
+        caught instanceof ApiError && caught.status === 503
+          ? 'خدمة الإجابة غير متاحة حالياً. حاول بعد قليل.'
+          : 'تعذّر الوصول للخادم. تأكد إنه شغال وحاول مرة ثانية.',
+      )
     } finally {
       setLoading(false)
     }

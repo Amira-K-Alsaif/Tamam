@@ -1,8 +1,10 @@
+import pytest
 from fastapi.testclient import TestClient
 
-from app.ai.llm import LLMNotConfiguredError
+from app.ai.llm import LLMNotConfiguredError, LLMUnavailableError
 from app.main import app
 from app.modules.chat import service
+from app.modules.chat.corpus import CorpusNotPreparedError
 from app.modules.chat.schemas import AskResponse
 
 client = TestClient(app)
@@ -25,12 +27,16 @@ def test_ask_rejects_an_empty_question():
     assert response.status_code == 422
 
 
-def test_ask_returns_503_when_the_model_is_not_configured(monkeypatch):
-    def not_configured(question):
-        raise LLMNotConfiguredError("missing key")
+@pytest.mark.parametrize(
+    "error", [LLMNotConfiguredError, LLMUnavailableError, CorpusNotPreparedError]
+)
+def test_ask_returns_503_when_the_service_is_not_set_up(monkeypatch, error):
+    def not_set_up(question):
+        raise error("setup detail the user must not see")
 
-    monkeypatch.setattr(service, "answer", not_configured)
+    monkeypatch.setattr(service, "answer", not_set_up)
 
     response = client.post("/api/chat/ask", json={"question": "كم يوم إجازتي؟"})
 
     assert response.status_code == 503
+    assert "setup detail" not in response.text

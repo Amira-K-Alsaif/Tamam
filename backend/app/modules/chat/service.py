@@ -4,7 +4,7 @@ Generation). See README.md in this folder for the full walkthrough."""
 from app.ai import llm
 
 from . import citations, retrieval
-from .chunking import Chunk
+from .corpus import Chunk
 from .prompts import SYSTEM_PROMPT, build_user_prompt
 from .schemas import AskResponse, Source
 

@@ -10,14 +10,15 @@ export function SourcesPanel({ sources }: { sources: Source[] }) {
       ) : (
         sources.map((source, index) => (
           <article
-            key={`${source.document_id}-${source.page}`}
+            key={`${source.document_id}-${source.section_title}`}
             className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-4"
           >
             <strong className="text-sm">
               [{index + 1}] {source.document_title}
             </strong>
             <span className="text-xs text-faint">
-              صفحة {source.page} · {source.section_title}
+              {source.page === null ? '' : `صفحة ${source.page} · `}
+              {source.section_title}
             </span>
             <p className="m-0 text-sm leading-relaxed text-soft">{source.quote}</p>
           </article>

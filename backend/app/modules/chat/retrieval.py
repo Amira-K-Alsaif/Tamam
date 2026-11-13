@@ -13,7 +13,7 @@ from functools import lru_cache
 from app.ai import embeddings, reranker
 
 from . import ranking
-from .chunking import Chunk, all_chunks
+from .corpus import Chunk, all_chunks
 
 # Low on purpose: the small embedding model scores even unrelated text near 0.8, so the
 # reranker, the model, and the citation check do the real filtering. Raise it with BGE-M3.
@@ -25,13 +25,13 @@ CANDIDATES = 10
 @lru_cache
 def _vectors() -> list[list[float]]:
     """Embeds every chunk once per process."""
-    return embeddings.embed_passages([chunk.text for chunk in all_chunks()])
+    return embeddings.embed_passages([chunk.search_text for chunk in all_chunks()])
 
 
 @lru_cache
 def _keyword_index() -> list[list[str]]:
     """Tokenizes every chunk once per process."""
-    return [ranking.tokenize(chunk.text) for chunk in all_chunks()]
+    return [ranking.tokenize(chunk.search_text) for chunk in all_chunks()]
 
 
 def warm_up() -> None:
@@ -80,6 +80,6 @@ def hybrid_search(question: str) -> list[Chunk]:
 
 def rerank(question: str, chunks: list[Chunk], k: int) -> list[Chunk]:
     """The `k` best chunks after the reranker reads each one with the question."""
-    scores = reranker.rerank(question, [chunk.text for chunk in chunks])
+    scores = reranker.rerank(question, [chunk.search_text for chunk in chunks])
     ranked = sorted(zip(scores, chunks, strict=True), key=lambda pair: pair[0], reverse=True)
     return [chunk for _, chunk in ranked[:k]]

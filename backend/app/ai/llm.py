@@ -2,11 +2,17 @@
 
 from functools import lru_cache
 
+from langchain_core.exceptions import ModelAPIError, ModelRateLimitError
+
 from app.config import get_settings
 
 
 class LLMNotConfiguredError(RuntimeError):
     """Raised when TAMAM_GOOGLE_API_KEY is missing."""
+
+
+class LLMUnavailableError(RuntimeError):
+    """Raised when the model cannot answer right now: quota used up or provider down."""
 
 
 @lru_cache
@@ -30,5 +36,10 @@ def _client():
 
 def generate(system: str, user: str) -> str:
     """Sends the instructions and the user message, and returns the model's reply text."""
-    response = _client().invoke([("system", system), ("human", user)])
+    try:
+        response = _client().invoke([("system", system), ("human", user)])
+    except (ModelRateLimitError, ModelAPIError) as error:
+        # The free tier allows a small number of requests per day; callers show a
+        # "try again later" message instead of a server error.
+        raise LLMUnavailableError(str(error)) from error
     return response.text

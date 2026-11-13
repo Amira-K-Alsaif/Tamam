@@ -83,7 +83,8 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
 export type Source = {
   document_id: string
   document_title: string
-  page: number
+  // null for documents without pages, such as Markdown
+  page: number | null
   section_title: string
   quote: string
 }
