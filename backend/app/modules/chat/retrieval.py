@@ -1,54 +1,78 @@
-"""Keyword search (BM25) and rank merging. Plain Python: no model needed."""
+"""Pipeline steps 2 and 3: find the chunks most likely to answer a question.
 
-import math
-import re
-from collections import Counter
+question ─┬─► semantic_search  (meaning: «من البيت» finds «عن بعد»)
+          └─► keyword_search   (exact words: «VPN» finds «VPN»)
+                    │
+            hybrid_search      (merges both rankings)
+                    │
+            rerank             (reorders the shortlist precisely)
+"""
 
-from app.ai.embeddings import normalize_arabic
+from functools import lru_cache
 
-# Words so common they match almost every chunk, written after normalize_arabic.
-STOP_WORDS = {
-    "من", "في", "علي", "عن", "الي", "او", "و", "ان", "ما", "هل", "كم", "كيف", "متي",
-    "مين", "وش", "ايش", "ابي", "ابغي", "لي", "لا", "مع", "بعد", "قبل", "هذا", "هذي", "هذه",
-    "اي", "كل", "عند", "انا", "يا",
-}  # fmt: skip
+from app.ai import embeddings, reranker
 
+from . import ranking
+from .chunking import Chunk, all_chunks
 
-def tokenize(text: str) -> list[str]:
-    words = re.findall(r"\w+", normalize_arabic(text).lower())
-    # Drop the Arabic definite article so «الإجازة» matches «إجازة».
-    words = [word[2:] if word.startswith("ال") and len(word) > 4 else word for word in words]
-    return [word for word in words if word not in STOP_WORDS]
-
-
-def bm25(
-    query: list[str], documents: list[list[str]], k1: float = 1.5, b: float = 0.75
-) -> list[float]:
-    """Scores each document by how often it uses the query's words, favouring rare words."""
-    count = len(documents)
-    average_length = sum(len(document) for document in documents) / count
-    document_frequency = Counter(word for document in documents for word in set(document))
-
-    scores = []
-    for document in documents:
-        frequency = Counter(document)
-        score = 0.0
-        for word in query:
-            if word not in frequency:
-                continue
-            rarity = math.log(
-                1 + (count - document_frequency[word] + 0.5) / (document_frequency[word] + 0.5)
-            )
-            length_penalty = 1 - b + b * len(document) / average_length
-            score += rarity * frequency[word] * (k1 + 1) / (frequency[word] + k1 * length_penalty)
-        scores.append(score)
-    return scores
+# Low on purpose: the small embedding model scores even unrelated text near 0.8, so the
+# reranker, the model, and the citation check do the real filtering. Raise it with BGE-M3.
+MIN_SEMANTIC_SCORE = 0.70
+# How many chunks the fast searches hand to the slower, more accurate reranker.
+CANDIDATES = 10
 
 
-def reciprocal_rank_fusion(rankings: list[list[str]], k: int = 60) -> list[str]:
-    """Merges several rankings of ids. An id ranked high in any list rises to the top."""
-    scores: dict[str, float] = {}
-    for ranking in rankings:
-        for rank, item in enumerate(ranking, start=1):
-            scores[item] = scores.get(item, 0.0) + 1 / (k + rank)
-    return sorted(scores, key=lambda item: scores[item], reverse=True)
+@lru_cache
+def _vectors() -> list[list[float]]:
+    """Embeds every chunk once per process."""
+    return embeddings.embed_passages([chunk.text for chunk in all_chunks()])
+
+
+@lru_cache
+def _keyword_index() -> list[list[str]]:
+    """Tokenizes every chunk once per process."""
+    return [ranking.tokenize(chunk.text) for chunk in all_chunks()]
+
+
+def semantic_search(question: str, k: int) -> list[tuple[float, Chunk]]:
+    """The `k` chunks closest in meaning to the question, with their cosine similarity."""
+    query = embeddings.embed_query(question)
+    scored = [
+        (sum(a * b for a, b in zip(vector, query, strict=True)), chunk)
+        for vector, chunk in zip(_vectors(), all_chunks(), strict=True)
+    ]
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return scored[:k]
+
+
+def keyword_search(question: str, k: int) -> list[tuple[float, Chunk]]:
+    """The `k` chunks that share the most important words with the question."""
+    scores = ranking.bm25(ranking.tokenize(question), _keyword_index())
+    scored = [
+        (score, chunk) for score, chunk in zip(scores, all_chunks(), strict=True) if score > 0
+    ]
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return scored[:k]
+
+
+def hybrid_search(question: str) -> list[Chunk]:
+    """Chunks close in meaning plus chunks sharing exact words, merged by rank."""
+    by_meaning = [
+        chunk
+        for score, chunk in semantic_search(question, CANDIDATES)
+        if score >= MIN_SEMANTIC_SCORE
+    ]
+    by_words = [chunk for _, chunk in keyword_search(question, CANDIDATES)]
+
+    chunks_by_id = {chunk.id: chunk for chunk in by_meaning + by_words}
+    merged = ranking.reciprocal_rank_fusion(
+        [[chunk.id for chunk in by_meaning], [chunk.id for chunk in by_words]]
+    )
+    return [chunks_by_id[chunk_id] for chunk_id in merged[:CANDIDATES]]
+
+
+def rerank(question: str, chunks: list[Chunk], k: int) -> list[Chunk]:
+    """The `k` best chunks after the reranker reads each one with the question."""
+    scores = reranker.rerank(question, [chunk.text for chunk in chunks])
+    ranked = sorted(zip(scores, chunks, strict=True), key=lambda pair: pair[0], reverse=True)
+    return [chunk for _, chunk in ranked[:k]]

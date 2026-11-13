@@ -1,31 +1,11 @@
-"""Turns text into vectors. The only place that loads the embedding model."""
+"""Turns text into vectors that capture its meaning. The only place that loads the
+embedding model."""
 
-import re
-import unicodedata
 from functools import lru_cache
 
+from app.ai.arabic import normalize_arabic
+
 MODEL_NAME = "intfloat/multilingual-e5-small"
-
-_DIACRITICS = re.compile(r"[ؐ-ًؚ-ٰٟۖ-ۭ]")
-_SPACES = re.compile(r"\s+")
-_LETTERS = str.maketrans(
-    {
-        "أ": "ا",  # أ → ا
-        "إ": "ا",  # إ → ا
-        "آ": "ا",  # آ → ا
-        "ٱ": "ا",  # ٱ → ا
-        "ى": "ي",  # ى → ي
-        "ة": "ه",  # ة → ه
-        "ـ": "",  # tatweel
-    }
-)
-
-
-def normalize_arabic(text: str) -> str:
-    """The one Arabic normalization for documents and questions alike. See CLAUDE.md."""
-    text = unicodedata.normalize("NFKC", text)
-    text = _DIACRITICS.sub("", text).translate(_LETTERS)
-    return _SPACES.sub(" ", text).strip().casefold()
 
 
 @lru_cache
@@ -37,10 +17,14 @@ def _model():
 
 
 def embed_passages(texts: list[str]) -> list[list[float]]:
+    """Embeds document chunks. Vectors are unit length, so a dot product is the cosine
+    similarity."""
+    # e5 models are trained with these prefixes and lose accuracy without them.
     prepared = ["passage: " + normalize_arabic(text) for text in texts]
     return _model().encode(prepared, normalize_embeddings=True).tolist()
 
 
 def embed_query(text: str) -> list[float]:
+    """Embeds a user question in the same space as `embed_passages`."""
     prepared = ["query: " + normalize_arabic(text)]
     return _model().encode(prepared, normalize_embeddings=True)[0].tolist()

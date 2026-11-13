@@ -1,6 +1,6 @@
 import pytest
 
-from app.ai.embeddings import normalize_arabic
+from app.ai.arabic import normalize_arabic
 
 
 @pytest.mark.parametrize(
