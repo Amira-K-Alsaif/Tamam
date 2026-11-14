@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from app.modules.knowledge.normalization import normalize_arabic
+from app.ai.arabic import normalize_arabic
 from app.modules.knowledge.service import (
     build_chunks,
     extract_markdown,
