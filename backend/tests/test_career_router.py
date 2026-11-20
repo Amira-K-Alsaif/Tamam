@@ -1,11 +1,21 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
-from app.modules.career import service
+from app.modules.career import repository, service
 from app.modules.career.repository import get_repository
 
 client = TestClient(app)
 ACCOUNTANT, FINANCE_MANAGER = 7, 8
+
+
+@pytest.fixture(autouse=True)
+def json_data_only(monkeypatch):
+    """Tests read the committed JSON files, never a developer's Supabase."""
+    monkeypatch.setattr(repository, "get_supabase", lambda: None)
+    get_repository.cache_clear()
+    yield
+    get_repository.cache_clear()
 
 
 def test_titles_lists_the_ten_titles_with_their_next_step():
