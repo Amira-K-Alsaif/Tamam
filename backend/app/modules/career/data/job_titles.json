@@ -98,5 +98,25 @@
   "name_en": "Sales Manager",
   "next_title_id": null,
   "esco_occupation_uri": null
+ },
+ {
+  "id": 11,
+  "code": "DA-1",
+  "ladder": "data",
+  "level": "mid",
+  "name_ar": "محلل بيانات",
+  "name_en": "Data Analyst",
+  "next_title_id": 12,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 12,
+  "code": "DA-2",
+  "ladder": "data",
+  "level": "senior",
+  "name_ar": "محلل بيانات أول",
+  "name_en": "Senior Data Analyst",
+  "next_title_id": null,
+  "esco_occupation_uri": null
  }
 ]

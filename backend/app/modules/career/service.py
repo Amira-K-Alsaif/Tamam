@@ -10,6 +10,8 @@ from .repository import CareerRepository
 from .schemas import Gap, GapAnalysis, GapSkill, JobTitle, MissingSkill, TitleSkill
 
 MIN_FREQUENCY = 0.15
+# Below this many target postings, the market profile is shown as a rough estimate.
+MIN_EVIDENCE_POSTINGS = 5
 RADAR_AXES = 8
 
 
@@ -96,6 +98,7 @@ def analyze_gap(
         if title_id not in repo.titles:
             raise TitleNotFoundError(title_id)
 
+    evidence = repo.postings_count.get(target_title_id, 0)
     current_freq = {r["skill_id"]: r["frequency"] for r in repo.profiles.get(current_title_id, [])}
     target = sorted(repo.profiles.get(target_title_id, []), key=lambda r: -r["frequency"])
     considered = [r for r in target if r["frequency"] >= MIN_FREQUENCY] or target[:RADAR_AXES]
@@ -142,7 +145,8 @@ def analyze_gap(
             matched=matched,
             missing=missing,
             to_improve=to_improve,
-            evidence_postings=repo.postings_count.get(target_title_id, 0),
+            evidence_postings=evidence,
+            low_evidence=evidence < MIN_EVIDENCE_POSTINGS,
         ),
         radar=[
             GapSkill(**s.model_dump(include=set(GapSkill.model_fields))) for s in radar[:RADAR_AXES]

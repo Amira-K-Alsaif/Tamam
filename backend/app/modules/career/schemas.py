@@ -45,6 +45,7 @@ class Gap(BaseModel):
     missing: list[MissingSkill]
     to_improve: list[GapSkill]
     evidence_postings: int
+    low_evidence: bool  # Too few target postings for the profile to be reliable
 
 
 LevelSource = Literal["employee_profile", "current_title_market_proxy"]

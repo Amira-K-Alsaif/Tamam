@@ -174,7 +174,7 @@ function ProfileTitleNote({ profileTitle }: { profileTitle: ProfileTitle }) {
 
 function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number, JobTitle> }) {
   const target = titles.get(result.target_title_id)
-  const { matched, to_improve, missing, evidence_postings } = result.gap
+  const { matched, to_improve, missing, evidence_postings, low_evidence } = result.gap
   return (
     <>
       <div className="grid gap-4 md:grid-cols-3">
@@ -188,6 +188,11 @@ function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number
               ? 'مستواك مأخوذ من ملف مهاراتك.'
               : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق، لين يجهز ملف مهاراتك.'}
           </p>
+          {low_evidence && (
+            <p role="note" className="m-0 mt-2 text-sm text-warning">
+              النتيجة تقريبية: عدد الإعلانات لهذا المنصب قليل، فالمهارات المطلوبة ممكن تكون ناقصة.
+            </p>
+          )}
         </Card>
       </div>
 

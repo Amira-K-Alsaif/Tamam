@@ -7686,5 +7686,373 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "متابعه العملاء -تحرير عروض الاسعار"
+ },
+ {
+  "posting_id": 177,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "developing reports and dashboards"
+ },
+ {
+  "posting_id": 177,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "gathering, cleaning, and analyzing data from various sources to drive business insights and performance metrics"
+ },
+ {
+  "posting_id": 177,
+  "skill_id": 72,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "developing reports and dashboards"
+ },
+ {
+  "posting_id": 177,
+  "skill_id": 74,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "gathering, cleaning, and analyzing data from various sources to drive business insights and performance metrics"
+ },
+ {
+  "posting_id": 178,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "developing reports, conducting quantitative analysis, and managing data projects from collection to operationalization"
+ },
+ {
+  "posting_id": 178,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "developing reports, conducting quantitative analysis, and managing data projects from collection to operationalization"
+ },
+ {
+  "posting_id": 178,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "analyzing data to support product development and optimize performance"
+ },
+ {
+  "posting_id": 178,
+  "skill_id": 73,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "developing reports, conducting quantitative analysis, and managing data projects from collection to operationalization"
+ },
+ {
+  "posting_id": 180,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data analytics specialist"
+ },
+ {
+  "posting_id": 180,
+  "skill_id": 75,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "analyzing data initiatives, developing etl processes, third-level support for data integration systems"
+ },
+ {
+  "posting_id": 181,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data validation using analytical tools, managing primary data, quality control, producing reports for management"
+ },
+ {
+  "posting_id": 181,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data validation using analytical tools, managing primary data, quality control, producing reports for management"
+ },
+ {
+  "posting_id": 181,
+  "skill_id": 74,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data validation using analytical tools, managing primary data, quality control, producing reports for management"
+ },
+ {
+  "posting_id": 182,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "sap analytics (sac) bi solutions, harmonizing data models, advanced analytics and reporting"
+ },
+ {
+  "posting_id": 182,
+  "skill_id": 30,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "sap analytics (sac) bi solutions, harmonizing data models, advanced analytics and reporting"
+ },
+ {
+  "posting_id": 182,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "analytics"
+ },
+ {
+  "posting_id": 183,
+  "skill_id": 4,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تحليل البيانات باستخدام ادوات مثل اكسل, بايثون وغيرها من البرامج المساعده للتحليل"
+ },
+ {
+  "posting_id": 183,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "القدره علي مواءمه التحليل مع الاهداف والاستراتجيات المستهدفه"
+ },
+ {
+  "posting_id": 183,
+  "skill_id": 29,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تحليل البيانات باستخدام ادوات مثل اكسل, بايثون وغيرها من البرامج المساعده للتحليل"
+ },
+ {
+  "posting_id": 183,
+  "skill_id": 36,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "معرفه بحوكمه البيانات ومؤشرات الاداء"
+ },
+ {
+  "posting_id": 183,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تحليل البيانات باستخدام ادوات مثل اكسل, بايثون وغيرها من البرامج المساعده للتحليل"
+ },
+ {
+  "posting_id": 184,
+  "skill_id": 17,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "ستقوم بجمع ومعالجه وتحليل البيانات الماليه لتقديم رؤي تدعم المبادرات الاستراتيجيه"
+ },
+ {
+  "posting_id": 184,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "ستؤثر مهاراتك التحليليه علي النتائج الرئيسيه للاعمال"
+ },
+ {
+  "posting_id": 184,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "ستقوم بجمع ومعالجه وتحليل البيانات الماليه لتقديم رؤي تدعم المبادرات الاستراتيجيه"
+ },
+ {
+  "posting_id": 185,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تشمل المسؤوليات اعداد التقارير ولوحات المعلومات لدعم عمليات اتخاذ القرار وتطوير مؤشرات الاداء الرئيسيه (kpis)"
+ },
+ {
+  "posting_id": 185,
+  "skill_id": 36,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تشمل المسؤوليات اعداد التقارير ولوحات المعلومات لدعم عمليات اتخاذ القرار وتطوير مؤشرات الاداء الرئيسيه (kpis)"
+ },
+ {
+  "posting_id": 185,
+  "skill_id": 72,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تشمل المسؤوليات اعداد التقارير ولوحات المعلومات لدعم عمليات اتخاذ القرار وتطوير مؤشرات الاداء الرئيسيه (kpis)"
+ },
+ {
+  "posting_id": 186,
+  "skill_id": 17,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "اخصائي تقارير وتحليل البيانات: اعداد تقارير تشغيليه واستراتيجيه، والحفاظ علي دقه البيانات، ودعم الاداره برؤي تحليليه لتعزيز اتخاذ القرارات"
+ },
+ {
+  "posting_id": 186,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data reporting & analysis specialist"
+ },
+ {
+  "posting_id": 186,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "data reporting & analysis specialist"
+ },
+ {
+  "posting_id": 186,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "اخصائي تقارير وتحليل البيانات: اعداد تقارير تشغيليه واستراتيجيه، والحفاظ علي دقه البيانات، ودعم الاداره برؤي تحليليه لتعزيز اتخاذ القرارات"
+ },
+ {
+  "posting_id": 187,
+  "skill_id": 7,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "8-month cloud project"
+ },
+ {
+  "posting_id": 187,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "العمل مع بيانات ساب والتقارير والتحليلات لتقديم رؤي قابله للتنفيذ، والتعاون مع اصحاب المصلحه والفرق الفنيه لضمان جوده البيانات ودعم انشطه الهجره"
+ },
+ {
+  "posting_id": 187,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "العمل مع بيانات ساب والتقارير والتحليلات لتقديم رؤي قابله للتنفيذ، والتعاون مع اصحاب المصلحه والفرق الفنيه لضمان جوده البيانات ودعم انشطه الهجره"
+ },
+ {
+  "posting_id": 187,
+  "skill_id": 30,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "sap data analyst"
+ },
+ {
+  "posting_id": 187,
+  "skill_id": 74,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "العمل مع بيانات ساب والتقارير والتحليلات لتقديم رؤي قابله للتنفيذ، والتعاون مع اصحاب المصلحه والفرق الفنيه لضمان جوده البيانات ودعم انشطه الهجره"
+ },
+ {
+  "posting_id": 188,
+  "skill_id": 27,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "محلل جوده البيانات الرئيسيه: ضمان دقه البيانات وسلامتها عبر المؤسسه، تحليل مجموعات البيانات الكبيره لتحديد التناقضات ودعم مبادرات حوكمه البيانات، اداره ادوات ذكاء الاعمال والحفاظ علي معايير جوده البيانات وتقارير ذكاء الاعمال"
+ },
+ {
+  "posting_id": 188,
+  "skill_id": 72,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "محلل جوده البيانات الرئيسيه: ضمان دقه البيانات وسلامتها عبر المؤسسه، تحليل مجموعات البيانات الكبيره لتحديد التناقضات ودعم مبادرات حوكمه البيانات، اداره ادوات ذكاء الاعمال والحفاظ علي معايير جوده البيانات وتقارير ذكاء الاعمال"
+ },
+ {
+  "posting_id": 188,
+  "skill_id": 74,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "master data quality analyst"
+ },
+ {
+  "posting_id": 189,
+  "skill_id": 17,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "خبير بحث وتحليل بيانات: خبره في تحليل البيانات ضمن القطاع الثقافي، بما في ذلك ابحاث السوق، وتطوير نماذج تحليليه، وتوليد رؤي استراتيجيه، وتقييم العرض والطلب، وقياس الاثر الاجتماعي للمبادرات"
+ },
+ {
+  "posting_id": 189,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "خبير بحث وتحليل بيانات: خبره في تحليل البيانات ضمن القطاع الثقافي، بما في ذلك ابحاث السوق، وتطوير نماذج تحليليه، وتوليد رؤي استراتيجيه، وتقييم العرض والطلب، وقياس الاثر الاجتماعي للمبادرات"
+ },
+ {
+  "posting_id": 189,
+  "skill_id": 48,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "خبير بحث وتحليل بيانات: خبره في تحليل البيانات ضمن القطاع الثقافي، بما في ذلك ابحاث السوق، وتطوير نماذج تحليليه، وتوليد رؤي استراتيجيه، وتقييم العرض والطلب، وقياس الاثر الاجتماعي للمبادرات"
+ },
+ {
+  "posting_id": 189,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "خبير بحث وتحليل بيانات: خبره في تحليل البيانات ضمن القطاع الثقافي، بما في ذلك ابحاث السوق، وتطوير نماذج تحليليه، وتوليد رؤي استراتيجيه، وتقييم العرض والطلب، وقياس الاثر الاجتماعي للمبادرات"
+ },
+ {
+  "posting_id": 190,
+  "skill_id": 14,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "متخصص تحليل البيانات: مهارات القياده والتحليل ضروريه"
+ },
+ {
+  "posting_id": 190,
+  "skill_id": 22,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "متخصص تحليل البيانات: مهارات القياده والتحليل ضروريه"
+ },
+ {
+  "posting_id": 190,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "متخصص تحليل البيانات: مهارات القياده والتحليل ضروريه"
  }
 ]

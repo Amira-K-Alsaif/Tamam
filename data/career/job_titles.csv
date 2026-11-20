@@ -9,3 +9,5 @@
 8.0,FIN-2,المالية,finance,مدير,manager,مدير مالي,Finance Manager,,16.0,مدير مالي، المدير المالي,"Finance Manager, Financial Manager",
 9.0,SAL-1,المبيعات,sales,متوسط,mid,أخصائي مبيعات,Sales Specialist,SAL-2,19.0,أخصائي مبيعات، مندوب مبيعات,"Sales Specialist, Sales Executive",
 10.0,SAL-2,المبيعات,sales,مدير,manager,مدير مبيعات,Sales Manager,,19.0,مدير مبيعات,Sales Manager,
+11.0,DA-1,تحليل البيانات,data,متوسط,mid,محلل بيانات,Data Analyst,DA-2,13.0,محلل بيانات، محلل تقارير البيانات,"Data Analyst, Data Reporting Analyst",
+12.0,DA-2,تحليل البيانات,data,أول,senior,محلل بيانات أول,Senior Data Analyst,,1.0,محلل بيانات أول، كبير محللي البيانات,"Senior Data Analyst, Lead Data Analyst",

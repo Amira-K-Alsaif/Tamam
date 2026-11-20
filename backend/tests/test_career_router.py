@@ -20,7 +20,7 @@ def json_data_only(monkeypatch):
 
 def test_titles_lists_the_ten_titles_with_their_next_step():
     titles = client.get("/api/career/titles").json()
-    assert len(titles) == 10
+    assert len(titles) == 12
     accountant = next(t for t in titles if t["id"] == ACCOUNTANT)
     assert accountant["next_title_id"] == FINANCE_MANAGER
     assert accountant["postings_count"] > 0
@@ -89,3 +89,25 @@ def test_match_title_unknown_is_404():
 
 def test_feminine_senior_matches_the_masculine_title_words():
     assert service._title_words("محللة بيانات أولى") == service._title_words("محلل بيانات أول")
+
+
+DATA_ANALYST, SENIOR_DATA_ANALYST = 11, 12
+
+
+def test_noura_matches_the_data_analyst_ladder():
+    for job_title, title_id in [("محللة بيانات", DATA_ANALYST), ("محللة بيانات أولى", 12)]:
+        response = client.get("/api/career/titles/match", params={"job_title": job_title})
+        assert response.json()["id"] == title_id
+        assert response.json()["code"].startswith("DA-")
+    assert response.json()["id"] == SENIOR_DATA_ANALYST
+
+
+def test_gap_on_few_postings_is_flagged_as_low_evidence():
+    thin = client.get(
+        "/api/career/gap-analysis",
+        params={"current_title_id": DATA_ANALYST, "target_title_id": SENIOR_DATA_ANALYST},
+    ).json()
+    assert thin["gap"]["evidence_postings"] < service.MIN_EVIDENCE_POSTINGS
+    assert thin["gap"]["low_evidence"] is True
+    solid = service.analyze_gap(get_repository(), ACCOUNTANT, FINANCE_MANAGER)
+    assert solid.gap.low_evidence is False

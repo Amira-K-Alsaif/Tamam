@@ -28,6 +28,7 @@ const GAP: GapAnalysis = {
     to_improve: [skill(2, 'إعداد الموازنات', 4, 2, 0.94)],
     missing: [{ ...skill(3, 'قيادة الفرق', 4, 0, 0.81), priority: 'high' }],
     evidence_postings: 16,
+    low_evidence: false,
   },
   radar: [skill(2, 'إعداد الموازنات', 4, 2, 0.94), skill(3, 'قيادة الفرق', 4, 0, 0.81), skill(1, 'إعداد القوائم المالية', 4, 4, 0.69)],
 }
@@ -71,6 +72,25 @@ describe('CareerPage', () => {
     expect(fetchMock).toHaveBeenLastCalledWith(expect.stringContaining('current_title_id=7&target_title_id=8'))
   })
 
+  it('marks a result built on few postings as a rough estimate', async () => {
+    stubApi({ ...GAP, gap: { ...GAP.gap, evidence_postings: 1, low_evidence: true } })
+    const user = userEvent.setup()
+    render(<CareerPage />)
+    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
+    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    expect(await screen.findByRole('note')).toHaveTextContent('النتيجة تقريبية')
+  })
+
+  it('does not warn when there are enough postings', async () => {
+    stubApi()
+    const user = userEvent.setup()
+    render(<CareerPage />)
+    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
+    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await screen.findByRole('progressbar')
+    expect(screen.queryByRole('note')).not.toBeInTheDocument()
+  })
+
   it('keeps the button disabled until both titles are chosen', async () => {
     stubApi()
     render(<CareerPage />)
@@ -97,9 +117,9 @@ describe('CareerPage', () => {
   })
 
   it('asks for a manual choice when the profile title has no postings', async () => {
-    stubApi(GAP, 'محللة بيانات')
+    stubApi(GAP, 'مهندسة طيران')
     render(<CareerPage />)
-    expect(await screen.findByText(/«محللة بيانات» ما عندنا له إعلانات/)).toBeInTheDocument()
+    expect(await screen.findByText(/«مهندسة طيران» ما عندنا له إعلانات/)).toBeInTheDocument()
     expect(screen.getByLabelText('المنصب الحالي')).toHaveValue('')
   })
 

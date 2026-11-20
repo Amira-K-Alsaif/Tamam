@@ -33,6 +33,7 @@ export type GapAnalysis = {
     missing: MissingSkill[]
     to_improve: GapSkill[]
     evidence_postings: number
+    low_evidence: boolean
   }
   radar: GapSkill[]
 }

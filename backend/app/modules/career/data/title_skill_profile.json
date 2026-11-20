@@ -1636,5 +1636,124 @@
   "postings_count": 1,
   "frequency": 0.05,
   "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 27,
+  "postings_count": 8,
+  "frequency": 0.62,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 71,
+  "postings_count": 8,
+  "frequency": 0.62,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 22,
+  "postings_count": 7,
+  "frequency": 0.54,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 74,
+  "postings_count": 4,
+  "frequency": 0.31,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 72,
+  "postings_count": 3,
+  "frequency": 0.23,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 17,
+  "postings_count": 3,
+  "frequency": 0.23,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 30,
+  "postings_count": 2,
+  "frequency": 0.15,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 36,
+  "postings_count": 2,
+  "frequency": 0.15,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 73,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 75,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 4,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 29,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 7,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 11,
+  "skill_id": 48,
+  "postings_count": 1,
+  "frequency": 0.08,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 12,
+  "skill_id": 14,
+  "postings_count": 1,
+  "frequency": 1.0,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 12,
+  "skill_id": 22,
+  "postings_count": 1,
+  "frequency": 1.0,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 12,
+  "skill_id": 71,
+  "postings_count": 1,
+  "frequency": 1.0,
+  "required_ratio": 1.0
  }
 ]
