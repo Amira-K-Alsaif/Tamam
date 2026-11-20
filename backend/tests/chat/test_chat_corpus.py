@@ -1,4 +1,5 @@
 import json
+import os
 
 import pytest
 
@@ -42,3 +43,27 @@ def test_the_repository_manifest_lists_every_document_once():
     ids = [document["id"] for document in json.loads(MANIFEST_FILE.read_text(encoding="utf-8"))]
 
     assert ids and len(ids) == len(set(ids))
+
+
+def test_rereads_the_chunks_after_the_file_changes(monkeypatch, tmp_path, manifest):
+    from app.modules.chat import corpus
+
+    chunks_file = tmp_path / "chunks.jsonl"
+    monkeypatch.setattr(corpus, "CHUNKS_FILE", chunks_file)
+    monkeypatch.setattr(corpus, "MANIFEST_FILE", manifest)
+
+    def write(text: str, modified_ns: int) -> None:
+        row = {
+            "id": "c1",
+            "document_id": "remote-work",
+            "section_title": "عدد الأيام",
+            "text": text,
+        }
+        chunks_file.write_text(json.dumps(row, ensure_ascii=False), encoding="utf-8")
+        os.utime(chunks_file, ns=(modified_ns, modified_ns))
+
+    write("يوم واحد في الأسبوع.", modified_ns=1_000_000_000)
+    assert corpus.all_chunks()[0].text == "يوم واحد في الأسبوع."
+
+    write("يومان في الأسبوع.", modified_ns=2_000_000_000)
+    assert corpus.all_chunks()[0].text == "يومان في الأسبوع."

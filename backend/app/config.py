@@ -9,6 +9,8 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173"]
     google_api_key: str = ""
     llm_model: str = "gemini-3.6-flash"
+    # The company whose documents Tamam answers from. The assistant introduces itself with it.
+    company_name: str = "شركة نخلة للتقنية"
     # Needs the `rag` extra installed. Off by default so the server starts without it.
     warm_up_models: bool = False
 

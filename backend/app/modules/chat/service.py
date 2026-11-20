@@ -2,10 +2,11 @@
 Generation). See README.md in this folder for the full walkthrough."""
 
 from app.ai import llm
+from app.config import get_settings
 
 from . import citations, retrieval
 from .corpus import Chunk
-from .prompts import SYSTEM_PROMPT, build_user_prompt
+from .prompts import build_system_prompt, build_user_prompt
 from .schemas import AskResponse, Source
 
 # How many chunks the model reads. One is too risky: an answer may need two chunks,
@@ -22,7 +23,8 @@ def answer(question: str) -> AskResponse:
     chunks = retrieval.rerank(question, candidates, TOP_K)
 
     # Steps 4-5: ask the model to answer from those chunks only.
-    text = llm.generate(SYSTEM_PROMPT, build_user_prompt(question, chunks))
+    system = build_system_prompt(get_settings().company_name)
+    text = llm.generate(system, build_user_prompt(question, chunks))
 
     # Step 6: reject the answer unless every citation is real.
     cited = citations.check_citations(text, len(chunks))

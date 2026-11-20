@@ -22,31 +22,33 @@ MIN_SEMANTIC_SCORE = 0.70
 CANDIDATES = 10
 
 
-@lru_cache
-def _vectors() -> list[list[float]]:
-    """Embeds every chunk once per process."""
-    return embeddings.embed_passages([chunk.search_text for chunk in all_chunks()])
+# Each index is built once per version of the chunks and rebuilt when they change.
+# maxsize=1 frees the previous version's index.
+@lru_cache(maxsize=1)
+def _vectors(chunks: tuple[Chunk, ...]) -> list[list[float]]:
+    return embeddings.embed_passages([chunk.search_text for chunk in chunks])
 
 
-@lru_cache
-def _keyword_index() -> list[list[str]]:
-    """Tokenizes every chunk once per process."""
-    return [ranking.tokenize(chunk.search_text) for chunk in all_chunks()]
+@lru_cache(maxsize=1)
+def _keyword_index(chunks: tuple[Chunk, ...]) -> list[list[str]]:
+    return [ranking.tokenize(chunk.search_text) for chunk in chunks]
 
 
 def warm_up() -> None:
     """Loads both models and builds both indexes now, so the first question is fast."""
-    _vectors()
-    _keyword_index()
+    chunks = all_chunks()
+    _vectors(chunks)
+    _keyword_index(chunks)
     reranker.warm_up()
 
 
 def semantic_search(question: str, k: int) -> list[tuple[float, Chunk]]:
     """The `k` chunks closest in meaning to the question, with their cosine similarity."""
+    chunks = all_chunks()
     query = embeddings.embed_query(question)
     scored = [
         (sum(a * b for a, b in zip(vector, query, strict=True)), chunk)
-        for vector, chunk in zip(_vectors(), all_chunks(), strict=True)
+        for vector, chunk in zip(_vectors(chunks), chunks, strict=True)
     ]
     scored.sort(key=lambda pair: pair[0], reverse=True)
     return scored[:k]
@@ -54,10 +56,9 @@ def semantic_search(question: str, k: int) -> list[tuple[float, Chunk]]:
 
 def keyword_search(question: str, k: int) -> list[tuple[float, Chunk]]:
     """The `k` chunks that share the most important words with the question."""
-    scores = ranking.bm25(ranking.tokenize(question), _keyword_index())
-    scored = [
-        (score, chunk) for score, chunk in zip(scores, all_chunks(), strict=True) if score > 0
-    ]
+    chunks = all_chunks()
+    scores = ranking.bm25(ranking.tokenize(question), _keyword_index(chunks))
+    scored = [(score, chunk) for score, chunk in zip(scores, chunks, strict=True) if score > 0]
     scored.sort(key=lambda pair: pair[0], reverse=True)
     return scored[:k]
 

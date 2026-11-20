@@ -72,7 +72,17 @@ def load_chunks(
     return chunks
 
 
-@lru_cache
 def all_chunks() -> tuple[Chunk, ...]:
-    """Every company chunk, read once per process."""
-    return tuple(load_chunks())
+    """Every company chunk. Re-read only when the knowledge module rewrites the file, so
+    new or updated documents are answered from without restarting the server."""
+    if not CHUNKS_FILE.is_file():
+        raise CorpusNotPreparedError(
+            f"{CHUNKS_FILE} is missing. Run: python -m app.modules.knowledge.cli"
+        )
+    return _chunks_at(CHUNKS_FILE, MANIFEST_FILE, CHUNKS_FILE.stat().st_mtime_ns)
+
+
+@lru_cache(maxsize=1)
+def _chunks_at(chunks_file: Path, manifest_file: Path, modified_ns: int) -> tuple[Chunk, ...]:
+    # `modified_ns` is part of the cache key: a rewritten file has a new one.
+    return tuple(load_chunks(chunks_file, manifest_file))

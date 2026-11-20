@@ -87,6 +87,11 @@ module (Gamar): it splits the 28 company documents by heading into 88 chunks and
 `data/processed/chunks.jsonl`. The chat reads that file and the manifest, so the two
 modules share the Chunk contract from `docs/team.md`, not code.
 
+**Any company, no code change.** The assistant's company name comes from
+`TAMAM_COMPANY_NAME`, and the chat re-reads the chunk file whenever the knowledge module
+rewrites it, rebuilding both search indexes, so new or updated documents are answered
+from without restarting the server.
+
 **Search with titles, cite with text.** Many chunks are one short sentence that does not
 say what it is about, such as «المدة المتوقعة ثلاثة أيام عمل». Search reads
 `Chunk.search_text`, the chunk prefixed with its document and section titles. This one
@@ -190,7 +195,8 @@ python -m app.modules.chat.evaluate --answers  # also checks Gemini's answers (u
 
 | Test file | Covers |
 |---|---|
-| `test_chat_corpus.py` | Reading chunks with their titles, and the message when the file is missing. |
+| `test_chat_corpus.py` | Reading chunks with their titles, re-reading after the file changes, and the message when it is missing. |
+| `test_chat_prompts.py` | The company name and the numbered, data-wrapped sources. |
 | `test_chat_ranking.py` | Tokenizing, BM25, and rank fusion. |
 | `test_chat_retrieval.py` | Hybrid merging, the threshold, and reranking. |
 | `test_chat_citations.py` | Accepting, rejecting, and renumbering citations. |
