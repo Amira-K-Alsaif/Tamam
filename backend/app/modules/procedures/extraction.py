@@ -32,6 +32,10 @@ def extract_procedure(
     if extracted is None:
         return None
     _check_grounded(extracted, text)
+    section_title = _section_of(extracted.evidence, text)
+    if section_title is None:
+        # Found only in a heading (usually the title), so it proves nothing about the steps.
+        raise ExtractionError(f"Evidence is not quoted from a section: {extracted.evidence!r}")
     return Procedure(
         id=f"proc-{document_id}",
         title=title,
@@ -45,7 +49,7 @@ def extract_procedure(
         source=Source(
             document_id=document_id,
             document_title=title,
-            section_title=_section_of(extracted.evidence, text),
+            section_title=section_title,
             quote=extracted.evidence,
         ),
     )
