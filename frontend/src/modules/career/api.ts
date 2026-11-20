@@ -9,6 +9,7 @@ export type JobTitle = {
   name_ar: string
   name_en: string
   next_title_id: number | null
+  esco_occupation_uri: string | null
   postings_count: number
 }
 

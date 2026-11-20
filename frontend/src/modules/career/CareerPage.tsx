@@ -217,6 +217,15 @@ function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number
               ? 'مستواك مأخوذ من ملف مهاراتك.'
               : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق، لين يجهز ملف مهاراتك.'}
           </p>
+          {target?.esco_occupation_uri && (
+            <p className="m-0 mt-2 text-xs text-faint">
+              المنصب في تصنيف{' '}
+              <a href={target.esco_occupation_uri} target="_blank" rel="noreferrer" className="text-blue-soft underline">
+                ESCO
+              </a>{' '}
+              (Skills/competences and occupations from ESCO, European Commission)
+            </p>
+          )}
           {low_evidence && (
             <p role="note" className="m-0 mt-2 text-sm text-warning">
               النتيجة تقريبية: عدد الإعلانات لهذا المنصب قليل، فالمهارات المطلوبة ممكن تكون ناقصة.
