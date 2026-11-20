@@ -78,6 +78,9 @@ class RoadmapItem(BaseModel):
     expected_days: int | None = None
     # person
     employee_id: str | None = None
+    # lesson: the assessment topic and the policy document its quiz comes from
+    topic: str | None = None
+    document_id: str | None = None
 
 
 class RoadmapWeek(BaseModel):
@@ -88,3 +91,71 @@ class RoadmapWeek(BaseModel):
 class Roadmap(BaseModel):
     employee_id: str
     weeks: list[RoadmapWeek]
+
+
+class Badge(BaseModel):
+    """An achievement on the onboarding path (week 3 of the plan)."""
+
+    id: str
+    title: str
+    description: str
+    earned: bool
+
+
+class Progress(BaseModel):
+    """How far an employee is along the path, counted in access items and assessment topics."""
+
+    employee_id: str
+    access_active: int
+    access_total: int
+    topics_passed: int
+    topics_total: int
+    percent: int = Field(ge=0, le=100)
+    badges: list[Badge]
+
+
+class TeamMember(BaseModel):
+    """One direct report on the manager's dashboard (week 4 of the plan)."""
+
+    employee: EmployeeProfile
+    progress: Progress
+    next_step: str | None
+
+
+class SourceCitation(BaseModel):
+    """Where a quiz question comes from. Matches the shared source citation contract."""
+
+    document_id: str
+    document_title: str
+    page: int | None
+    section_title: str
+    quote: str
+
+
+class QuizQuestion(BaseModel):
+    question: str
+    options: list[str] = Field(min_length=2, max_length=4)
+    source: SourceCitation
+
+
+class Quiz(BaseModel):
+    """A short quiz on one lesson, generated from its policy document. No answers inside."""
+
+    topic: str
+    document_id: str
+    document_title: str
+    questions: list[QuizQuestion]
+
+
+class QuizAnswers(BaseModel):
+    """The option index the employee chose for each question, in order."""
+
+    answers: list[int]
+
+
+class QuizResult(BaseModel):
+    topic: str
+    score: int = Field(ge=0, le=100)
+    passed: bool
+    correct: list[bool]
+    correct_options: list[int]
