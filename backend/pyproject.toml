@@ -17,6 +17,8 @@ dev = [
   "pytest==9.1.1",
   "httpx==0.28.1",
   "ruff==0.17.1",
+  "supabase==2.34.1",
+  "python-dotenv==1.2.4",
 ]
 
 # The embedding model is heavy, so CI and modules that do not need it skip this extra.

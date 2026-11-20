@@ -2,13 +2,13 @@
 
 from functools import lru_cache
 
-from sentence_transformers import SentenceTransformer
-
 EMBEDDING_DIMENSIONS = 1024
 
 
 @lru_cache(maxsize=1)
 def get_embedding_model():
+    from sentence_transformers import SentenceTransformer
+
     return SentenceTransformer("BAAI/bge-m3", device="cpu")
 
 
