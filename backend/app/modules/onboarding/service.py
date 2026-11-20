@@ -3,6 +3,7 @@
 from . import mock_data
 from .schemas import (
     AssessmentResult,
+    CurrentEmployee,
     EmployeeProfile,
     Roadmap,
     RoadmapItem,
@@ -22,6 +23,13 @@ def get_employee(employee_id: str) -> EmployeeProfile:
         if employee.id == employee_id:
             return employee
     raise LookupError(f"Unknown employee: {employee_id}")
+
+
+def get_current_employee(employee_id: str) -> CurrentEmployee:
+    """The employee with their manager's name, so forms can name the direct manager."""
+    employee = get_employee(employee_id)
+    manager_name = get_employee(employee.manager_id).full_name if employee.manager_id else None
+    return CurrentEmployee(**employee.model_dump(), manager_name=manager_name)
 
 
 def latest_scores(results: list[AssessmentResult]) -> dict[str, int]:

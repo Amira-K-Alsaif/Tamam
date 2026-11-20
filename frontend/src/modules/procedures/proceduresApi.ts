@@ -49,7 +49,7 @@ export function getProcedure(id: string): Promise<Procedure> {
 export type FormFieldKind = 'text' | 'long_text' | 'date' | 'number'
 
 // Which Employee profile value fills the field (docs/team.md); null means the employee types it.
-export type ProfileKey = 'full_name' | 'employee_id'
+export type ProfileKey = 'full_name' | 'employee_id' | 'manager_name'
 
 export type FormField = {
   label: string

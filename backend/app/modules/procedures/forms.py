@@ -24,6 +24,7 @@ _SEPARATORS = re.compile(r"[،,]")
 _PREFILL: dict[str, ProfileKey] = {
     normalize_arabic("اسم الموظف"): "full_name",
     normalize_arabic("الرقم الوظيفي"): "employee_id",
+    normalize_arabic("المدير المباشر"): "manager_name",
 }
 
 # The first word of a label says what kind of answer it takes.

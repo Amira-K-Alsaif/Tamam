@@ -34,6 +34,6 @@ Before the catalog file exists, the list is empty.
 ## Forms (`forms.py`)
 
 Documents of kind `form` list their fields in a «الحقول» section, separated by «،». They are
-read directly, with no language model, so a field can never be invented. «اسم الموظف» and
-«الرقم الوظيفي» are marked to be filled from the Employee profile (`/api/onboarding/me`);
+read directly, with no language model, so a field can never be invented. «اسم الموظف»،
+«الرقم الوظيفي»، and «المدير المباشر» are marked to be filled from the Employee profile (`/api/onboarding/me`);
 the frontend fills them when the employee presses «عبّي النموذج عني».
