@@ -5,10 +5,29 @@ import { PageHeader } from '../../components/PageHeader'
 import { ProgressBar } from '../../components/ProgressBar'
 import { StatusBadge, type Status } from '../../components/StatusBadge'
 import { ApiError, getMe } from '../../lib/api'
-import { getGapAnalysis, getTitles, matchTitle, type GapAnalysis, type GapSkill, type JobTitle } from './api'
+import {
+  getGapAnalysis,
+  getPlan,
+  getTitles,
+  matchTitle,
+  type DevelopmentPlan,
+  type GapAnalysis,
+  type GapSkill,
+  type JobTitle,
+  type PlanAction,
+} from './api'
 import { GapRadar } from './GapRadar'
 
 const percent = new Intl.NumberFormat('ar-SA', { style: 'percent', maximumFractionDigits: 0 })
+const PHASE_LABEL = { '30': 'أول ٣٠ يوم', '60': 'من ٣١ إلى ٦٠ يوم', '90': 'من ٦١ إلى ٩٠ يوم' } as const
+const ACTION_LABEL: Record<PlanAction['type'], string> = {
+  course: 'دورة',
+  project: 'تطبيق عملي',
+  mentoring: 'توجيه',
+  shadowing: 'مرافقة',
+  certification: 'شهادة',
+  reading: 'قراءة',
+}
 const PRIORITY = { high: 'أولوية عالية', medium: 'أولوية متوسطة', low: 'أولوية منخفضة' } as const
 
 // Where the current title came from: the employee's profile, or nothing to prefill.
@@ -28,6 +47,7 @@ export default function CareerPage() {
   const [currentId, setCurrentId] = useState<number | null>(null)
   const [targetId, setTargetId] = useState<number | null>(null)
   const [result, setResult] = useState<Load<GapAnalysis>>({ state: 'idle' })
+  const [plan, setPlan] = useState<Load<DevelopmentPlan>>({ state: 'idle' })
   const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
   const userChose = useRef(false)
 
@@ -78,9 +98,13 @@ export default function CareerPage() {
   function analyze() {
     if (currentId === null || targetId === null) return
     setResult({ state: 'loading' })
+    setPlan({ state: 'loading' })
     getGapAnalysis(currentId, targetId)
       .then((data) => setResult({ state: 'done', data }))
       .catch(() => setResult({ state: 'error' }))
+    getPlan(currentId, targetId)
+      .then((data) => setPlan({ state: 'done', data }))
+      .catch(() => setPlan({ state: 'error' }))
   }
 
   return (
@@ -156,7 +180,12 @@ export default function CareerPage() {
         </p>
       )}
 
-      {result.state === 'done' && <GapResult result={result.data} titles={byId} />}
+      {result.state === 'done' && (
+        <>
+          <GapResult result={result.data} titles={byId} />
+          <PlanCard plan={plan} />
+        </>
+      )}
     </>
   )
 }
@@ -239,6 +268,47 @@ function SkillList({ title, status, skills }: { title: string; status: Status; s
             </li>
           ))}
         </ul>
+      )}
+    </Card>
+  )
+}
+
+function PlanCard({ plan }: { plan: Load<DevelopmentPlan> }) {
+  return (
+    <Card title="خطة التطوير">
+      {plan.state === 'loading' && <p className="m-0 text-muted">نجهّز خطتك…</p>}
+      {plan.state === 'error' && (
+        <p role="alert" className="m-0 text-danger">
+          ما قدرنا نجهّز الخطة. جرّبي التحليل مرة ثانية.
+        </p>
+      )}
+      {plan.state === 'done' && plan.data.phases.length === 0 && (
+        <p className="m-0 text-muted">عندك كل المهارات اللي يطلبها السوق لهذا المنصب، ما تحتاجين خطة 🎉</p>
+      )}
+      {plan.state === 'done' && plan.data.phases.length > 0 && (
+        <ol className="m-0 flex list-none flex-col gap-6 p-0">
+          {plan.data.phases.map((phase) => (
+            <li key={phase.phase} className="flex flex-col gap-3">
+              <div className="flex flex-col">
+                <span className="text-sm text-mint">{PHASE_LABEL[phase.phase]}</span>
+                <span className="font-display">{phase.goal_ar}</span>
+              </div>
+              <ul className="m-0 flex list-none flex-col gap-3 p-0">
+                {phase.actions.map((action) => (
+                  <li key={`${action.skill_id}-${action.type}`} className="flex items-start gap-3">
+                    <StatusBadge status="in-progress" label={ACTION_LABEL[action.type]} />
+                    <span className="flex flex-col">
+                      <span>{action.title_ar}</span>
+                      <span className="text-xs text-faint">
+                        {action.effort_hours} ساعة · {action.success_metric_ar}
+                      </span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ol>
       )}
     </Card>
   )

@@ -38,6 +38,22 @@ export type GapAnalysis = {
   radar: GapSkill[]
 }
 
+export type PlanAction = {
+  skill_id: number
+  type: 'course' | 'project' | 'mentoring' | 'shadowing' | 'certification' | 'reading'
+  title_ar: string
+  effort_hours: number
+  success_metric_ar: string
+}
+
+export type DevelopmentPlan = {
+  current_title_id: number
+  target_title_id: number
+  readiness_score: number
+  low_evidence: boolean
+  phases: { phase: '30' | '60' | '90'; goal_ar: string; actions: PlanAction[] }[]
+}
+
 export function getTitles(): Promise<JobTitle[]> {
   return apiGet<JobTitle[]>('/api/career/titles')
 }
@@ -48,6 +64,14 @@ export function getGapAnalysis(currentTitleId: number, targetTitleId: number): P
     target_title_id: String(targetTitleId),
   })
   return apiGet<GapAnalysis>(`/api/career/gap-analysis?${query}`)
+}
+
+export function getPlan(currentTitleId: number, targetTitleId: number): Promise<DevelopmentPlan> {
+  const query = new URLSearchParams({
+    current_title_id: String(currentTitleId),
+    target_title_id: String(targetTitleId),
+  })
+  return apiGet<DevelopmentPlan>(`/api/career/plan?${query}`)
 }
 
 // The career title that matches an employee profile's job_title; rejects with a 404 ApiError when none does.

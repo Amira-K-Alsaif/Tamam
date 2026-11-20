@@ -58,3 +58,30 @@ class GapAnalysis(BaseModel):
     level_source: LevelSource
     gap: Gap
     radar: list[GapSkill]
+
+
+ActionType = Literal["course", "project", "mentoring", "shadowing", "certification", "reading"]
+
+
+class PlanAction(BaseModel):
+    skill_id: int
+    type: ActionType
+    title_ar: str
+    effort_hours: int = Field(ge=1)
+    success_metric_ar: str
+
+
+class PlanPhase(BaseModel):
+    phase: Literal["30", "60", "90"]
+    goal_ar: str
+    actions: list[PlanAction]
+
+
+class DevelopmentPlan(BaseModel):
+    """A 30/60/90-day plan built from the gap (masari_api_contract.json → plan)."""
+
+    current_title_id: int
+    target_title_id: int
+    readiness_score: float = Field(ge=0, le=100)
+    low_evidence: bool
+    phases: list[PlanPhase]

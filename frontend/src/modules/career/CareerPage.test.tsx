@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { GapAnalysis, JobTitle } from './api'
+import type { DevelopmentPlan, GapAnalysis, JobTitle } from './api'
 import CareerPage from './CareerPage'
 
 const TITLES: JobTitle[] = [
@@ -33,10 +33,26 @@ const GAP: GapAnalysis = {
   radar: [skill(2, 'إعداد الموازنات', 4, 2, 0.94), skill(3, 'قيادة الفرق', 4, 0, 0.81), skill(1, 'إعداد القوائم المالية', 4, 4, 0.69)],
 }
 
+const PLAN: DevelopmentPlan = {
+  current_title_id: 7,
+  target_title_id: 8,
+  readiness_score: 42,
+  low_evidence: false,
+  phases: [
+    {
+      phase: '30',
+      goal_ar: 'بناء الأساس في «قيادة الفرق»',
+      actions: [
+        { skill_id: 3, type: 'mentoring', title_ar: 'جلسات توجيه في «قيادة الفرق»', effort_hours: 10, success_metric_ar: '٣ جلسات موثّقة' },
+      ],
+    },
+  ],
+}
+
 const json = (body: unknown, status = 200) => Promise.resolve(new Response(JSON.stringify(body), { status }))
 
 // `me` is the signed-in employee's job_title; null makes the profile request fail.
-function stubApi(gap: GapAnalysis | 'fail' = GAP, me: string | null = 'مهندسة طيران') {
+function stubApi(gap: GapAnalysis | 'fail' = GAP, me: string | null = 'مهندسة طيران', plan: DevelopmentPlan | 'fail' = PLAN) {
   const fetchMock = vi.fn((url: string) => {
     if (url.includes('/api/onboarding/me')) return me === null ? json({}, 500) : json({ job_title: me })
     if (url.includes('/api/career/titles/match')) {
@@ -45,6 +61,7 @@ function stubApi(gap: GapAnalysis | 'fail' = GAP, me: string | null = 'مهند�
       return match ? json(match) : json({ detail: 'not found' }, 404)
     }
     if (url.includes('/api/career/titles')) return json(TITLES)
+    if (url.includes('/api/career/plan')) return plan === 'fail' ? json({}, 500) : json(plan)
     if (gap === 'fail') return Promise.resolve(new Response('', { status: 500 }))
     return Promise.resolve(new Response(JSON.stringify(gap)))
   })
@@ -69,7 +86,10 @@ describe('CareerPage', () => {
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '42')
     expect(screen.getAllByText('قيادة الفرق')).toHaveLength(2) // radar axis + missing list
     expect(screen.getByText(/أولوية عالية/)).toBeInTheDocument()
-    expect(fetchMock).toHaveBeenLastCalledWith(expect.stringContaining('current_title_id=7&target_title_id=8'))
+    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('gap-analysis?current_title_id=7&target_title_id=8'))
+    expect(await screen.findByText('بناء الأساس في «قيادة الفرق»')).toBeInTheDocument()
+    expect(screen.getByText('أول ٣٠ يوم')).toBeInTheDocument()
+    expect(screen.getByText(/10 ساعة/)).toBeInTheDocument()
   })
 
   it('marks a result built on few postings as a rough estimate', async () => {
@@ -89,6 +109,25 @@ describe('CareerPage', () => {
     await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
     await screen.findByRole('progressbar')
     expect(screen.queryByRole('note')).not.toBeInTheDocument()
+  })
+
+  it('says so when there is nothing to learn', async () => {
+    stubApi(GAP, 'مهندسة طيران', { ...PLAN, phases: [] })
+    const user = userEvent.setup()
+    render(<CareerPage />)
+    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
+    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    expect(await screen.findByText(/ما تحتاجين خطة/)).toBeInTheDocument()
+  })
+
+  it('keeps the gap result when only the plan fails', async () => {
+    stubApi(GAP, 'مهندسة طيران', 'fail')
+    const user = userEvent.setup()
+    render(<CareerPage />)
+    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
+    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('ما قدرنا نجهّز الخطة')
+    expect(screen.getByRole('progressbar')).toBeInTheDocument()
   })
 
   it('keeps the button disabled until both titles are chosen', async () => {
