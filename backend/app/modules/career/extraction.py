@@ -1,7 +1,7 @@
-"""Skill extraction from job-posting text with the bilingual skills dictionary.
+"""Skill extraction from job-posting text.
 
-This is the offline baseline. An LLM extractor will go through `app/ai/` once that
-boundary exists, and must return the same `ExtractedSkill` shape.
+`KeywordExtractor` is the offline baseline: it matches the bilingual skills dictionary.
+`LLMExtractor` asks the model through `app/ai/` and returns the same `ExtractedSkill` shape.
 """
 
 import json
@@ -10,8 +10,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
+from pydantic import BaseModel, ValidationError
+
+from app.ai import llm
 from app.ai.arabic import normalize_arabic as normalize
 
+from .prompts import build_system_prompt, build_user_prompt
 from .text_ar import has_arabic
 
 DATA_DIR = Path(__file__).parent / "data"
@@ -97,4 +101,53 @@ class KeywordExtractor:
                     previous.importance == "preferred" and importance == "required"
                 ):
                     found[key] = ExtractedSkill(key, importance, "keyword", 0.7, sentence[:300])
+        return list(found.values())
+
+
+class ExtractionError(ValueError):
+    """The model's output was not valid JSON or did not match the schema."""
+
+
+class _LLMSkill(BaseModel):
+    key: str
+    importance: Importance
+    quote: str
+
+
+class _LLMSkills(BaseModel):
+    skills: list[_LLMSkill]
+
+
+_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$")
+LLM_CONFIDENCE = 0.9
+
+
+class LLMExtractor:
+    """Skills chosen by the model. A skill is kept only when its key is in the dictionary and
+    its quote is really in the posting, so the model cannot add a skill the text does not ask for.
+    """
+
+    def __init__(self, dictionary: list[dict]):
+        self._keys = {s["key"] for s in dictionary}
+        self._system = build_system_prompt(dictionary)
+
+    def extract(self, text: str) -> list[ExtractedSkill]:
+        raw = llm.generate(self._system, build_user_prompt(text))
+        try:
+            parsed = _LLMSkills.model_validate(json.loads(_FENCE.sub("", raw.strip())))
+        except (json.JSONDecodeError, ValidationError) as error:
+            raise ExtractionError(f"Model output is not a valid skill list: {error}") from error
+        posting = normalize(text)
+        found: dict[str, ExtractedSkill] = {}
+        for item in parsed.skills:
+            quote = normalize(item.quote)
+            if item.key not in self._keys or not quote or quote not in posting:
+                continue
+            previous = found.get(item.key)
+            if previous is None or (
+                previous.importance == "preferred" and item.importance == "required"
+            ):
+                found[item.key] = ExtractedSkill(
+                    item.key, item.importance, "llm", LLM_CONFIDENCE, quote[:200]
+                )
         return list(found.values())

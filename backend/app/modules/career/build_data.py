@@ -19,6 +19,15 @@ def _read_csv(path: Path) -> list[dict]:
         return list(csv.DictReader(f))
 
 
+def read_postings() -> list[dict]:
+    return _read_csv(SOURCE_DIR / "job_postings.csv")
+
+
+def posting_text(raw: dict) -> str:
+    parts = (raw["title_as_posted"], raw["description_text"], raw["requirements_text"])
+    return " . ".join(x for x in parts if x)
+
+
 def _titles() -> list[dict]:
     rows = _read_csv(SOURCE_DIR / "job_titles.csv")
     id_of = {r["code"]: int(float(r["id"])) for r in rows}
@@ -57,7 +66,7 @@ def build() -> dict[str, int]:
     skill_id = {s["key"]: s["id"] for s in skills}
 
     postings, posting_skills = [], []
-    for pid, raw in enumerate(_read_csv(SOURCE_DIR / "job_postings.csv"), start=1):
+    for pid, raw in enumerate(read_postings(), start=1):
         postings.append(
             {
                 "id": pid,
@@ -65,11 +74,7 @@ def build() -> dict[str, int]:
                 "job_title_id": title_id[raw["job_title_code"]],
             }
         )
-        text = " . ".join(
-            x
-            for x in (raw["title_as_posted"], raw["description_text"], raw["requirements_text"])
-            if x
-        )
+        text = posting_text(raw)
         for found in extractor.extract(text):
             posting_skills.append(
                 {
