@@ -3,15 +3,15 @@
 from fastapi import APIRouter
 
 from . import mock_data, service
-from .schemas import EmployeeProfile, Roadmap
+from .schemas import CurrentEmployee, Roadmap
 
 router = APIRouter(prefix="/api/onboarding", tags=["onboarding"])
 
 
-@router.get("/me", response_model=EmployeeProfile)
-def get_current_employee() -> EmployeeProfile:
+@router.get("/me", response_model=CurrentEmployee)
+def get_current_employee() -> CurrentEmployee:
     """The signed-in employee. Uses the mock employee until auth exists."""
-    return service.get_employee(mock_data.CURRENT_EMPLOYEE_ID)
+    return service.get_current_employee(mock_data.CURRENT_EMPLOYEE_ID)
 
 
 @router.get("/roadmap", response_model=Roadmap)

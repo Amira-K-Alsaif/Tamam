@@ -12,7 +12,7 @@ _LEAVE_FORM = """# نموذج طلب إجازة سنوية
 
 ## الحقول
 
-اسم الموظف، الرقم الوظيفي، تاريخ البداية، تاريخ النهاية، عدد الأيام، قائمة المهام.
+اسم الموظف، الرقم الوظيفي، تاريخ البداية، تاريخ النهاية، عدد الأيام، قائمة المهام، المدير المباشر.
 
 ## تعليمات
 
@@ -39,6 +39,7 @@ def test_reads_every_field_in_order_without_the_final_period():
         "تاريخ النهاية",
         "عدد الأيام",
         "قائمة المهام",
+        "المدير المباشر",
     ]
 
 
@@ -47,6 +48,7 @@ def test_marks_the_fields_the_employee_profile_fills():
 
     assert prefill["اسم الموظف"] == "full_name"
     assert prefill["الرقم الوظيفي"] == "employee_id"
+    assert prefill["المدير المباشر"] == "manager_name"
     assert prefill["تاريخ البداية"] is None
 
 

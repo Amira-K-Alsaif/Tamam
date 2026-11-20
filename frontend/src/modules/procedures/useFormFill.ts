@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { getMe, type EmployeeProfile } from '../../lib/api'
+import { getMe, type CurrentEmployee } from '../../lib/api'
 import type { CompanyForm, ProfileKey } from './proceduresApi'
 
-const PROFILE_VALUE: Record<ProfileKey, (me: EmployeeProfile) => string> = {
+const PROFILE_VALUE: Record<ProfileKey, (me: CurrentEmployee) => string | null> = {
   full_name: (me) => me.full_name,
   employee_id: (me) => me.id,
+  manager_name: (me) => me.manager_name,
 }
 
 export type FillStatus = { kind: 'idle' } | { kind: 'filling' } | { kind: 'filled'; count: number } | { kind: 'error' }
@@ -30,7 +31,9 @@ export function useFormFill(form: CompanyForm) {
       const me = await getMe()
       const filled: Record<string, string> = {}
       for (const field of prefillable) {
-        if (field.prefill_from) filled[field.label] = PROFILE_VALUE[field.prefill_from](me)
+        const value = field.prefill_from && PROFILE_VALUE[field.prefill_from](me)
+        // A profile without this value (the CEO has no manager) leaves the field to the employee.
+        if (value) filled[field.label] = value
       }
       setValues((current) => ({ ...current, ...filled }))
       setFromProfile(Object.keys(filled))

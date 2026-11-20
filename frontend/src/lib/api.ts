@@ -58,8 +58,11 @@ export type RoadmapWeek = { week: number; items: RoadmapItem[] }
 
 export type Roadmap = { employee_id: string; weeks: RoadmapWeek[] }
 
-export function getMe(): Promise<EmployeeProfile> {
-  return apiGet<EmployeeProfile>('/api/onboarding/me')
+// What /api/onboarding/me returns: the profile plus the manager's name (null only for the CEO).
+export type CurrentEmployee = EmployeeProfile & { manager_name: string | null }
+
+export function getMe(): Promise<CurrentEmployee> {
+  return apiGet<CurrentEmployee>('/api/onboarding/me')
 }
 
 export function getRoadmap(): Promise<Roadmap> {

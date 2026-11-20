@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, Route, Routes } from 'react-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import type { EmployeeProfile } from '../../lib/api'
+import type { CurrentEmployee } from '../../lib/api'
 import type { CompanyForm } from './proceduresApi'
 import ProceduresPage from './ProceduresPage'
 
@@ -16,6 +16,7 @@ const LEAVE_FORM: CompanyForm = {
     { label: 'الرقم الوظيفي', kind: 'text', prefill_from: 'employee_id' },
     { label: 'تاريخ البداية', kind: 'date', prefill_from: null },
     { label: 'عدد الأيام', kind: 'number', prefill_from: null },
+    { label: 'المدير المباشر', kind: 'text', prefill_from: 'manager_name' },
   ],
   source: {
     document_id: 'leave-request-form',
@@ -26,7 +27,7 @@ const LEAVE_FORM: CompanyForm = {
   },
 }
 
-const ME: EmployeeProfile = {
+const ME: CurrentEmployee = {
   id: 'emp-004',
   full_name: 'نورة العتيبي',
   department_id: 'dep-data',
@@ -35,6 +36,7 @@ const ME: EmployeeProfile = {
   manager_id: 'emp-002',
   years_of_experience: 0,
   role: 'employee',
+  manager_name: 'سارة القحطاني',
 }
 
 type Reply = { status?: number; body?: unknown }
@@ -77,7 +79,7 @@ describe('Forms on the procedures page', () => {
       'href',
       `/procedures?form=leave-request-form`,
     )
-    expect(within(forms).getByText('الموارد البشرية · 4 حقول')).toBeInTheDocument()
+    expect(within(forms).getByText('الموارد البشرية · 5 حقول')).toBeInTheDocument()
   })
 })
 
@@ -102,23 +104,34 @@ describe('FormFiller', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'عبّي النموذج عني' }))
 
-    expect(await screen.findByText('تعبّى حقلان من ملفك. كمّلي الباقي.')).toBeInTheDocument()
+    expect(await screen.findByText('تعبّى 3 حقول من ملفك. كمّلي الباقي.')).toBeInTheDocument()
     expect(screen.getByLabelText('اسم الموظف')).toHaveValue('نورة العتيبي')
     expect(screen.getByLabelText('الرقم الوظيفي')).toHaveValue('emp-004')
     expect(screen.getByLabelText('تاريخ البداية')).toHaveValue('')
-    expect(screen.getAllByText('من ملفك')).toHaveLength(2)
-    expect(screen.getByRole('progressbar', { name: 'عبّيتِ 2 من 4' })).toHaveAttribute('aria-valuenow', '50')
+    expect(screen.getByLabelText('المدير المباشر')).toHaveValue('سارة القحطاني')
+    expect(screen.getAllByText('من ملفك')).toHaveLength(3)
+    expect(screen.getByRole('progressbar', { name: 'عبّيتِ 3 من 5' })).toHaveAttribute('aria-valuenow', '60')
   })
 
   it('drops the «من ملفك» mark once the employee edits the value', async () => {
     serve({ [FORM_API]: { body: LEAVE_FORM }, '/api/onboarding/me': { body: ME } })
     renderAt(FORM_URL)
     await userEvent.click(await screen.findByRole('button', { name: 'عبّي النموذج عني' }))
-    await screen.findByText('تعبّى حقلان من ملفك. كمّلي الباقي.')
+    await screen.findByText('تعبّى 3 حقول من ملفك. كمّلي الباقي.')
 
     await userEvent.type(screen.getByLabelText('اسم الموظف'), ' م')
 
-    expect(screen.getAllByText('من ملفك')).toHaveLength(1)
+    expect(screen.getAllByText('من ملفك')).toHaveLength(2)
+  })
+
+  it('leaves the manager for the employee when the profile has none', async () => {
+    serve({ [FORM_API]: { body: LEAVE_FORM }, '/api/onboarding/me': { body: { ...ME, manager_name: null } } })
+    renderAt(FORM_URL)
+
+    await userEvent.click(await screen.findByRole('button', { name: 'عبّي النموذج عني' }))
+
+    expect(await screen.findByText('تعبّى حقلان من ملفك. كمّلي الباقي.')).toBeInTheDocument()
+    expect(screen.getByLabelText('المدير المباشر')).toHaveValue('')
   })
 
   it('says what to do when the profile cannot be reached', async () => {
@@ -134,7 +147,7 @@ describe('FormFiller', () => {
     serve({ [FORM_API]: { body: LEAVE_FORM }, '/api/onboarding/me': { body: ME } })
     renderAt(FORM_URL)
     await userEvent.click(await screen.findByRole('button', { name: 'عبّي النموذج عني' }))
-    await screen.findByText('تعبّى حقلان من ملفك. كمّلي الباقي.')
+    await screen.findByText('تعبّى 3 حقول من ملفك. كمّلي الباقي.')
 
     await userEvent.click(screen.getByRole('button', { name: 'انسخي النموذج' }))
 
@@ -147,7 +160,7 @@ describe('FormFiller', () => {
     const writeText = vi.spyOn(navigator.clipboard, 'writeText')
     renderAt(FORM_URL)
     await user.click(await screen.findByRole('button', { name: 'عبّي النموذج عني' }))
-    await screen.findByText('تعبّى حقلان من ملفك. كمّلي الباقي.')
+    await screen.findByText('تعبّى 3 حقول من ملفك. كمّلي الباقي.')
     await user.type(screen.getByLabelText('تاريخ البداية'), '2026-12-01')
     await user.type(screen.getByLabelText('عدد الأيام'), '5')
 
@@ -155,7 +168,7 @@ describe('FormFiller', () => {
 
     expect(await screen.findByText(/نسخنا النموذج/)).toBeInTheDocument()
     expect(writeText).toHaveBeenCalledWith(
-      'نموذج طلب إجازة سنوية\nاسم الموظف: نورة العتيبي\nالرقم الوظيفي: emp-004\nتاريخ البداية: 2026-12-01\nعدد الأيام: 5',
+      'نموذج طلب إجازة سنوية\nاسم الموظف: نورة العتيبي\nالرقم الوظيفي: emp-004\nتاريخ البداية: 2026-12-01\nعدد الأيام: 5\nالمدير المباشر: سارة القحطاني',
     )
   })
 

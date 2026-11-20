@@ -42,7 +42,7 @@ class Source(BaseModel):
 FieldKind = Literal["text", "long_text", "date", "number"]
 
 # Profile fields a form field can be filled from (Employee profile contract, docs/team.md).
-ProfileKey = Literal["full_name", "employee_id"]
+ProfileKey = Literal["full_name", "employee_id", "manager_name"]
 
 
 class FormField(BaseModel):
