@@ -4,6 +4,8 @@ Readiness is a weighted average: a skill's weight is the share of target-title p
 that ask for it, so the skills the market asks for most count most.
 """
 
+from app.ai.arabic import normalize_arabic
+
 from .repository import CareerRepository
 from .schemas import Gap, GapAnalysis, GapSkill, JobTitle, MissingSkill, TitleSkill
 
@@ -41,6 +43,22 @@ def list_titles(repo: CareerRepository) -> list[JobTitle]:
         JobTitle(**t, postings_count=repo.postings_count.get(t["id"], 0))
         for t in repo.titles.values()
     ]
+
+
+def _title_words(name: str) -> list[str]:
+    # The feminine form («محاسبة») names the same job as the masculine title («محاسب»).
+    return [w.removesuffix("ه") for w in normalize_arabic(name).split()]
+
+
+def match_title(repo: CareerRepository, job_title: str) -> JobTitle:
+    """The career title for an employee profile's free-text `job_title`."""
+    words = _title_words(job_title)
+    for t in repo.titles.values():
+        if _title_words(t["name_ar"]) == words or normalize_arabic(
+            t["name_en"]
+        ) == normalize_arabic(job_title):
+            return JobTitle(**t, postings_count=repo.postings_count.get(t["id"], 0))
+    raise TitleNotFoundError(job_title)
 
 
 def title_skills(repo: CareerRepository, title_id: int) -> list[TitleSkill]:

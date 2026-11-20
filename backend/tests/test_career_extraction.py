@@ -1,5 +1,4 @@
-from app.modules.career.extraction import KeywordExtractor, load_dictionary
-from app.modules.career.text_ar import normalize
+from app.modules.career.extraction import KeywordExtractor, load_dictionary, normalize
 
 EXTRACTOR = KeywordExtractor(load_dictionary())
 

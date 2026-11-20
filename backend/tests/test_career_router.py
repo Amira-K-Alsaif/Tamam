@@ -64,3 +64,24 @@ def test_employee_levels_drive_the_split():
     empty = service.analyze_gap(repo, ACCOUNTANT, FINANCE_MANAGER, employee_skills={})
     assert empty.readiness_score == 0
     assert top in {s.skill_id for s in empty.gap.missing}
+
+
+def test_match_title_finds_the_profile_job_title():
+    response = client.get("/api/career/titles/match", params={"job_title": "محاسب"})
+    assert response.status_code == 200
+    assert response.json()["id"] == ACCOUNTANT
+
+
+def test_match_title_accepts_feminine_form_and_spelling_variants():
+    for job_title in ["محاسبة", "مُحاسِبة", "مديرة مالية", "مطورة برمجيات", "Accountant"]:
+        response = client.get("/api/career/titles/match", params={"job_title": job_title})
+        assert response.status_code == 200, job_title
+    assert (
+        client.get("/api/career/titles/match", params={"job_title": "مطوّرة برمجيات"}).json()["id"]
+        == 1
+    )
+
+
+def test_match_title_unknown_is_404():
+    response = client.get("/api/career/titles/match", params={"job_title": "محللة بيانات"})
+    assert response.status_code == 404

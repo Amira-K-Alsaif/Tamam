@@ -14,6 +14,14 @@ def list_titles() -> list[JobTitle]:
     return service.list_titles(get_repository())
 
 
+@router.get("/titles/match", response_model=JobTitle)
+def match_title(job_title: str = Query(min_length=1)) -> JobTitle:
+    try:
+        return service.match_title(get_repository(), job_title)
+    except service.TitleNotFoundError as e:
+        raise HTTPException(404, "ما عندنا إعلانات وظائف لهذا المسمى الوظيفي") from e
+
+
 @router.get("/titles/{title_id}/skills", response_model=list[TitleSkill])
 def title_skills(title_id: int) -> list[TitleSkill]:
     try:
