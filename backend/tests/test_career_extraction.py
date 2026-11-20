@@ -1,5 +1,7 @@
 import pytest
 
+from app.ai import llm
+from app.ai.llm import LLMUnavailableError
 from app.modules.career import compare, extraction
 from app.modules.career.extraction import (
     ExtractedSkill,
@@ -124,3 +126,58 @@ def test_compare_counts_agreement_and_uses_the_cache():
     compare.compare(postings, EXTRACTOR, Model(), cache)
     assert Model.calls == 1
     assert "النموذج" in compare.render(result, {})
+
+
+class FlakyModel:
+    """Fails with a provider error on the postings in `fail_times` for that many calls."""
+
+    def __init__(self, fail_times: dict[str, int]):
+        self.fail_times, self.calls = dict(fail_times), []
+
+    def extract(self, text):
+        self.calls.append(text)
+        for word, left in self.fail_times.items():
+            if word in text and left:
+                self.fail_times[word] = left - 1
+                raise LLMUnavailableError("504 DEADLINE_EXCEEDED")
+        return [ExtractedSkill("databases", "required", "llm", 0.9, "sql")]
+
+
+def _posting(code: str, text: str) -> dict:
+    return {
+        "posting_id": code,
+        "title_as_posted": text,
+        "description_text": "",
+        "requirements_text": "",
+    }
+
+
+def test_compare_retries_once_then_skips_and_keeps_going(monkeypatch):
+    monkeypatch.setattr(compare, "RETRY_DELAY_SECONDS", 0)
+    postings = [_posting("P-1", "slow SQL"), _posting("P-2", "down SQL"), _posting("P-3", "SQL")]
+    model, cache, saves = FlakyModel({"slow": 1, "down": 2}), {}, []
+    result = compare.compare(postings, EXTRACTOR, model, cache, on_new=lambda: saves.append(1))
+    assert set(cache) == {"P-1", "P-3"}
+    assert result.failed == ["P-2"] and result.postings == 2
+    assert len(saves) == 2
+    assert "P-2" in compare.render(result, {})
+
+
+def test_a_rerun_only_asks_for_postings_not_cached(monkeypatch):
+    monkeypatch.setattr(compare, "RETRY_DELAY_SECONDS", 0)
+    postings = [_posting("P-1", "SQL"), _posting("P-2", "SQL")]
+    model = FlakyModel({})
+    compare.compare(postings, EXTRACTOR, model, {"P-1": ["databases"]})
+    assert len(model.calls) == 1
+
+
+def test_provider_errors_become_llm_unavailable(monkeypatch):
+    from langchain_core.exceptions import ModelAPIError
+
+    class Client:
+        def invoke(self, messages):
+            raise ModelAPIError("504 DEADLINE_EXCEEDED")
+
+    monkeypatch.setattr(llm, "_client", lambda: Client())
+    with pytest.raises(LLMUnavailableError):
+        llm.generate("system", "user")

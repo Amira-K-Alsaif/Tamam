@@ -9,6 +9,10 @@ class LLMNotConfiguredError(RuntimeError):
     """Raised when TAMAM_GOOGLE_API_KEY is missing."""
 
 
+class LLMUnavailableError(RuntimeError):
+    """Raised when the model call fails after the client's own retries (timeout, 5xx, quota)."""
+
+
 @lru_cache
 def _client():
     from langchain_google_genai import ChatGoogleGenerativeAI
@@ -27,5 +31,10 @@ def _client():
 
 def generate(system: str, user: str) -> str:
     """Sends the instructions and the user message, and returns the model's reply text."""
-    response = _client().invoke([("system", system), ("human", user)])
+    from langchain_core.exceptions import ModelAPIError
+
+    try:
+        response = _client().invoke([("system", system), ("human", user)])
+    except ModelAPIError as error:
+        raise LLMUnavailableError(str(error)) from error
     return response.text
