@@ -2,10 +2,13 @@
 
     cd backend && python -m app.modules.career.compare --limit 20   # try a few first
     cd backend && python -m app.modules.career.compare               # all postings
+    cd backend && python -m app.modules.career.compare --cached-only  # saved answers only
 
 Model answers are cached in data/llm_skills_cache.json after every posting, so a re-run (or a
 run that stopped half way) only pays for the postings that are not cached yet. A posting the
-model fails on is retried once and then skipped, and the report lists it.
+model fails on is retried once and then skipped, and the report lists it. When the API quota
+runs out (for example the free tier's daily limit), the run stops asking the model and writes
+the report from the answers saved so far; rerun after the quota resets to add the rest.
 The report is written to data/career/extraction_comparison.md at the repository root.
 """
 
@@ -16,7 +19,7 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.ai.llm import LLMNotConfiguredError, LLMUnavailableError
+from app.ai.llm import LLMNotConfiguredError, LLMQuotaExceededError, LLMUnavailableError
 
 from .build_data import SOURCE_DIR, posting_text, read_postings
 from .extraction import DATA_DIR, ExtractionError, KeywordExtractor, LLMExtractor, load_dictionary
@@ -29,6 +32,8 @@ REPORT_FILE = SOURCE_DIR / "extraction_comparison.md"
 class Comparison:
     postings: int = 0
     failed: list[str] = field(default_factory=list)
+    not_asked: int = 0  # Postings left out because the model was not called for them.
+    quota_hit: bool = False
     keyword_links: int = 0
     llm_links: int = 0
     both: int = 0
@@ -58,6 +63,8 @@ def _ask_model(model, text: str) -> list[str]:
     """The model's skill keys, retrying once when the provider times out or fails."""
     try:
         return sorted({s.skill_key for s in model.extract(text)})
+    except LLMQuotaExceededError:
+        raise
     except LLMUnavailableError:
         time.sleep(RETRY_DELAY_SECONDS)
         return sorted({s.skill_key for s in model.extract(text)})
@@ -66,13 +73,22 @@ def _ask_model(model, text: str) -> list[str]:
 def compare(
     postings: list[dict], keyword, model, cache: dict[str, list[str]], on_new=lambda: None
 ) -> Comparison:
-    """`on_new` runs after each newly cached answer, so the caller can save progress."""
+    """`on_new` runs after each newly cached answer, so the caller can save progress.
+    With `model=None` only cached answers are compared."""
     result = Comparison()
     for raw in postings:
         code, text = raw["posting_id"], posting_text(raw)
         if code not in cache:
+            if model is None or result.quota_hit:
+                result.not_asked += 1
+                continue
             try:
                 cache[code] = _ask_model(model, text)
+            except LLMQuotaExceededError:
+                print(f"{code}: API quota exceeded, using saved answers for the rest")
+                result.quota_hit = True
+                result.not_asked += 1
+                continue
             except (ExtractionError, LLMUnavailableError) as error:
                 print(f"{code}: skipped ({type(error).__name__})")
                 result.failed.append(code)
@@ -89,7 +105,10 @@ def _pct(part: float, whole: float) -> str:
 def render(c: Comparison, labels: dict[str, str]) -> str:
     n = c.postings
     if not n:
-        return "# مقارنة استخراج المهارات\n\nما فيه إعلانات تمت مقارنتها.\n"
+        return (
+            "# مقارنة استخراج المهارات\n\nما فيه إعلانات تمت مقارنتها"
+            f" ({c.not_asked} إعلان بدون إجابة محفوظة من النموذج).\n"
+        )
     rows = [
         ("الإعلانات المقارنة", n, n),
         ("مجموع المهارات المستخرجة", c.keyword_links, c.llm_links),
@@ -108,6 +127,12 @@ def render(c: Comparison, labels: dict[str, str]) -> str:
         f"- لو اعتبرنا النموذج هو المرجع: دقة القاموس (precision) {_pct(c.both, c.keyword_links)}،"
         f" وتغطيته (recall) {_pct(c.both, c.llm_links)}.",
     ]
+    if c.not_asked:
+        reason = "خلصت حصة الـ API" if c.quota_hit else "شغّلناها على الإجابات المحفوظة بس"
+        lines.append(
+            f"- **ملاحظة:** {c.not_asked} إعلان ما دخل المقارنة لأن {reason}."
+            " النتيجة مبنية على الإعلانات المقارنة فقط."
+        )
     if c.failed:
         lines.append(
             f"- إعلانات رجع فيها النموذج رد غير صالح: {len(c.failed)} ({', '.join(c.failed)})."
@@ -124,6 +149,11 @@ def render(c: Comparison, labels: dict[str, str]) -> str:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--limit", type=int, help="compare only the first N postings")
+    parser.add_argument(
+        "--cached-only",
+        action="store_true",
+        help="do not call the model; compare only postings with a saved answer",
+    )
     args = parser.parse_args()
 
     dictionary = load_dictionary()
@@ -134,15 +164,15 @@ def main() -> None:
         CACHE_FILE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
 
     try:
-        result = compare(
-            postings, KeywordExtractor(dictionary), LLMExtractor(dictionary), cache, on_new=save
-        )
+        model = None if args.cached_only else LLMExtractor(dictionary)
+        result = compare(postings, KeywordExtractor(dictionary), model, cache, on_new=save)
     except LLMNotConfiguredError as error:
         raise SystemExit(str(error)) from error
     labels = {s["key"]: s["label_ar"] for s in dictionary}
     REPORT_FILE.write_text(render(result, labels), encoding="utf-8")
     print(
         f"{result.postings} postings compared, {len(result.failed)} skipped,"
+        f" {result.not_asked} not asked yet (cache: {CACHE_FILE.resolve()}),"
         f" report: {Path(REPORT_FILE).resolve()}"
     )
 
