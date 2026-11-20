@@ -11,7 +11,8 @@ Turns each company document of kind `procedure` into a structured procedure
 2. The reply is validated with `ExtractionResult` (`schemas.py`). Invalid output raises `ExtractionError`.
 3. The evidence quote, forms, owner, and duration must appear in the document
    (compared after Arabic normalization). Anything the model invented is rejected.
-4. The procedure id is the document id, so other modules use it as `procedure_id`.
+4. The procedure id is `proc-<document id>` (for example `proc-vpn`), the format the
+   onboarding module already uses for `procedure_id`.
 
 Run it once the document set changes, then review and commit the result:
 

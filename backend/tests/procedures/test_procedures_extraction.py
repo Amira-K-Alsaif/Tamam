@@ -21,7 +21,8 @@ def test_builds_a_procedure_with_ordered_steps_and_its_source(
 ):
     procedure = extract(monkeypatch, model_reply(), reimbursement_text)
 
-    assert procedure.id == "reimbursements"
+    assert procedure.id == "proc-reimbursements"
+    assert procedure.source.document_id == "reimbursements"
     assert procedure.department == "المالية"
     assert [step.order for step in procedure.steps] == [1, 2]
     assert procedure.source.quote == "اختر تعويض مصروفات"

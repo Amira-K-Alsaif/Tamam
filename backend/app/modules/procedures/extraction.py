@@ -33,7 +33,7 @@ def extract_procedure(
         return None
     _check_grounded(extracted, text)
     return Procedure(
-        id=document_id,
+        id=f"proc-{document_id}",
         title=title,
         department=department,
         summary=extracted.summary,

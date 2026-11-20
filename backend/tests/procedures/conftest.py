@@ -54,8 +54,8 @@ def catalog_file(tmp_path, monkeypatch):
     """Points the service at a temporary catalog with two procedures."""
     path = tmp_path / "procedures.json"
     items = [
-        _procedure("reimbursements", "إجراء تعويض مصاريف العمل", "المالية", "تعويض المصروفات"),
-        _procedure("vpn", "دليل تفعيل الاتصال الآمن VPN", "تقنية المعلومات", "طلب صلاحية VPN"),
+        _procedure("proc-reimbursements", "إجراء تعويض مصاريف العمل", "المالية", "تعويض المصروفات"),
+        _procedure("proc-vpn", "دليل تفعيل الاتصال الآمن VPN", "تقنية المعلومات", "طلب صلاحية VPN"),
     ]
     path.write_text(json.dumps(items, ensure_ascii=False), encoding="utf-8")
     monkeypatch.setattr(service, "CATALOG_PATH", path)
@@ -73,5 +73,9 @@ def _procedure(id: str, title: str, department: str, summary: str) -> dict:
         "requirements": [],
         "forms": [],
         "steps": [{"order": 1, "title": "ابدأ", "detail": "ابدأ الطلب."}],
-        "source": {"document_id": id, "document_title": title, "quote": "ابدأ الطلب."},
+        "source": {
+            "document_id": id.removeprefix("proc-"),
+            "document_title": title,
+            "quote": "ابدأ الطلب.",
+        },
     }

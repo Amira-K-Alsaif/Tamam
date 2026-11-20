@@ -9,19 +9,19 @@ def test_lists_every_procedure(catalog_file):
     response = client.get("/api/procedures")
 
     assert response.status_code == 200
-    assert [item["id"] for item in response.json()] == ["reimbursements", "vpn"]
+    assert [item["id"] for item in response.json()] == ["proc-reimbursements", "proc-vpn"]
 
 
 def test_search_ignores_alef_and_taa_marbuta_spelling(catalog_file):
     response = client.get("/api/procedures", params={"q": "تعويض مصاريف"})
 
-    assert [item["id"] for item in response.json()] == ["reimbursements"]
+    assert [item["id"] for item in response.json()] == ["proc-reimbursements"]
 
 
 def test_filters_by_department(catalog_file):
     response = client.get("/api/procedures", params={"department": "تقنية المعلومات"})
 
-    assert [item["id"] for item in response.json()] == ["vpn"]
+    assert [item["id"] for item in response.json()] == ["proc-vpn"]
 
 
 def test_returns_an_empty_list_when_nothing_matches(catalog_file):
@@ -37,10 +37,10 @@ def test_returns_an_empty_list_before_the_catalog_is_extracted(tmp_path, monkeyp
 
 
 def test_returns_one_procedure_with_its_source(catalog_file):
-    response = client.get("/api/procedures/vpn")
+    response = client.get("/api/procedures/proc-vpn")
 
     assert response.status_code == 200
-    assert response.json()["source"]["document_id"] == "vpn"
+    assert response.json()["id"] == "proc-vpn"
 
 
 def test_unknown_procedure_is_404_in_arabic(catalog_file):

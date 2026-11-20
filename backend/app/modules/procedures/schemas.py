@@ -38,7 +38,7 @@ class Source(BaseModel):
 
 
 class Procedure(BaseModel):
-    id: str  # The document id, so other modules can reference it as procedure_id.
+    id: str  # "proc-<document id>", the procedure_id other modules reference.
     title: str
     department: str
     summary: str
