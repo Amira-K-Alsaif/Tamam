@@ -19,6 +19,11 @@ def _model():
     return CrossEncoder(MODEL_NAME)
 
 
+def warm_up() -> None:
+    """Loads the model now instead of on the first call."""
+    _model()
+
+
 def rerank(question: str, texts: list[str]) -> list[float]:
     """Returns one relevance score per text, in the same order as `texts`."""
     pairs = [(normalize_arabic(question), normalize_arabic(text)) for text in texts]

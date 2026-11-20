@@ -55,13 +55,45 @@ describe('ChatPage', () => {
     expect(screen.getByText('بتظهر هنا مصادر آخر إجابة.')).toBeInTheDocument()
   })
 
-  it('tells the user what to do when the backend fails', async () => {
+  it('says the service is busy when the backend answers 503', async () => {
     replyWith(null, 503)
     render(<ChatPage />)
 
     await ask('كم يوم إجازتي؟')
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('حاول مرة ثانية')
+    expect(await screen.findByRole('alert')).toHaveTextContent('حاول بعد قليل')
+  })
+
+  it('tells the user to check the server when it cannot be reached', async () => {
+    replyWith(null, 500)
+    render(<ChatPage />)
+
+    await ask('كم يوم إجازتي؟')
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('تأكد إنه شغال')
+  })
+
+  it('shows the section alone for sources without a page', async () => {
+    replyWith({
+      answer: 'يومان في الأسبوع [1].',
+      found: true,
+      sources: [
+        {
+          document_id: 'remote-work',
+          document_title: 'سياسة العمل عن بُعد',
+          page: null,
+          section_title: 'عدد الأيام',
+          quote: 'الحد الأقصى المعتمد يومان في الأسبوع.',
+        },
+      ],
+    })
+    render(<ChatPage />)
+
+    await ask('كم يوم أشتغل من البيت؟')
+
+    const sources = await screen.findByRole('complementary', { name: 'مصادر الإجابة' })
+    expect(await within(sources).findByText('عدد الأيام')).toBeInTheDocument()
+    expect(within(sources).queryByText(/صفحة/)).not.toBeInTheDocument()
   })
 
   it('fills the question from a suggestion', async () => {

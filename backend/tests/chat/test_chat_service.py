@@ -55,3 +55,19 @@ def test_skips_the_model_when_retrieval_finds_nothing(monkeypatch):
     monkeypatch.setattr(llm, "generate", must_not_call)
 
     assert not service.answer("وش أحسن مطعم؟").found
+
+
+def test_tells_the_model_which_company_it_works_for(monkeypatch, found):
+    from app.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "company_name", "شركة الواحة")
+    prompts_seen = []
+
+    def remember(system, user):
+        prompts_seen.append(system)
+        return "إجازتك ٢١ يوماً [1]."
+
+    monkeypatch.setattr(llm, "generate", remember)
+    service.answer("كم يوم إجازتي؟")
+
+    assert "شركة الواحة" in prompts_seen[0]
