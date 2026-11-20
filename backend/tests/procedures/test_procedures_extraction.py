@@ -53,6 +53,12 @@ def test_rejects_output_that_is_not_a_valid_procedure(monkeypatch, reimbursement
         extract(monkeypatch, reply, reimbursement_text)
 
 
+def test_rejects_evidence_that_only_repeats_a_heading(monkeypatch, model_reply, reimbursement_text):
+    for heading in ["إجراء تعويض مصاريف العمل", "المتطلبات"]:
+        with pytest.raises(ExtractionError, match="not quoted from a section"):
+            extract(monkeypatch, model_reply(evidence=heading), reimbursement_text)
+
+
 @pytest.mark.parametrize(
     "invented",
     [
