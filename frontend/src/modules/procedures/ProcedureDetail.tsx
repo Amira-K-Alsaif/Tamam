@@ -3,10 +3,10 @@ import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { Card } from '../../components/Card'
-import { Diamond } from '../../components/Diamond'
 import { PageHeader } from '../../components/PageHeader'
-import type { Procedure, ProcedureSource } from './proceduresApi'
+import type { Procedure } from './proceduresApi'
 import { ProcedureSteps } from './ProcedureSteps'
+import { SourceCard } from './SourceCard'
 import { useChecklist } from './useChecklist'
 import { useProcedure } from './useProcedures'
 
@@ -41,7 +41,7 @@ export function ProcedureDetail({ id }: { id: string }) {
   )
 }
 
-function BackLink() {
+export function BackLink() {
   return (
     <Link to="/procedures" className="inline-flex items-center gap-2 self-start text-sm text-muted no-underline hover:text-ink">
       {/* Points right: "back" in a right-to-left layout. */}
@@ -81,7 +81,7 @@ function ProcedureView({ procedure }: { procedure: Procedure }) {
             <Requirements procedureId={procedure.id} items={procedure.requirements} />
           )}
           {procedure.forms.length > 0 && <Forms forms={procedure.forms} />}
-          <SourceCard source={procedure.source} />
+          <SourceCard source={procedure.source} label="مصدر الإجراء" />
         </div>
       </div>
     </>
@@ -142,23 +142,5 @@ function Forms({ forms }: { forms: string[] }) {
         ))}
       </ul>
     </Card>
-  )
-}
-
-function SourceCard({ source }: { source: ProcedureSource }) {
-  const location = [source.page !== null && `صفحة ${source.page}`, source.section_title].filter(Boolean).join(' · ')
-
-  return (
-    <section aria-label="مصدر الإجراء" className="flex flex-col gap-3 rounded-3xl border border-mint/20 bg-sunken p-6">
-      <h2 className="m-0 font-display text-lg font-semibold">المصدر</h2>
-      <div className="flex flex-wrap items-center gap-2">
-        <Diamond tone="teal" />
-        <strong>{source.document_title}</strong>
-        {location && <span className="text-xs text-faint">{location}</span>}
-      </div>
-      <blockquote className="m-0 rounded-xl bg-mint/10 px-3 py-2 text-sm leading-relaxed text-soft">
-        «{source.quote}»
-      </blockquote>
-    </section>
   )
 }

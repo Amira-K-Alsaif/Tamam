@@ -1,5 +1,7 @@
 """Shapes of the procedures API and of the model's extraction output."""
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -35,6 +37,28 @@ class Source(BaseModel):
     page: int | None = None
     section_title: str | None = None
     quote: str
+
+
+FieldKind = Literal["text", "long_text", "date", "number"]
+
+# Profile fields a form field can be filled from (Employee profile contract, docs/team.md).
+ProfileKey = Literal["full_name", "employee_id"]
+
+
+class FormField(BaseModel):
+    label: str
+    kind: FieldKind
+    # Set when the value comes from the employee's profile; None means the employee types it.
+    prefill_from: ProfileKey | None = None
+
+
+class CompanyForm(BaseModel):
+    id: str  # The form's document id, e.g. "leave-request-form".
+    title: str
+    department: str
+    instructions: str | None
+    fields: list[FormField]
+    source: Source
 
 
 class Procedure(BaseModel):

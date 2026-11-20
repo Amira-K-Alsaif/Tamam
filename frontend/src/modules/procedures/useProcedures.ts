@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 import { ApiError } from '../../lib/api'
-import { getProcedure, listProcedures, type Procedure } from './proceduresApi'
+import {
+  getForm,
+  getProcedure,
+  listForms,
+  listProcedures,
+  type CompanyForm,
+  type Procedure,
+} from './proceduresApi'
 
 const SEARCH_DELAY_MS = 250
 
@@ -70,6 +77,56 @@ export function useProcedure(id: string) {
     getProcedure(id)
       .then((procedure) => {
         if (!cancelled) setState({ kind: 'ready', procedure })
+      })
+      .catch((error: unknown) => {
+        if (cancelled) return
+        setState({ kind: error instanceof ApiError && error.status === 404 ? 'not-found' : 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [id])
+
+  return state
+}
+
+export type FormsState = { kind: 'loading' } | { kind: 'error' } | { kind: 'ready'; forms: CompanyForm[] }
+
+export function useCompanyForms(): FormsState {
+  const [state, setState] = useState<FormsState>({ kind: 'loading' })
+
+  useEffect(() => {
+    let cancelled = false
+    listForms()
+      .then((forms) => {
+        if (!cancelled) setState({ kind: 'ready', forms })
+      })
+      .catch(() => {
+        if (!cancelled) setState({ kind: 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  return state
+}
+
+export type FormState =
+  | { kind: 'loading' }
+  | { kind: 'not-found' }
+  | { kind: 'error' }
+  | { kind: 'ready'; form: CompanyForm }
+
+/** One form by id. Callers key the component by id, so a new id starts from "loading". */
+export function useCompanyForm(id: string): FormState {
+  const [state, setState] = useState<FormState>({ kind: 'loading' })
+
+  useEffect(() => {
+    let cancelled = false
+    getForm(id)
+      .then((form) => {
+        if (!cancelled) setState({ kind: 'ready', form })
       })
       .catch((error: unknown) => {
         if (cancelled) return

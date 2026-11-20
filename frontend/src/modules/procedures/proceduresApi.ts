@@ -45,3 +45,31 @@ export function listProcedures({ query, department }: ProcedureFilter = {}): Pro
 export function getProcedure(id: string): Promise<Procedure> {
   return apiGet<Procedure>(`/api/procedures/${encodeURIComponent(id)}`)
 }
+
+export type FormFieldKind = 'text' | 'long_text' | 'date' | 'number'
+
+// Which Employee profile value fills the field (docs/team.md); null means the employee types it.
+export type ProfileKey = 'full_name' | 'employee_id'
+
+export type FormField = {
+  label: string
+  kind: FormFieldKind
+  prefill_from: ProfileKey | null
+}
+
+export type CompanyForm = {
+  id: string
+  title: string
+  department: string
+  instructions: string | null
+  fields: FormField[]
+  source: ProcedureSource
+}
+
+export function listForms(): Promise<CompanyForm[]> {
+  return apiGet<CompanyForm[]>('/api/procedures/forms')
+}
+
+export function getForm(id: string): Promise<CompanyForm> {
+  return apiGet<CompanyForm>(`/api/procedures/forms/${encodeURIComponent(id)}`)
+}

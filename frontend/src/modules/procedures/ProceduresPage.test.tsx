@@ -42,7 +42,7 @@ type Reply = { status?: number; body?: unknown }
 function serve(routes: Record<string, Reply>) {
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input))
-    const reply = routes[url.pathname + url.search] ?? { status: 404 }
+    const reply = { '/api/procedures/forms': { body: [] }, ...routes }[url.pathname + url.search] ?? { status: 404 }
     return new Response(reply.body === undefined ? '' : JSON.stringify(reply.body), {
       status: reply.status ?? 200,
     })

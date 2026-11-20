@@ -26,5 +26,14 @@ It needs `TAMAM_GOOGLE_API_KEY` in `backend/.env` and prints a line for each doc
 |---|---|
 | `GET /api/procedures?q=&department=` | Procedures matching the search text and department |
 | `GET /api/procedures/{id}` | One procedure with its source, or 404 |
+| `GET /api/procedures/forms` | Company forms with their fields and which ones the profile fills |
+| `GET /api/procedures/forms/{id}` | One form, or 404 |
 
 Before the catalog file exists, the list is empty.
+
+## Forms (`forms.py`)
+
+Documents of kind `form` list their fields in a «الحقول» section, separated by «،». They are
+read directly, with no language model, so a field can never be invented. «اسم الموظف» and
+«الرقم الوظيفي» are marked to be filled from the Employee profile (`/api/onboarding/me`);
+the frontend fills them when the employee presses «عبّي النموذج عني».
