@@ -7,7 +7,7 @@
   "name_ar": "مطوّر برمجيات",
   "name_en": "Software Developer",
   "next_title_id": 2,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/f2b15a0e-e65a-438a-affb-29b9d50b77d1"
  },
  {
   "id": 2,
@@ -17,7 +17,7 @@
   "name_ar": "قائد فريق تقني",
   "name_en": "Tech Lead / Team Lead",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/8b6388a4-4904-471b-9331-d3b1211f5525"
  },
  {
   "id": 3,
@@ -27,7 +27,7 @@
   "name_ar": "أخصائي موارد بشرية",
   "name_en": "HR Specialist",
   "next_title_id": 4,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/d3e32e5e-7f24-48e3-b939-e4f800eb62fb"
  },
  {
   "id": 4,
@@ -37,7 +37,7 @@
   "name_ar": "مدير موارد بشرية",
   "name_en": "HR Manager",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/f605bcd2-90b6-45a0-a558-d05016d68a77"
  },
  {
   "id": 5,
@@ -47,7 +47,7 @@
   "name_ar": "أخصائي تسويق رقمي",
   "name_en": "Digital Marketing Specialist",
   "next_title_id": 6,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/356227b9-2263-4dbd-81e9-7dfc6d3f3af7"
  },
  {
   "id": 6,
@@ -57,7 +57,7 @@
   "name_ar": "مدير تسويق",
   "name_en": "Marketing Manager",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/6fcf4638-e7c7-4978-9302-9a7b63a3d57c"
  },
  {
   "id": 7,
@@ -67,7 +67,7 @@
   "name_ar": "محاسب",
   "name_en": "Accountant",
   "next_title_id": 8,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897"
  },
  {
   "id": 8,
@@ -77,7 +77,7 @@
   "name_ar": "مدير مالي",
   "name_en": "Finance Manager",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f"
  },
  {
   "id": 9,
@@ -87,7 +87,7 @@
   "name_ar": "أخصائي مبيعات",
   "name_en": "Sales Specialist",
   "next_title_id": 10,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/14031d4a-6e99-442f-b4fe-18262b6432b2"
  },
  {
   "id": 10,
@@ -97,7 +97,7 @@
   "name_ar": "مدير مبيعات",
   "name_en": "Sales Manager",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/a7594892-ff23-4e2a-aedf-2f967ebca15c"
  },
  {
   "id": 11,
@@ -107,7 +107,7 @@
   "name_ar": "محلل بيانات",
   "name_en": "Data Analyst",
   "next_title_id": 12,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/d3edb8f8-3a06-47a0-8fb9-9b212c006aa2"
  },
  {
   "id": 12,
@@ -117,6 +117,6 @@
   "name_ar": "محلل بيانات أول",
   "name_en": "Senior Data Analyst",
   "next_title_id": null,
-  "esco_occupation_uri": null
+  "esco_occupation_uri": "http://data.europa.eu/esco/occupation/d3edb8f8-3a06-47a0-8fb9-9b212c006aa2"
  }
 ]

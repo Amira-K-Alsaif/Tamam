@@ -111,3 +111,15 @@ def test_gap_on_few_postings_is_flagged_as_low_evidence():
     assert thin["gap"]["low_evidence"] is True
     solid = service.analyze_gap(get_repository(), ACCOUNTANT, FINANCE_MANAGER)
     assert solid.gap.low_evidence is False
+
+
+def test_every_title_links_to_its_esco_occupation():
+    titles = client.get("/api/career/titles").json()
+    assert all(
+        t["esco_occupation_uri"].startswith("http://data.europa.eu/esco/occupation/")
+        for t in titles
+    )
+    uri = {t["code"]: t["esco_occupation_uri"] for t in titles}
+    # ESCO has no senior data analyst, so both levels point to «data analyst».
+    assert uri["DA-1"] == uri["DA-2"]
+    assert len(set(uri.values())) == len(uri) - 1

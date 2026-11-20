@@ -13,6 +13,7 @@ class JobTitle(BaseModel):
     name_ar: str
     name_en: str
     next_title_id: int | None
+    esco_occupation_uri: str | None  # ESCO occupation, European Commission
     postings_count: int
 
 

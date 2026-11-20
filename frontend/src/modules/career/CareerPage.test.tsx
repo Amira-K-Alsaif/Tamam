@@ -5,8 +5,8 @@ import type { DevelopmentPlan, GapAnalysis, JobTitle } from './api'
 import CareerPage from './CareerPage'
 
 const TITLES: JobTitle[] = [
-  { id: 7, code: 'FIN-1', ladder: 'finance', level: 'mid', name_ar: 'محاسب', name_en: 'Accountant', next_title_id: 8, postings_count: 19 },
-  { id: 8, code: 'FIN-2', ladder: 'finance', level: 'manager', name_ar: 'مدير مالي', name_en: 'Finance Manager', next_title_id: null, postings_count: 16 },
+  { id: 7, code: 'FIN-1', ladder: 'finance', level: 'mid', name_ar: 'محاسب', name_en: 'Accountant', next_title_id: 8, esco_occupation_uri: 'http://data.europa.eu/esco/occupation/eda0d957-3c3c-4139-b89a-a18bc9e18897', postings_count: 19 },
+  { id: 8, code: 'FIN-2', ladder: 'finance', level: 'manager', name_ar: 'مدير مالي', name_en: 'Finance Manager', next_title_id: null, esco_occupation_uri: 'http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f', postings_count: 16 },
 ]
 
 const skill = (id: number, label: string, expected: number, level: number, frequency: number) => ({
@@ -89,6 +89,10 @@ describe('CareerPage', () => {
     expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('gap-analysis?current_title_id=7&target_title_id=8'))
     expect(await screen.findByText('بناء الأساس في «قيادة الفرق»')).toBeInTheDocument()
     expect(screen.getByText('أول ٣٠ يوم')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'ESCO' })).toHaveAttribute(
+      'href',
+      'http://data.europa.eu/esco/occupation/30f3ea93-882a-4525-841c-1d5b4b64076f',
+    )
     expect(screen.getByText(/10 ساعة/)).toBeInTheDocument()
   })
 
