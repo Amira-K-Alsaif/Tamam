@@ -1,0 +1,302 @@
+[
+  {
+    "id": "KQ-001",
+    "question": "كم عدد أيام الإجازة السنوية في السنة؟",
+    "expected_document_id": "annual-leave",
+    "expected_answer_hint": "21 يومًا"
+  },
+  {
+    "id": "KQ-002",
+    "question": "متى يصير رصيد الإجازة السنوية 30 يومًا؟",
+    "expected_document_id": "annual-leave",
+    "expected_answer_hint": "خمس سنوات"
+  },
+  {
+    "id": "KQ-003",
+    "question": "قبل كم يوم أقدم على الإجازة السنوية؟",
+    "expected_document_id": "annual-leave",
+    "expected_answer_hint": "أربعة عشر يومًا"
+  },
+  {
+    "id": "KQ-004",
+    "question": "كم يستغرق اعتماد المدير لإجازتي؟",
+    "expected_document_id": "annual-leave",
+    "expected_answer_hint": "يومي عمل"
+  },
+  {
+    "id": "KQ-005",
+    "question": "إذا إجازتي أكثر من خمسة أيام، وش أسوي؟",
+    "expected_document_id": "annual-leave",
+    "expected_answer_hint": "نموذج تسليم المهام"
+  },
+  {
+    "id": "KQ-006",
+    "question": "وش أول خطوة لو احتجت إجازة اضطرارية؟",
+    "expected_document_id": "emergency-leave",
+    "expected_answer_hint": "أبلغ المدير"
+  },
+  {
+    "id": "KQ-007",
+    "question": "وين أقدم طلب إجازة اضطرارية؟",
+    "expected_document_id": "emergency-leave",
+    "expected_answer_hint": "بوابة الموارد البشرية"
+  },
+  {
+    "id": "KQ-008",
+    "question": "كم يوم عمل عن بعد يسمح النظام؟",
+    "expected_document_id": "remote-work",
+    "expected_answer_hint": "يومان في الأسبوع"
+  },
+  {
+    "id": "KQ-009",
+    "question": "متى تحدّثت سياسة العمل عن بعد؟",
+    "expected_document_id": "remote-work",
+    "expected_answer_hint": "28 أكتوبر 2026"
+  },
+  {
+    "id": "KQ-010",
+    "question": "هل أقدر أشتغل عن بعد بدون موافقة المدير؟",
+    "expected_document_id": "remote-work",
+    "expected_answer_hint": "بالتنسيق مع المدير"
+  },
+  {
+    "id": "KQ-011",
+    "question": "كيف أسجل حضوري وانصرافي؟",
+    "expected_document_id": "attendance",
+    "expected_answer_hint": "نظام الحضور"
+  },
+  {
+    "id": "KQ-012",
+    "question": "مين أراجع لتصحيح سجل حضوري؟",
+    "expected_document_id": "attendance",
+    "expected_answer_hint": "الموارد البشرية"
+  },
+  {
+    "id": "KQ-013",
+    "question": "مين يحدد فترة التجربة في العقد؟",
+    "expected_document_id": "probation",
+    "expected_answer_hint": "الموارد البشرية"
+  },
+  {
+    "id": "KQ-014",
+    "question": "وش أهداف المتابعة خلال فترة التجربة؟",
+    "expected_document_id": "probation",
+    "expected_answer_hint": "الأهداف والملاحظات"
+  },
+  {
+    "id": "KQ-015",
+    "question": "وش الأشياء المطلوبة مني في اليوم الأول؟",
+    "expected_document_id": "employee-onboarding",
+    "expected_answer_hint": "بطاقة الدخول"
+  },
+  {
+    "id": "KQ-016",
+    "question": "وش أتعلم في أول أسبوع؟",
+    "expected_document_id": "employee-onboarding",
+    "expected_answer_hint": "أمن المعلومات"
+  },
+  {
+    "id": "KQ-017",
+    "question": "وش أسوي إذا صار عندي تعارض مصالح؟",
+    "expected_document_id": "code-conduct",
+    "expected_answer_hint": "أبلغ المدير"
+  },
+  {
+    "id": "KQ-018",
+    "question": "هل أقدر أشارك ملفات الشركة المقيدة مع صديق؟",
+    "expected_document_id": "data-privacy",
+    "expected_answer_hint": "صلاحية وحاجة عمل"
+  },
+  {
+    "id": "KQ-019",
+    "question": "هل أقدر أرفع ملفات الشركة لأداة عامة؟",
+    "expected_document_id": "infosec",
+    "expected_answer_hint": "أدوات عامة غير معتمدة"
+  },
+  {
+    "id": "KQ-020",
+    "question": "وش أسوي لو جاني رابط مشبوه؟",
+    "expected_document_id": "infosec",
+    "expected_answer_hint": "أبلغ فريق الأمن"
+  },
+  {
+    "id": "KQ-021",
+    "question": "كيف أطلب صلاحية نظام جديد؟",
+    "expected_document_id": "system-access",
+    "expected_answer_hint": "بوابة الخدمات التقنية"
+  },
+  {
+    "id": "KQ-022",
+    "question": "كم تستغرق صلاحية النظام بعد الموافقة؟",
+    "expected_document_id": "system-access",
+    "expected_answer_hint": "ثلاثة أيام عمل"
+  },
+  {
+    "id": "KQ-023",
+    "question": "من يعتمد طلب صلاحية النظام؟",
+    "expected_document_id": "system-access",
+    "expected_answer_hint": "المدير المباشر"
+  },
+  {
+    "id": "KQ-024",
+    "question": "هل مشاركة كلمة المرور مع زميل مسموحة؟",
+    "expected_document_id": "mfa-password",
+    "expected_answer_hint": "لا تشاركها"
+  },
+  {
+    "id": "KQ-025",
+    "question": "وش المطلوب لحماية الحساب المؤسسي؟",
+    "expected_document_id": "mfa-password",
+    "expected_answer_hint": "المصادقة متعددة العوامل"
+  },
+  {
+    "id": "KQ-026",
+    "question": "كيف أبلغ عن رسالة تصيد؟",
+    "expected_document_id": "phishing",
+    "expected_answer_hint": "زر الإبلاغ"
+  },
+  {
+    "id": "KQ-027",
+    "question": "إذا ضغطت على رابط تصيد، وش أسوي؟",
+    "expected_document_id": "phishing",
+    "expected_answer_hint": "أبلغ فريق الأمن فورًا"
+  },
+  {
+    "id": "KQ-028",
+    "question": "كيف أطلب VPN للعمل من البيت؟",
+    "expected_document_id": "vpn",
+    "expected_answer_hint": "صلاحية VPN"
+  },
+  {
+    "id": "KQ-029",
+    "question": "وش أرسل للدعم إذا VPN ما اشتغل؟",
+    "expected_document_id": "vpn",
+    "expected_answer_hint": "نوع الجهاز"
+  },
+  {
+    "id": "KQ-030",
+    "question": "هل مسموح أثبت أي برنامج على جهاز الشركة؟",
+    "expected_document_id": "devices",
+    "expected_answer_hint": "برامج غير مصرح بها"
+  },
+  {
+    "id": "KQ-031",
+    "question": "وش أسوي إذا ضاع جهاز العمل؟",
+    "expected_document_id": "devices",
+    "expected_answer_hint": "فور فقدان الجهاز"
+  },
+  {
+    "id": "KQ-032",
+    "question": "وش تصنيفات البيانات في الشركة؟",
+    "expected_document_id": "classification",
+    "expected_answer_hint": "عامة وداخلية ومقيدة"
+  },
+  {
+    "id": "KQ-033",
+    "question": "مين يراجع تصنيف البيانات غير الواضح؟",
+    "expected_document_id": "classification",
+    "expected_answer_hint": "حوكمة البيانات"
+  },
+  {
+    "id": "KQ-034",
+    "question": "كيف أطلب قراءة مستودع البيانات؟",
+    "expected_document_id": "warehouse",
+    "expected_answer_hint": "نموذج صلاحية الأنظمة"
+  },
+  {
+    "id": "KQ-035",
+    "question": "مين يوافق على مستودع البيانات؟",
+    "expected_document_id": "warehouse",
+    "expected_answer_hint": "مديرة قسم البيانات والتحليلات"
+  },
+  {
+    "id": "KQ-036",
+    "question": "هل صلاحية القراءة تسمح بالتعديل؟",
+    "expected_document_id": "warehouse",
+    "expected_answer_hint": "لا تشمل التعديل"
+  },
+  {
+    "id": "KQ-037",
+    "question": "من يراجع مصادر لوحات المؤشرات؟",
+    "expected_document_id": "dashboards",
+    "expected_answer_hint": "صاحب المقياس"
+  },
+  {
+    "id": "KQ-038",
+    "question": "كيف أطلب تقرير جديد من فريق التحليلات؟",
+    "expected_document_id": "metrics",
+    "expected_answer_hint": "وصفًا للهدف"
+  },
+  {
+    "id": "KQ-039",
+    "question": "وش أرفق مع تعويض مصاريف العمل؟",
+    "expected_document_id": "reimbursements",
+    "expected_answer_hint": "الإيصال"
+  },
+  {
+    "id": "KQ-040",
+    "question": "كم المدة الإرشادية لتعويض المصاريف؟",
+    "expected_document_id": "reimbursements",
+    "expected_answer_hint": "خمسة أيام عمل"
+  },
+  {
+    "id": "KQ-041",
+    "question": "هل سياسة السفر تشمل إجازتي الشخصية؟",
+    "expected_document_id": "business-travel",
+    "expected_answer_hint": "لا تنطبق على الإجازات الشخصية"
+  },
+  {
+    "id": "KQ-042",
+    "question": "من المسؤول عن مبالغ بدلات السفر؟",
+    "expected_document_id": "business-travel",
+    "expected_answer_hint": "الإدارة المالية"
+  },
+  {
+    "id": "KQ-043",
+    "question": "هل أقدر أشتري برنامج للشركة قبل الموافقة؟",
+    "expected_document_id": "procurement",
+    "expected_answer_hint": "قبل الموافقات المطلوبة"
+  },
+  {
+    "id": "KQ-044",
+    "question": "من وين أستلم بطاقة المبنى؟",
+    "expected_document_id": "id-badge",
+    "expected_answer_hint": "مكتب الأمن"
+  },
+  {
+    "id": "KQ-045",
+    "question": "كيف أبلغ عن عطل في المكتب؟",
+    "expected_document_id": "office-support",
+    "expected_answer_hint": "بلاغ مرافق"
+  },
+  {
+    "id": "KQ-046",
+    "question": "وش أول تصرف عند حادث سلامة؟",
+    "expected_document_id": "incident",
+    "expected_answer_hint": "ابتعد عن مصدر الخطر"
+  },
+  {
+    "id": "KQ-047",
+    "question": "وش البيانات المطلوبة في نموذج الإجازة؟",
+    "expected_document_id": "leave-request-form",
+    "expected_answer_hint": "الرقم الوظيفي"
+  },
+  {
+    "id": "KQ-048",
+    "question": "متى أعبي نموذج تسليم المهام؟",
+    "expected_document_id": "handover-form",
+    "expected_answer_hint": "تتجاوز خمسة أيام عمل"
+  },
+  {
+    "id": "KQ-049",
+    "question": "وش البيانات المطلوبة لطلب تدريب خارجي؟",
+    "expected_document_id": "training-request",
+    "expected_answer_hint": "وصف البرنامج"
+  },
+  {
+    "id": "KQ-050",
+    "question": "وين أرفع شهادة الدورة التدريبية؟",
+    "expected_document_id": "learning-faq",
+    "expected_answer_hint": "ملف التطوير المهني"
+  }
+]

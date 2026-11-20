@@ -22,6 +22,12 @@ class EmployeeProfile(BaseModel):
     role: Role
 
 
+class CurrentEmployee(EmployeeProfile):
+    """The signed-in employee, as `GET /api/onboarding/me` returns it."""
+
+    manager_name: str | None  # The manager's full_name; None only for the CEO
+
+
 class AccessItem(BaseModel):
     """A system or permission a job title needs. Used by modules 3, 5."""
 

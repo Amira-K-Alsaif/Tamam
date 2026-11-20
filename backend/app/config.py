@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="TAMAM_", env_file=".env", extra="ignore")
 
     cors_origins: list[str] = ["http://localhost:5173"]
+    google_api_key: str = ""
+    llm_model: str = "gemini-3.6-flash"
 
 
 @lru_cache

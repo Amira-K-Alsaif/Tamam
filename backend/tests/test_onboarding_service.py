@@ -7,6 +7,7 @@ from app.modules.onboarding.schemas import AssessmentResult
 from app.modules.onboarding.service import (
     PASSING_SCORE,
     build_roadmap,
+    get_current_employee,
     get_employee,
     knowledge_gaps,
     latest_scores,
@@ -61,3 +62,11 @@ def test_roadmap_is_grouped_by_week_in_order():
 def test_unknown_employee_raises():
     with pytest.raises(LookupError):
         build_roadmap("emp-999")
+
+
+def test_current_employee_names_the_direct_manager():
+    assert get_current_employee("emp-004").manager_name == "سارة القحطاني"
+
+
+def test_the_ceo_has_no_manager_name():
+    assert get_current_employee("emp-001").manager_name is None

@@ -12,6 +12,13 @@ def test_me_returns_the_mock_employee():
     assert response.json()["id"] == "emp-004"
 
 
+def test_me_includes_the_direct_managers_name():
+    body = client.get("/api/onboarding/me").json()
+
+    assert body["manager_id"] == "emp-002"
+    assert body["manager_name"] == "سارة القحطاني"
+
+
 def test_roadmap_returns_weeks_in_order():
     response = client.get("/api/onboarding/roadmap")
 
