@@ -3,17 +3,20 @@
     cd backend && python -m app.modules.career.compare --limit 20   # try a few first
     cd backend && python -m app.modules.career.compare               # all postings
 
-Model answers are cached in data/llm_skills_cache.json, so a re-run only pays for new postings.
+Model answers are cached in data/llm_skills_cache.json after every posting, so a re-run (or a
+run that stopped half way) only pays for the postings that are not cached yet. A posting the
+model fails on is retried once and then skipped, and the report lists it.
 The report is written to data/career/extraction_comparison.md at the repository root.
 """
 
 import argparse
 import json
+import time
 from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from app.ai.llm import LLMNotConfiguredError
+from app.ai.llm import LLMNotConfiguredError, LLMUnavailableError
 
 from .build_data import SOURCE_DIR, posting_text, read_postings
 from .extraction import DATA_DIR, ExtractionError, KeywordExtractor, LLMExtractor, load_dictionary
@@ -48,16 +51,33 @@ class Comparison:
         self.only_llm.update(model - keyword)
 
 
-def compare(postings: list[dict], keyword, model, cache: dict[str, list[str]]) -> Comparison:
+RETRY_DELAY_SECONDS = 5
+
+
+def _ask_model(model, text: str) -> list[str]:
+    """The model's skill keys, retrying once when the provider times out or fails."""
+    try:
+        return sorted({s.skill_key for s in model.extract(text)})
+    except LLMUnavailableError:
+        time.sleep(RETRY_DELAY_SECONDS)
+        return sorted({s.skill_key for s in model.extract(text)})
+
+
+def compare(
+    postings: list[dict], keyword, model, cache: dict[str, list[str]], on_new=lambda: None
+) -> Comparison:
+    """`on_new` runs after each newly cached answer, so the caller can save progress."""
     result = Comparison()
     for raw in postings:
         code, text = raw["posting_id"], posting_text(raw)
         if code not in cache:
             try:
-                cache[code] = sorted({s.skill_key for s in model.extract(text)})
-            except ExtractionError:
+                cache[code] = _ask_model(model, text)
+            except (ExtractionError, LLMUnavailableError) as error:
+                print(f"{code}: skipped ({type(error).__name__})")
                 result.failed.append(code)
                 continue
+            on_new()
         result.add({s.skill_key for s in keyword.extract(text)}, set(cache[code]))
     return result
 
@@ -109,16 +129,22 @@ def main() -> None:
     dictionary = load_dictionary()
     postings = read_postings()[: args.limit]
     cache = json.loads(CACHE_FILE.read_text(encoding="utf-8")) if CACHE_FILE.exists() else {}
+
+    def save() -> None:
+        CACHE_FILE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
+
     try:
-        result = compare(postings, KeywordExtractor(dictionary), LLMExtractor(dictionary), cache)
+        result = compare(
+            postings, KeywordExtractor(dictionary), LLMExtractor(dictionary), cache, on_new=save
+        )
     except LLMNotConfiguredError as error:
         raise SystemExit(str(error)) from error
-    finally:
-        if cache:
-            CACHE_FILE.write_text(json.dumps(cache, ensure_ascii=False, indent=1), encoding="utf-8")
     labels = {s["key"]: s["label_ar"] for s in dictionary}
     REPORT_FILE.write_text(render(result, labels), encoding="utf-8")
-    print(f"{result.postings} postings compared, report: {Path(REPORT_FILE).resolve()}")
+    print(
+        f"{result.postings} postings compared, {len(result.failed)} skipped,"
+        f" report: {Path(REPORT_FILE).resolve()}"
+    )
 
 
 if __name__ == "__main__":
