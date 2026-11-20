@@ -1,0 +1,632 @@
+[
+ {
+  "id": 1,
+  "key": "programming",
+  "esco_id": null,
+  "label_ar": "البرمجة وكتابة الكود",
+  "label_en": "computer programming",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 2,
+  "key": "web_frontend",
+  "esco_id": null,
+  "label_ar": "تطوير واجهات الويب",
+  "label_en": "front-end web development",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 3,
+  "key": "backend",
+  "esco_id": null,
+  "label_ar": "تطوير الخوادم (Back-end)",
+  "label_en": "back-end development",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 4,
+  "key": "python",
+  "esco_id": null,
+  "label_ar": "بايثون",
+  "label_en": "Python",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 5,
+  "key": "mobile_dev",
+  "esco_id": null,
+  "label_ar": "تطوير تطبيقات الجوال",
+  "label_en": "mobile application development",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 6,
+  "key": "databases",
+  "esco_id": null,
+  "label_ar": "قواعد البيانات و SQL",
+  "label_en": "database management (SQL)",
+  "skill_type": "knowledge",
+  "category": "technical"
+ },
+ {
+  "id": 7,
+  "key": "cloud",
+  "esco_id": null,
+  "label_ar": "الحوسبة السحابية",
+  "label_en": "cloud technologies",
+  "skill_type": "knowledge",
+  "category": "technical"
+ },
+ {
+  "id": 8,
+  "key": "devops",
+  "esco_id": null,
+  "label_ar": "DevOps والنشر المستمر",
+  "label_en": "DevOps and CI/CD",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 9,
+  "key": "testing",
+  "esco_id": null,
+  "label_ar": "اختبار البرمجيات",
+  "label_en": "software testing",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 10,
+  "key": "system_design",
+  "esco_id": null,
+  "label_ar": "تصميم الأنظمة والمعمارية",
+  "label_en": "software architecture design",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 11,
+  "key": "code_review",
+  "esco_id": null,
+  "label_ar": "مراجعة الكود ومعايير الجودة",
+  "label_en": "code review",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 12,
+  "key": "agile",
+  "esco_id": null,
+  "label_ar": "منهجيات Agile و Scrum",
+  "label_en": "agile project management",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 13,
+  "key": "technical_docs",
+  "esco_id": null,
+  "label_ar": "التوثيق التقني",
+  "label_en": "technical documentation",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 14,
+  "key": "team_leadership",
+  "esco_id": null,
+  "label_ar": "قيادة الفرق",
+  "label_en": "leading a team",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 15,
+  "key": "mentoring",
+  "esco_id": null,
+  "label_ar": "التوجيه وتطوير الزملاء",
+  "label_en": "mentoring individuals",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 16,
+  "key": "project_management",
+  "esco_id": null,
+  "label_ar": "إدارة المشاريع",
+  "label_en": "project management",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 17,
+  "key": "strategic_planning",
+  "esco_id": null,
+  "label_ar": "التخطيط الاستراتيجي",
+  "label_en": "strategic planning",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 18,
+  "key": "budgeting",
+  "esco_id": null,
+  "label_ar": "إعداد الموازنات",
+  "label_en": "budget management",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 19,
+  "key": "stakeholder_mgmt",
+  "esco_id": null,
+  "label_ar": "إدارة أصحاب المصلحة",
+  "label_en": "stakeholder management",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 20,
+  "key": "communication",
+  "esco_id": null,
+  "label_ar": "مهارات التواصل",
+  "label_en": "communication",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 21,
+  "key": "problem_solving",
+  "esco_id": null,
+  "label_ar": "حل المشكلات",
+  "label_en": "solving problems",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 22,
+  "key": "analytical",
+  "esco_id": null,
+  "label_ar": "التفكير التحليلي",
+  "label_en": "analytical thinking",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 23,
+  "key": "negotiation",
+  "esco_id": null,
+  "label_ar": "التفاوض",
+  "label_en": "negotiation",
+  "skill_type": "skill",
+  "category": "soft"
+ },
+ {
+  "id": 24,
+  "key": "time_management",
+  "esco_id": null,
+  "label_ar": "إدارة الوقت والعمل تحت الضغط",
+  "label_en": "time management",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 25,
+  "key": "teamwork",
+  "esco_id": null,
+  "label_ar": "العمل الجماعي",
+  "label_en": "teamwork",
+  "skill_type": "competence",
+  "category": "soft"
+ },
+ {
+  "id": 26,
+  "key": "presentation",
+  "esco_id": null,
+  "label_ar": "العرض والتقديم",
+  "label_en": "presentation skills",
+  "skill_type": "skill",
+  "category": "soft"
+ },
+ {
+  "id": 27,
+  "key": "reporting",
+  "esco_id": null,
+  "label_ar": "إعداد التقارير",
+  "label_en": "report writing",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 28,
+  "key": "english",
+  "esco_id": null,
+  "label_ar": "اللغة الإنجليزية",
+  "label_en": "English",
+  "skill_type": "language",
+  "category": "language"
+ },
+ {
+  "id": 29,
+  "key": "ms_office",
+  "esco_id": null,
+  "label_ar": "برامج Microsoft Office و Excel",
+  "label_en": "Microsoft Office / Excel",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 30,
+  "key": "erp",
+  "esco_id": null,
+  "label_ar": "أنظمة ERP (مثل SAP و Oracle)",
+  "label_en": "ERP systems",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 31,
+  "key": "recruitment",
+  "esco_id": null,
+  "label_ar": "التوظيف واستقطاب المواهب",
+  "label_en": "recruit employees",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 32,
+  "key": "onboarding",
+  "esco_id": null,
+  "label_ar": "تهيئة الموظفين الجدد",
+  "label_en": "employee onboarding",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 33,
+  "key": "labor_law",
+  "esco_id": null,
+  "label_ar": "نظام العمل السعودي واللوائح",
+  "label_en": "labour legislation",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 34,
+  "key": "hr_systems",
+  "esco_id": null,
+  "label_ar": "الأنظمة الحكومية للموارد البشرية (قوى، مدد، مقيم)",
+  "label_en": "HR government platforms",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 35,
+  "key": "payroll",
+  "esco_id": null,
+  "label_ar": "الرواتب والتعويضات",
+  "label_en": "payroll and compensation",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 36,
+  "key": "performance_mgmt",
+  "esco_id": null,
+  "label_ar": "إدارة الأداء",
+  "label_en": "performance management",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 37,
+  "key": "employee_relations",
+  "esco_id": null,
+  "label_ar": "علاقات الموظفين وشؤونهم",
+  "label_en": "employee relations",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 38,
+  "key": "training_dev",
+  "esco_id": null,
+  "label_ar": "التدريب والتطوير",
+  "label_en": "training and development",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 39,
+  "key": "hr_policies",
+  "esco_id": null,
+  "label_ar": "السياسات والإجراءات",
+  "label_en": "policy development",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 40,
+  "key": "org_development",
+  "esco_id": null,
+  "label_ar": "التطوير التنظيمي والهيكلة",
+  "label_en": "organisational development",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 41,
+  "key": "digital_marketing",
+  "esco_id": null,
+  "label_ar": "التسويق الرقمي",
+  "label_en": "digital marketing",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 42,
+  "key": "social_media",
+  "esco_id": null,
+  "label_ar": "إدارة منصات التواصل الاجتماعي",
+  "label_en": "social media management",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 43,
+  "key": "seo_sem",
+  "esco_id": null,
+  "label_ar": "تحسين محركات البحث والإعلانات المدفوعة (SEO/SEM)",
+  "label_en": "search engine optimisation",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 44,
+  "key": "content_creation",
+  "esco_id": null,
+  "label_ar": "صناعة المحتوى",
+  "label_en": "content development",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 45,
+  "key": "marketing_analytics",
+  "esco_id": null,
+  "label_ar": "تحليل بيانات التسويق",
+  "label_en": "marketing analytics",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 46,
+  "key": "campaign_mgmt",
+  "esco_id": null,
+  "label_ar": "إدارة الحملات التسويقية",
+  "label_en": "marketing campaigns",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 47,
+  "key": "branding",
+  "esco_id": null,
+  "label_ar": "إدارة العلامة التجارية",
+  "label_en": "brand management",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 48,
+  "key": "market_research",
+  "esco_id": null,
+  "label_ar": "أبحاث السوق ودراسة المنافسين",
+  "label_en": "market research",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 49,
+  "key": "graphic_design",
+  "esco_id": null,
+  "label_ar": "أدوات التصميم",
+  "label_en": "graphic design tools",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 50,
+  "key": "crm",
+  "esco_id": null,
+  "label_ar": "أنظمة إدارة علاقات العملاء (CRM)",
+  "label_en": "customer relationship management",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 51,
+  "key": "events_pr",
+  "esco_id": null,
+  "label_ar": "الفعاليات والعلاقات العامة",
+  "label_en": "public relations and events",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 52,
+  "key": "bookkeeping",
+  "esco_id": null,
+  "label_ar": "القيود المحاسبية والدفاتر",
+  "label_en": "bookkeeping",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 53,
+  "key": "financial_statements",
+  "esco_id": null,
+  "label_ar": "إعداد القوائم المالية",
+  "label_en": "financial statements",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 54,
+  "key": "reconciliation",
+  "esco_id": null,
+  "label_ar": "التسويات البنكية والحسابات",
+  "label_en": "account reconciliation",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 55,
+  "key": "ap_ar",
+  "esco_id": null,
+  "label_ar": "الذمم الدائنة والمدينة",
+  "label_en": "accounts payable and receivable",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 56,
+  "key": "tax_zakat",
+  "esco_id": null,
+  "label_ar": "الزكاة والضريبة (VAT)",
+  "label_en": "tax and zakat compliance",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 57,
+  "key": "ifrs",
+  "esco_id": null,
+  "label_ar": "المعايير المحاسبية (IFRS / SOCPA)",
+  "label_en": "IFRS accounting standards",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 58,
+  "key": "auditing",
+  "esco_id": null,
+  "label_ar": "المراجعة والتدقيق",
+  "label_en": "auditing",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 59,
+  "key": "cost_accounting",
+  "esco_id": null,
+  "label_ar": "محاسبة التكاليف",
+  "label_en": "cost accounting",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 60,
+  "key": "financial_analysis",
+  "esco_id": null,
+  "label_ar": "التحليل المالي",
+  "label_en": "financial analysis",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 61,
+  "key": "accounting_software",
+  "esco_id": null,
+  "label_ar": "برامج المحاسبة",
+  "label_en": "accounting software",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 62,
+  "key": "cpa_cma",
+  "esco_id": null,
+  "label_ar": "شهادات مهنية (SOCPA / CMA / CPA)",
+  "label_en": "professional accounting certification",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 63,
+  "key": "sales_targets",
+  "esco_id": null,
+  "label_ar": "تحقيق أهداف المبيعات",
+  "label_en": "meeting sales targets",
+  "skill_type": "competence",
+  "category": "domain"
+ },
+ {
+  "id": 64,
+  "key": "client_relations",
+  "esco_id": null,
+  "label_ar": "بناء العلاقات مع العملاء",
+  "label_en": "maintain relationship with customers",
+  "skill_type": "skill",
+  "category": "soft"
+ },
+ {
+  "id": 65,
+  "key": "prospecting",
+  "esco_id": null,
+  "label_ar": "البحث عن عملاء جدد",
+  "label_en": "prospect new customers",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 66,
+  "key": "product_knowledge",
+  "esco_id": null,
+  "label_ar": "معرفة المنتج وعرضه",
+  "label_en": "product knowledge and demonstration",
+  "skill_type": "knowledge",
+  "category": "domain"
+ },
+ {
+  "id": 67,
+  "key": "sales_forecasting",
+  "esco_id": null,
+  "label_ar": "التنبؤ بالمبيعات وتحليلها",
+  "label_en": "sales forecasting and analysis",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 68,
+  "key": "sales_strategy",
+  "esco_id": null,
+  "label_ar": "خطط واستراتيجيات المبيعات",
+  "label_en": "sales strategies",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 69,
+  "key": "b2b_sales",
+  "esco_id": null,
+  "label_ar": "مبيعات الشركات (B2B)",
+  "label_en": "B2B sales",
+  "skill_type": "skill",
+  "category": "domain"
+ },
+ {
+  "id": 70,
+  "key": "driving_license",
+  "esco_id": null,
+  "label_ar": "رخصة قيادة سارية",
+  "label_en": "driving licence",
+  "skill_type": "knowledge",
+  "category": "domain"
+ }
+]

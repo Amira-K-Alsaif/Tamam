@@ -1,0 +1,1167 @@
+{
+ "_note": "قاموس المهارات الموحّد (نسخة أولى). كل مهارة لها أسماء بديلة بالعربي والإنجليزي عشان «Python» و«بايثون» تُحسب نفس المهارة. esco_id فاضي لين نتأكد من الروابط في موقع ESCO.",
+ "skills": [
+  {
+   "key": "programming",
+   "label_ar": "البرمجة وكتابة الكود",
+   "label_en": "computer programming",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "programming",
+    "coding",
+    "write code",
+    "maintainable code",
+    "برمجة",
+    "كتابة الكود",
+    "كتابه الكود",
+    "software applications",
+    "software development",
+    "develop software",
+    "modify software",
+    "تطوير البرمجيات",
+    "تطوير البرامج"
+   ]
+  },
+  {
+   "key": "web_frontend",
+   "label_ar": "تطوير واجهات الويب",
+   "label_en": "front-end web development",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "front-end",
+    "frontend",
+    "front end",
+    "responsive web",
+    "angular",
+    "react",
+    "vue",
+    "html",
+    "css",
+    "javascript",
+    "typescript",
+    "واجهات المستخدم"
+   ]
+  },
+  {
+   "key": "backend",
+   "label_ar": "تطوير الخوادم (Back-end)",
+   "label_en": "back-end development",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "backend",
+    "back-end",
+    "back end",
+    ".net",
+    "node.js",
+    "nodejs",
+    "java",
+    "spring",
+    "django",
+    "laravel",
+    "php",
+    "api",
+    "apis",
+    "microservices"
+   ]
+  },
+  {
+   "key": "python",
+   "label_ar": "بايثون",
+   "label_en": "Python",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "python",
+    "بايثون"
+   ]
+  },
+  {
+   "key": "mobile_dev",
+   "label_ar": "تطوير تطبيقات الجوال",
+   "label_en": "mobile application development",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "mobile application",
+    "mobile app",
+    "android",
+    "ios",
+    "flutter",
+    "swift",
+    "kotlin",
+    "تطبيقات الجوال",
+    "تطبيقات الهاتف"
+   ]
+  },
+  {
+   "key": "databases",
+   "label_ar": "قواعد البيانات و SQL",
+   "label_en": "database management (SQL)",
+   "category": "technical",
+   "skill_type": "knowledge",
+   "aliases": [
+    "database",
+    "databases",
+    "sql",
+    "mysql",
+    "postgres",
+    "oracle db",
+    "mongodb",
+    "قواعد البيانات",
+    "قاعدة البيانات"
+   ]
+  },
+  {
+   "key": "cloud",
+   "label_ar": "الحوسبة السحابية",
+   "label_en": "cloud technologies",
+   "category": "technical",
+   "skill_type": "knowledge",
+   "aliases": [
+    "cloud",
+    "aws",
+    "azure",
+    "gcp",
+    "الحوسبة السحابية",
+    "السحابة"
+   ]
+  },
+  {
+   "key": "devops",
+   "label_ar": "DevOps والنشر المستمر",
+   "label_en": "DevOps and CI/CD",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "devops",
+    "ci/cd",
+    "docker",
+    "kubernetes",
+    "deployment pipeline"
+   ]
+  },
+  {
+   "key": "testing",
+   "label_ar": "اختبار البرمجيات",
+   "label_en": "software testing",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "testing",
+    "troubleshooting",
+    "debugging",
+    "unit test",
+    "quality assurance",
+    "اختبار البرامج",
+    "اختبار البرمجيات",
+    "bug fixes",
+    "fix errors",
+    "bugs"
+   ]
+  },
+  {
+   "key": "system_design",
+   "label_ar": "تصميم الأنظمة والمعمارية",
+   "label_en": "software architecture design",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "architecture",
+    "system design",
+    "design and develop applications and systems",
+    "scalable",
+    "technical design",
+    "معمارية",
+    "تصميم الانظمة",
+    "software design"
+   ]
+  },
+  {
+   "key": "code_review",
+   "label_ar": "مراجعة الكود ومعايير الجودة",
+   "label_en": "code review",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "code review",
+    "code quality",
+    "best practices",
+    "coding standards",
+    "technical standards",
+    "مراجعة الكود"
+   ]
+  },
+  {
+   "key": "agile",
+   "label_ar": "منهجيات Agile و Scrum",
+   "label_en": "agile project management",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "agile",
+    "scrum",
+    "sprint",
+    "kanban",
+    "اجايل",
+    "سكرم"
+   ]
+  },
+  {
+   "key": "technical_docs",
+   "label_ar": "التوثيق التقني",
+   "label_en": "technical documentation",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "documentation",
+    "التوثيق"
+   ]
+  },
+  {
+   "key": "team_leadership",
+   "label_ar": "قيادة الفرق",
+   "label_en": "leading a team",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "lead a team",
+    "leading a team",
+    "team lead",
+    "leadership",
+    "lead the team",
+    "manage a team",
+    "managing teams",
+    "قيادة الفريق",
+    "قيادة فريق",
+    "قيادية",
+    "مهارات القيادة",
+    "قيادة",
+    "ادارة الفريق",
+    "ادارة فريق",
+    "ادارة فرق",
+    "الاشراف على فريق",
+    "الاشراف على الفريق"
+   ],
+   "exclude": [
+    "رخصة قيادة",
+    "رخصه قياده",
+    "قيادة السيارات",
+    "قيادة سيارة"
+   ]
+  },
+  {
+   "key": "mentoring",
+   "label_ar": "التوجيه وتطوير الزملاء",
+   "label_en": "mentoring individuals",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "mentor",
+    "mentoring",
+    "coaching",
+    "guide junior",
+    "توجيه",
+    "تدريب الفريق",
+    "تطوير الفريق"
+   ]
+  },
+  {
+   "key": "project_management",
+   "label_ar": "إدارة المشاريع",
+   "label_en": "project management",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "project management",
+    "manage projects",
+    "delivery",
+    "ادارة المشاريع",
+    "ادارة مشاريع"
+   ]
+  },
+  {
+   "key": "strategic_planning",
+   "label_ar": "التخطيط الاستراتيجي",
+   "label_en": "strategic planning",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "strategy",
+    "strategic",
+    "استراتيجي",
+    "استراتيجيات",
+    "استراتيجية"
+   ]
+  },
+  {
+   "key": "budgeting",
+   "label_ar": "إعداد الموازنات",
+   "label_en": "budget management",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "budget",
+    "budgeting",
+    "موازنة",
+    "موازنات",
+    "الموازنات",
+    "الميزانيات",
+    "ميزانية",
+    "الميزانية"
+   ]
+  },
+  {
+   "key": "stakeholder_mgmt",
+   "label_ar": "إدارة أصحاب المصلحة",
+   "label_en": "stakeholder management",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "stakeholder",
+    "cross-functional",
+    "collaborate with teams",
+    "التنسيق مع الادارات",
+    "التعاون مع الادارات",
+    "التنسيق مع الاقسام",
+    "الادارات الاخرى",
+    "الاقسام الاخرى"
+   ]
+  },
+  {
+   "key": "communication",
+   "label_ar": "مهارات التواصل",
+   "label_en": "communication",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "communication",
+    "مهارات التواصل",
+    "مهارات الاتصال",
+    "مهارات اتصال",
+    "مهارات تواصل",
+    "التواصل الفعال",
+    "القدرة على التواصل",
+    "التواصل مع"
+   ]
+  },
+  {
+   "key": "problem_solving",
+   "label_ar": "حل المشكلات",
+   "label_en": "solving problems",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "problem-solving",
+    "problem solving",
+    "resolve technical challenges",
+    "حل المشكلات",
+    "حل المشاكل"
+   ]
+  },
+  {
+   "key": "analytical",
+   "label_ar": "التفكير التحليلي",
+   "label_en": "analytical thinking",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "analytical",
+    "analysis",
+    "تحليلية",
+    "تحليلي",
+    "التحليل"
+   ]
+  },
+  {
+   "key": "negotiation",
+   "label_ar": "التفاوض",
+   "label_en": "negotiation",
+   "category": "soft",
+   "skill_type": "skill",
+   "aliases": [
+    "negotiat",
+    "التفاوض",
+    "تفاوض"
+   ]
+  },
+  {
+   "key": "time_management",
+   "label_ar": "إدارة الوقت والعمل تحت الضغط",
+   "label_en": "time management",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "time management",
+    "under pressure",
+    "deadlines",
+    "ادارة الوقت",
+    "تحت الضغط",
+    "ضغط العمل"
+   ]
+  },
+  {
+   "key": "teamwork",
+   "label_ar": "العمل الجماعي",
+   "label_en": "teamwork",
+   "category": "soft",
+   "skill_type": "competence",
+   "aliases": [
+    "teamwork",
+    "team player",
+    "العمل الجماعي",
+    "العمل ضمن فريق",
+    "روح الفريق",
+    "العمل بروح الفريق"
+   ]
+  },
+  {
+   "key": "presentation",
+   "label_ar": "العرض والتقديم",
+   "label_en": "presentation skills",
+   "category": "soft",
+   "skill_type": "skill",
+   "aliases": [
+    "presentation",
+    "العروض التقديمية",
+    "مهارات العرض",
+    "مهارات التقديم",
+    "عروض تقديمية"
+   ]
+  },
+  {
+   "key": "reporting",
+   "label_ar": "إعداد التقارير",
+   "label_en": "report writing",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "reporting",
+    "reports",
+    "اعداد التقارير",
+    "التقارير",
+    "تقارير"
+   ]
+  },
+  {
+   "key": "english",
+   "label_ar": "اللغة الإنجليزية",
+   "label_en": "English",
+   "category": "language",
+   "skill_type": "language",
+   "aliases": [
+    "english",
+    "الانجليزية",
+    "الانجليزيه",
+    "انجليزي"
+   ]
+  },
+  {
+   "key": "ms_office",
+   "label_ar": "برامج Microsoft Office و Excel",
+   "label_en": "Microsoft Office / Excel",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "microsoft office",
+    "ms office",
+    "excel",
+    "word",
+    "powerpoint",
+    "اكسل",
+    "الاوفيس",
+    "اوفيس",
+    "الحاسب الالي",
+    "الحاسب الآلي",
+    "مايكروسوفت"
+   ]
+  },
+  {
+   "key": "erp",
+   "label_ar": "أنظمة ERP (مثل SAP و Oracle)",
+   "label_en": "ERP systems",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "erp",
+    "sap",
+    "oracle",
+    "odoo",
+    "dynamics",
+    "اودو",
+    "ساب",
+    "اوراكل",
+    "انظمة تخطيط موارد"
+   ]
+  },
+  {
+   "key": "recruitment",
+   "label_ar": "التوظيف واستقطاب المواهب",
+   "label_en": "recruit employees",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "recruit",
+    "talent acquisition",
+    "sourcing",
+    "hiring",
+    "التوظيف",
+    "الاستقطاب",
+    "استقطاب",
+    "المقابلات",
+    "التعيين"
+   ]
+  },
+  {
+   "key": "onboarding",
+   "label_ar": "تهيئة الموظفين الجدد",
+   "label_en": "employee onboarding",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "onboarding",
+    "induction",
+    "تهيئة الموظفين",
+    "التهيئة",
+    "الموظفين الجدد"
+   ]
+  },
+  {
+   "key": "labor_law",
+   "label_ar": "نظام العمل السعودي واللوائح",
+   "label_en": "labour legislation",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "labor law",
+    "labour law",
+    "نظام العمل",
+    "قانون العمل",
+    "قوانين العمل",
+    "اللوائح العمالية",
+    "لوائح العمل",
+    "مكتب العمل"
+   ]
+  },
+  {
+   "key": "hr_systems",
+   "label_ar": "الأنظمة الحكومية للموارد البشرية (قوى، مدد، مقيم)",
+   "label_en": "HR government platforms",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "qiwa",
+    "gosi",
+    "mudad",
+    "muqeem",
+    "قوى",
+    "مدد",
+    "مقيم",
+    "التامينات",
+    "التأمينات",
+    "اجير",
+    "أجير",
+    "الجوازات",
+    "نطاقات",
+    "السعودة"
+   ]
+  },
+  {
+   "key": "payroll",
+   "label_ar": "الرواتب والتعويضات",
+   "label_en": "payroll and compensation",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "payroll",
+    "compensation and benefits",
+    "مسير الرواتب",
+    "مسيرات الرواتب",
+    "ادارة الرواتب",
+    "الرواتب والاجور",
+    "اعداد الرواتب",
+    "التعويضات والمزايا",
+    "التعويضات"
+   ]
+  },
+  {
+   "key": "performance_mgmt",
+   "label_ar": "إدارة الأداء",
+   "label_en": "performance management",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "performance management",
+    "performance appraisal",
+    "kpi",
+    "kpis",
+    "ادارة الاداء",
+    "تقييم الاداء",
+    "مؤشرات الاداء",
+    "تقييم أداء"
+   ]
+  },
+  {
+   "key": "employee_relations",
+   "label_ar": "علاقات الموظفين وشؤونهم",
+   "label_en": "employee relations",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "employee relations",
+    "personnel",
+    "شؤون الموظفين",
+    "علاقات الموظفين",
+    "شئون الموظفين",
+    "الاجازات",
+    "الحضور والانصراف"
+   ]
+  },
+  {
+   "key": "training_dev",
+   "label_ar": "التدريب والتطوير",
+   "label_en": "training and development",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "training",
+    "learning and development",
+    "التدريب والتطوير",
+    "البرامج التدريبية",
+    "الاحتياجات التدريبية",
+    "تدريب الموظفين"
+   ]
+  },
+  {
+   "key": "hr_policies",
+   "label_ar": "السياسات والإجراءات",
+   "label_en": "policy development",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "policies",
+    "policy",
+    "procedures",
+    "السياسات",
+    "سياسات",
+    "الاجراءات",
+    "اللوائح الداخلية"
+   ]
+  },
+  {
+   "key": "org_development",
+   "label_ar": "التطوير التنظيمي والهيكلة",
+   "label_en": "organisational development",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "organizational development",
+    "organisational development",
+    "workforce planning",
+    "التطوير التنظيمي",
+    "الهيكل التنظيمي",
+    "تخطيط القوى العاملة",
+    "الهياكل"
+   ]
+  },
+  {
+   "key": "digital_marketing",
+   "label_ar": "التسويق الرقمي",
+   "label_en": "digital marketing",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "digital marketing",
+    "online marketing",
+    "التسويق الرقمي",
+    "التسويق الالكتروني",
+    "تسويق الكتروني",
+    "تسويق رقمي"
+   ]
+  },
+  {
+   "key": "social_media",
+   "label_ar": "إدارة منصات التواصل الاجتماعي",
+   "label_en": "social media management",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "social media",
+    "instagram",
+    "tiktok",
+    "snapchat",
+    "twitter",
+    "سوشال ميديا",
+    "السوشال",
+    "التواصل الاجتماعي",
+    "منصات التواصل",
+    "مواقع التواصل",
+    "سناب",
+    "انستقرام",
+    "تيك توك"
+   ]
+  },
+  {
+   "key": "seo_sem",
+   "label_ar": "تحسين محركات البحث والإعلانات المدفوعة (SEO/SEM)",
+   "label_en": "search engine optimisation",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "seo",
+    "sem",
+    "google ads",
+    "ppc",
+    "paid ads",
+    "تحسين محركات البحث",
+    "محركات البحث",
+    "الاعلانات المدفوعة",
+    "اعلانات جوجل",
+    "الاعلانات الممولة"
+   ]
+  },
+  {
+   "key": "content_creation",
+   "label_ar": "صناعة المحتوى",
+   "label_en": "content development",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "content",
+    "copywriting",
+    "المحتوى",
+    "محتوى",
+    "كتابة المحتوى"
+   ]
+  },
+  {
+   "key": "marketing_analytics",
+   "label_ar": "تحليل بيانات التسويق",
+   "label_en": "marketing analytics",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "google analytics",
+    "analytics",
+    "roi",
+    "conversion",
+    "ادوات التحليل",
+    "تحليل البيانات",
+    "العائد على الاستثمار",
+    "مقاييس الاداء",
+    "تحليل الحملات"
+   ]
+  },
+  {
+   "key": "campaign_mgmt",
+   "label_ar": "إدارة الحملات التسويقية",
+   "label_en": "marketing campaigns",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "campaign",
+    "campaigns",
+    "الحملات",
+    "حملات",
+    "الحملة"
+   ]
+  },
+  {
+   "key": "branding",
+   "label_ar": "إدارة العلامة التجارية",
+   "label_en": "brand management",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "brand",
+    "branding",
+    "العلامة التجارية",
+    "العلامه التجاريه"
+   ]
+  },
+  {
+   "key": "market_research",
+   "label_ar": "أبحاث السوق ودراسة المنافسين",
+   "label_en": "market research",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "market research",
+    "competitor",
+    "market analysis",
+    "ابحاث السوق",
+    "دراسة السوق",
+    "دراسات السوق",
+    "تحليل السوق",
+    "المنافسين",
+    "احتياجات السوق"
+   ]
+  },
+  {
+   "key": "graphic_design",
+   "label_ar": "أدوات التصميم",
+   "label_en": "graphic design tools",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "photoshop",
+    "illustrator",
+    "canva",
+    "adobe",
+    "design software",
+    "برامج التصميم",
+    "الفوتوشوب",
+    "فوتوشوب",
+    "التصميم الجرافيكي"
+   ]
+  },
+  {
+   "key": "crm",
+   "label_ar": "أنظمة إدارة علاقات العملاء (CRM)",
+   "label_en": "customer relationship management",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "crm",
+    "salesforce",
+    "hubspot",
+    "ادارة علاقات العملاء"
+   ]
+  },
+  {
+   "key": "events_pr",
+   "label_ar": "الفعاليات والعلاقات العامة",
+   "label_en": "public relations and events",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "public relations",
+    "events",
+    "exhibitions",
+    "العلاقات العامة",
+    "الفعاليات",
+    "المعارض",
+    "المؤتمرات"
+   ]
+  },
+  {
+   "key": "bookkeeping",
+   "label_ar": "القيود المحاسبية والدفاتر",
+   "label_en": "bookkeeping",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "journal entries",
+    "bookkeeping",
+    "general ledger",
+    "القيود",
+    "قيود",
+    "دفتر الاستاذ",
+    "الدفاتر",
+    "الترحيل"
+   ]
+  },
+  {
+   "key": "financial_statements",
+   "label_ar": "إعداد القوائم المالية",
+   "label_en": "financial statements",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "financial statements",
+    "financial reporting",
+    "القوائم المالية",
+    "التقارير المالية",
+    "الميزانية العمومية",
+    "قائمة الدخل",
+    "الاقفال الشهري",
+    "الاقفال"
+   ]
+  },
+  {
+   "key": "reconciliation",
+   "label_ar": "التسويات البنكية والحسابات",
+   "label_en": "account reconciliation",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "reconciliation",
+    "التسويات",
+    "تسويات",
+    "المطابقات",
+    "مطابقة"
+   ]
+  },
+  {
+   "key": "ap_ar",
+   "label_ar": "الذمم الدائنة والمدينة",
+   "label_en": "accounts payable and receivable",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "accounts payable",
+    "accounts receivable",
+    "الذمم",
+    "الموردين",
+    "حسابات العملاء",
+    "المدينة والدائنة",
+    "التحصيل"
+   ]
+  },
+  {
+   "key": "tax_zakat",
+   "label_ar": "الزكاة والضريبة (VAT)",
+   "label_en": "tax and zakat compliance",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "vat",
+    "tax",
+    "zakat",
+    "zatca",
+    "الزكاة",
+    "الزكوية",
+    "الضريبة",
+    "الضريبية",
+    "ضريبة القيمة المضافة",
+    "الضرائب",
+    "هيئة الزكاة"
+   ]
+  },
+  {
+   "key": "ifrs",
+   "label_ar": "المعايير المحاسبية (IFRS / SOCPA)",
+   "label_en": "IFRS accounting standards",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "ifrs",
+    "gaap",
+    "socpa",
+    "المعايير المحاسبية",
+    "معايير المحاسبة",
+    "المعايير الدولية"
+   ]
+  },
+  {
+   "key": "auditing",
+   "label_ar": "المراجعة والتدقيق",
+   "label_en": "auditing",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "audit",
+    "auditing",
+    "المراجعة",
+    "المراجعين",
+    "التدقيق",
+    "مراجعة الحسابات",
+    "الرقابة الداخلية"
+   ]
+  },
+  {
+   "key": "cost_accounting",
+   "label_ar": "محاسبة التكاليف",
+   "label_en": "cost accounting",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "cost accounting",
+    "costing",
+    "محاسبة التكاليف",
+    "التكاليف",
+    "تكاليف"
+   ]
+  },
+  {
+   "key": "financial_analysis",
+   "label_ar": "التحليل المالي",
+   "label_en": "financial analysis",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "financial analysis",
+    "forecasting",
+    "التحليل المالي",
+    "تحليل مالي",
+    "التنبؤ",
+    "التدفقات النقدية",
+    "السيولة",
+    "الاداء المالي"
+   ]
+  },
+  {
+   "key": "accounting_software",
+   "label_ar": "برامج المحاسبة",
+   "label_en": "accounting software",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "quickbooks",
+    "accounting software",
+    "برامج المحاسبة",
+    "البرامج المحاسبية",
+    "الانظمة المحاسبية",
+    "برامج محاسبية",
+    "نظام محاسبي"
+   ]
+  },
+  {
+   "key": "cpa_cma",
+   "label_ar": "شهادات مهنية (SOCPA / CMA / CPA)",
+   "label_en": "professional accounting certification",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "cpa",
+    "cma",
+    "acca",
+    "cfa",
+    "زمالة",
+    "الزمالة",
+    "شهادة مهنية",
+    "شهادات مهنية"
+   ]
+  },
+  {
+   "key": "sales_targets",
+   "label_ar": "تحقيق أهداف المبيعات",
+   "label_en": "meeting sales targets",
+   "category": "domain",
+   "skill_type": "competence",
+   "aliases": [
+    "sales targets",
+    "quota",
+    "اهداف المبيعات",
+    "الاهداف البيعية",
+    "اهداف البيع",
+    "المستهدفات",
+    "التارجت",
+    "تجاوز الاهداف",
+    "الاهداف الشهرية",
+    "sales target",
+    "target achievement",
+    "تحقيق اهداف المبيعات",
+    "تحقيق الاهداف البيعيه"
+   ]
+  },
+  {
+   "key": "client_relations",
+   "label_ar": "بناء العلاقات مع العملاء",
+   "label_en": "maintain relationship with customers",
+   "category": "soft",
+   "skill_type": "skill",
+   "aliases": [
+    "client relationship",
+    "customer relationship",
+    "account management",
+    "العلاقات مع العملاء",
+    "علاقات مع العملاء",
+    "علاقات العملاء",
+    "رضا العملاء",
+    "خدمة العملاء",
+    "العملاء الحاليين"
+   ]
+  },
+  {
+   "key": "prospecting",
+   "label_ar": "البحث عن عملاء جدد",
+   "label_en": "prospect new customers",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "prospect",
+    "lead generation",
+    "new clients",
+    "new business",
+    "العملاء المحتملين",
+    "عملاء جدد",
+    "العملاء الجدد",
+    "فرص بيعية",
+    "الفرص البيعية",
+    "توسيع قاعدة العملاء"
+   ]
+  },
+  {
+   "key": "product_knowledge",
+   "label_ar": "معرفة المنتج وعرضه",
+   "label_en": "product knowledge and demonstration",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "product knowledge",
+    "product demonstration",
+    "عرض المنتجات",
+    "عرض منتجات",
+    "المعرفة بالمنتج",
+    "معرفة المنتجات"
+   ]
+  },
+  {
+   "key": "sales_forecasting",
+   "label_ar": "التنبؤ بالمبيعات وتحليلها",
+   "label_en": "sales forecasting and analysis",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "sales forecast",
+    "sales analysis",
+    "pipeline",
+    "توقعات المبيعات",
+    "تقارير المبيعات",
+    "تحليل المبيعات",
+    "التنبؤ بالمبيعات"
+   ]
+  },
+  {
+   "key": "sales_strategy",
+   "label_ar": "خطط واستراتيجيات المبيعات",
+   "label_en": "sales strategies",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "sales strategy",
+    "sales plan",
+    "استراتيجيات المبيعات",
+    "خطط المبيعات",
+    "خطط البيع",
+    "الخطط البيعية",
+    "استراتيجية المبيعات"
+   ]
+  },
+  {
+   "key": "b2b_sales",
+   "label_ar": "مبيعات الشركات (B2B)",
+   "label_en": "B2B sales",
+   "category": "domain",
+   "skill_type": "skill",
+   "aliases": [
+    "b2b",
+    "corporate sales",
+    "key accounts",
+    "tenders",
+    "مبيعات الشركات",
+    "كبار العملاء",
+    "المناقصات",
+    "الحسابات الرئيسية",
+    "عروض الاسعار"
+   ]
+  },
+  {
+   "key": "driving_license",
+   "label_ar": "رخصة قيادة سارية",
+   "label_en": "driving licence",
+   "category": "domain",
+   "skill_type": "knowledge",
+   "aliases": [
+    "driving license",
+    "driving licence",
+    "رخصة قيادة",
+    "رخصة سارية",
+    "رخصه قياده"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,102 @@
+[
+ {
+  "id": 1,
+  "code": "SWE-1",
+  "ladder": "engineering",
+  "level": "mid",
+  "name_ar": "مطوّر برمجيات",
+  "name_en": "Software Developer",
+  "next_title_id": 2,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 2,
+  "code": "SWE-2",
+  "ladder": "engineering",
+  "level": "lead",
+  "name_ar": "قائد فريق تقني",
+  "name_en": "Tech Lead / Team Lead",
+  "next_title_id": null,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 3,
+  "code": "HR-1",
+  "ladder": "hr",
+  "level": "mid",
+  "name_ar": "أخصائي موارد بشرية",
+  "name_en": "HR Specialist",
+  "next_title_id": 4,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 4,
+  "code": "HR-2",
+  "ladder": "hr",
+  "level": "manager",
+  "name_ar": "مدير موارد بشرية",
+  "name_en": "HR Manager",
+  "next_title_id": null,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 5,
+  "code": "MKT-1",
+  "ladder": "marketing",
+  "level": "mid",
+  "name_ar": "أخصائي تسويق رقمي",
+  "name_en": "Digital Marketing Specialist",
+  "next_title_id": 6,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 6,
+  "code": "MKT-2",
+  "ladder": "marketing",
+  "level": "manager",
+  "name_ar": "مدير تسويق",
+  "name_en": "Marketing Manager",
+  "next_title_id": null,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 7,
+  "code": "FIN-1",
+  "ladder": "finance",
+  "level": "mid",
+  "name_ar": "محاسب",
+  "name_en": "Accountant",
+  "next_title_id": 8,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 8,
+  "code": "FIN-2",
+  "ladder": "finance",
+  "level": "manager",
+  "name_ar": "مدير مالي",
+  "name_en": "Finance Manager",
+  "next_title_id": null,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 9,
+  "code": "SAL-1",
+  "ladder": "sales",
+  "level": "mid",
+  "name_ar": "أخصائي مبيعات",
+  "name_en": "Sales Specialist",
+  "next_title_id": 10,
+  "esco_occupation_uri": null
+ },
+ {
+  "id": 10,
+  "code": "SAL-2",
+  "ladder": "sales",
+  "level": "manager",
+  "name_ar": "مدير مبيعات",
+  "name_en": "Sales Manager",
+  "next_title_id": null,
+  "esco_occupation_uri": null
+ }
+]

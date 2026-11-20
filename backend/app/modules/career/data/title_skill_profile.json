@@ -1,0 +1,1619 @@
+[
+ {
+  "job_title_id": 1,
+  "skill_id": 1,
+  "postings_count": 11,
+  "frequency": 0.58,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 9,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 2,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 3,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 25,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 13,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 11,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 21,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 10,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 19,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 6,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 7,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 20,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 1,
+  "skill_id": 5,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 2,
+  "postings_count": 5,
+  "frequency": 0.45,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 3,
+  "postings_count": 5,
+  "frequency": 0.45,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 9,
+  "postings_count": 3,
+  "frequency": 0.27,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 1,
+  "postings_count": 3,
+  "frequency": 0.27,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 22,
+  "postings_count": 2,
+  "frequency": 0.18,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 4,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 19,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 10,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 20,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 11,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 12,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
+  "skill_id": 13,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 20,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 27,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 31,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 39,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 37,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 29,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 28,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 36,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 33,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 38,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 35,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 34,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 19,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 25,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 45,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 14,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 23,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 30,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 61,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 3,
+  "skill_id": 24,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 17,
+  "postings_count": 12,
+  "frequency": 0.75,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 31,
+  "postings_count": 9,
+  "frequency": 0.56,
+  "required_ratio": 0.89
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 39,
+  "postings_count": 8,
+  "frequency": 0.5,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 33,
+  "postings_count": 8,
+  "frequency": 0.5,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 14,
+  "postings_count": 7,
+  "frequency": 0.44,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 36,
+  "postings_count": 6,
+  "frequency": 0.38,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 34,
+  "postings_count": 6,
+  "frequency": 0.38,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 27,
+  "postings_count": 5,
+  "frequency": 0.31,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 37,
+  "postings_count": 5,
+  "frequency": 0.31,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 40,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 35,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 38,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 20,
+  "postings_count": 3,
+  "frequency": 0.19,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 15,
+  "postings_count": 3,
+  "frequency": 0.19,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 21,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 24,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 22,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 28,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 23,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 18,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 25,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 64,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 4,
+  "skill_id": 19,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 41,
+  "postings_count": 19,
+  "frequency": 1.0,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 17,
+  "postings_count": 13,
+  "frequency": 0.68,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 44,
+  "postings_count": 13,
+  "frequency": 0.68,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 42,
+  "postings_count": 12,
+  "frequency": 0.63,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 46,
+  "postings_count": 12,
+  "frequency": 0.63,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 27,
+  "postings_count": 9,
+  "frequency": 0.47,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 45,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 0.88
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 20,
+  "postings_count": 7,
+  "frequency": 0.37,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 34,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 43,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 47,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 22,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 48,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 28,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 0.67
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 16,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 49,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 23,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 2,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 50,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 51,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 65,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 31,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 62,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 64,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 29,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 18,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 36,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 14,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 69,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 37,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 25,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 17,
+  "postings_count": 12,
+  "frequency": 0.63,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 47,
+  "postings_count": 12,
+  "frequency": 0.63,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 46,
+  "postings_count": 11,
+  "frequency": 0.58,
+  "required_ratio": 0.91
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 14,
+  "postings_count": 10,
+  "frequency": 0.53,
+  "required_ratio": 0.9
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 42,
+  "postings_count": 9,
+  "frequency": 0.47,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 22,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 0.62
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 41,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 0.88
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 45,
+  "postings_count": 7,
+  "frequency": 0.37,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 48,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 0.83
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 27,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 0.8
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 20,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 0.8
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 43,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 0.75
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 44,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 36,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 16,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 0.75
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 51,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 18,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 28,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 0.33
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 64,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 0.33
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 65,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 15,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 34,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 49,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 50,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 24,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 53,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 19,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 26,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
+  "skill_id": 29,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 27,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 52,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 61,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 55,
+  "postings_count": 7,
+  "frequency": 0.37,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 53,
+  "postings_count": 7,
+  "frequency": 0.37,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 18,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 54,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 60,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 58,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 29,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 39,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 33,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 28,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 56,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 45,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 34,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 59,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 20,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 30,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 24,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 25,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 7,
+  "skill_id": 57,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 17,
+  "postings_count": 15,
+  "frequency": 0.94,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 18,
+  "postings_count": 15,
+  "frequency": 0.94,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 60,
+  "postings_count": 15,
+  "frequency": 0.94,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 27,
+  "postings_count": 15,
+  "frequency": 0.94,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 14,
+  "postings_count": 13,
+  "frequency": 0.81,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 53,
+  "postings_count": 11,
+  "frequency": 0.69,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 22,
+  "postings_count": 9,
+  "frequency": 0.56,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 59,
+  "postings_count": 9,
+  "frequency": 0.56,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 39,
+  "postings_count": 9,
+  "frequency": 0.56,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 58,
+  "postings_count": 9,
+  "frequency": 0.56,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 62,
+  "postings_count": 7,
+  "frequency": 0.44,
+  "required_ratio": 0.14
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 56,
+  "postings_count": 6,
+  "frequency": 0.38,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 57,
+  "postings_count": 6,
+  "frequency": 0.38,
+  "required_ratio": 0.5
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 28,
+  "postings_count": 5,
+  "frequency": 0.31,
+  "required_ratio": 0.8
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 15,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 29,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 0.75
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 31,
+  "postings_count": 4,
+  "frequency": 0.25,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 20,
+  "postings_count": 3,
+  "frequency": 0.19,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 55,
+  "postings_count": 3,
+  "frequency": 0.19,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 61,
+  "postings_count": 3,
+  "frequency": 0.19,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 34,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 30,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 36,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 33,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 35,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 0.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 40,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 21,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
+  "skill_id": 45,
+  "postings_count": 1,
+  "frequency": 0.06,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 64,
+  "postings_count": 12,
+  "frequency": 0.63,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 63,
+  "postings_count": 11,
+  "frequency": 0.58,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 20,
+  "postings_count": 10,
+  "frequency": 0.53,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 28,
+  "postings_count": 8,
+  "frequency": 0.42,
+  "required_ratio": 0.88
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 27,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 65,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 23,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 39,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 66,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 48,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 51,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 25,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 29,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 70,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 50,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 17,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 47,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 69,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 15,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 34,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 6,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 9,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 24,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 9,
+  "skill_id": 26,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 17,
+  "postings_count": 10,
+  "frequency": 0.53,
+  "required_ratio": 0.9
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 20,
+  "postings_count": 10,
+  "frequency": 0.53,
+  "required_ratio": 0.9
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 64,
+  "postings_count": 10,
+  "frequency": 0.53,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 28,
+  "postings_count": 9,
+  "frequency": 0.47,
+  "required_ratio": 0.89
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 27,
+  "postings_count": 7,
+  "frequency": 0.37,
+  "required_ratio": 0.86
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 34,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 0.83
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 63,
+  "postings_count": 6,
+  "frequency": 0.32,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 14,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 69,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 0.8
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 23,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 0.75
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 51,
+  "postings_count": 4,
+  "frequency": 0.21,
+  "required_ratio": 0.75
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 18,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 65,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 48,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 0.67
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 25,
+  "postings_count": 3,
+  "frequency": 0.16,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 39,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 26,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 29,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 15,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 50,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 68,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 53,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 13,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 19,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 22,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 67,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 60,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 10,
+  "skill_id": 30,
+  "postings_count": 1,
+  "frequency": 0.05,
+  "required_ratio": 0.0
+ }
+]
