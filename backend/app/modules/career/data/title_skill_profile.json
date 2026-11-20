@@ -162,6 +162,13 @@
  },
  {
   "job_title_id": 2,
+  "skill_id": 71,
+  "postings_count": 1,
+  "frequency": 0.09,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 2,
   "skill_id": 11,
   "postings_count": 1,
   "frequency": 0.09,
@@ -281,7 +288,7 @@
  },
  {
   "job_title_id": 3,
-  "skill_id": 45,
+  "skill_id": 71,
   "postings_count": 1,
   "frequency": 0.05,
   "required_ratio": 1.0
@@ -551,6 +558,13 @@
   "postings_count": 6,
   "frequency": 0.32,
   "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 5,
+  "skill_id": 71,
+  "postings_count": 5,
+  "frequency": 0.26,
+  "required_ratio": 0.8
  },
  {
   "job_title_id": 5,
@@ -834,6 +848,13 @@
  },
  {
   "job_title_id": 6,
+  "skill_id": 71,
+  "postings_count": 2,
+  "frequency": 0.11,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 6,
   "skill_id": 65,
   "postings_count": 2,
   "frequency": 0.11,
@@ -1002,7 +1023,7 @@
  },
  {
   "job_title_id": 7,
-  "skill_id": 45,
+  "skill_id": 71,
   "postings_count": 1,
   "frequency": 0.05,
   "required_ratio": 1.0
@@ -1198,6 +1219,13 @@
  },
  {
   "job_title_id": 8,
+  "skill_id": 71,
+  "postings_count": 2,
+  "frequency": 0.12,
+  "required_ratio": 1.0
+ },
+ {
+  "job_title_id": 8,
   "skill_id": 34,
   "postings_count": 2,
   "frequency": 0.12,
@@ -1241,13 +1269,6 @@
  {
   "job_title_id": 8,
   "skill_id": 21,
-  "postings_count": 1,
-  "frequency": 0.06,
-  "required_ratio": 1.0
- },
- {
-  "job_title_id": 8,
-  "skill_id": 45,
   "postings_count": 1,
   "frequency": 0.06,
   "required_ratio": 1.0

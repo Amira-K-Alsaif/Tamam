@@ -464,6 +464,14 @@
   "source_span": "coding, data analysis, software design and implementation"
  },
  {
+  "posting_id": 25,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "coding, data analysis, software design and implementation"
+ },
+ {
   "posting_id": 26,
   "skill_id": 2,
   "importance": "required",
@@ -625,7 +633,7 @@
  },
  {
   "posting_id": 32,
-  "skill_id": 45,
+  "skill_id": 71,
   "importance": "required",
   "extraction_method": "keyword",
   "confidence": 0.7,
@@ -2000,6 +2008,14 @@
   "source_span": "نظره عامه علي الدور: بصفتك اخصائي تسويق رقمي، ستتضمن مسؤولياتك الرئيسيه: تطوير وتنفيذ حملات التسويق الرقمي اداره حسابات وسائل التواصل الاجتماعي تحليل بيانات الويب وانشاء استراتيجيات التسويق عبر الانترنت التعاون مع الفرق الابداعيه ومحتويات الفرق مراقبه وتقديم تقارير عن اداء الحمله المؤهلات: المتقدم ا"
  },
  {
+  "posting_id": 69,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "نظره عامه علي الدور: بصفتك اخصائي تسويق رقمي، ستتضمن مسؤولياتك الرئيسيه: تطوير وتنفيذ حملات التسويق الرقمي اداره حسابات وسائل التواصل الاجتماعي تحليل بيانات الويب وانشاء استراتيجيات التسويق عبر الانترنت التعاون مع الفرق الابداعيه ومحتويات الفرق مراقبه وتقديم تقارير عن اداء الحمله المؤهلات: المتقدم ا"
+ },
+ {
   "posting_id": 70,
   "skill_id": 2,
   "importance": "required",
@@ -2086,6 +2102,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "تشغيل نظام crm: دعم اتمته نظام crm لتعزيز رعايه العملاء المحتملين"
+ },
+ {
+  "posting_id": 70,
+  "skill_id": 71,
+  "importance": "preferred",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "المؤهلات المفضله: خبره في ادوات التسويق مثل google analytics، hotjar، او semrush"
  },
  {
   "posting_id": 71,
@@ -2176,6 +2200,14 @@
   "source_span": "اجراء ابحاث السوق لتحديد الاتجاهات والفرص"
  },
  {
+  "posting_id": 71,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "اجاده ادوات التسويق الرقمي (google analytics، semrush، hootsuite، الخ"
+ },
+ {
   "posting_id": 72,
   "skill_id": 17,
   "importance": "required",
@@ -2262,6 +2294,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "اجراء ابحاث السوق لتحديد الاتجاهات والفرص"
+ },
+ {
+  "posting_id": 72,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "اتقان ادوات التسويق الرقمي (google analytics، semrush، hootsuite، الخ)"
  },
  {
   "posting_id": 73,
@@ -2406,6 +2446,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "مطلوب اخصائي تسويق الكتروني ذو خبره في اداره الحملات التسويقيه عبر منصات التواصل الاجتماعي وتحسين محركات البحث (seo) للعمل في شركه متعدده الانشطه"
+ },
+ {
+  "posting_id": 74,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "نبحث عن شخص يمتلك مهارات تحليليه قويه ويجيد استخدام ادوات التحليل الرقمي مثل google analytics"
  },
  {
   "posting_id": 75,
@@ -3014,6 +3062,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "تحسين محركات البحث (seo) وزياده ظهور العلامه التجاريه رقميا"
+ },
+ {
+  "posting_id": 85,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "المام بادوات التحليل والاعلانات الرقميه (google ads – facebook ads manager – google analytics)"
  },
  {
   "posting_id": 86,
@@ -3861,7 +3917,7 @@
   "importance": "required",
   "extraction_method": "keyword",
   "confidence": 0.7,
-  "source_span": "في هذا الدور، ستلعب دورا حيويا في تحسين حملات علامتنا التجاريه لزياده معدلات التحويل والاداء العام للاعمال من خلال تحليل البيانات"
+  "source_span": "قياس مؤشرات الاداء الرئيسيه، بما في ذلك حركه مرور الموقع، وتفاعل الجمهور، وحصص الخدمه، ومعدل الارتداد، والعائد علي الاستثمار في الانفاق الاعلاني"
  },
  {
   "posting_id": 102,
@@ -3878,6 +3934,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "المهام والمسؤوليات الاساسيه: بناء وصيانه وجود العلامه التجاريه عبر قنوات التواصل الاجتماعي المتعدده، لضمان نمو مشاهده المستهلكين"
+ },
+ {
+  "posting_id": 102,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "في هذا الدور، ستلعب دورا حيويا في تحسين حملات علامتنا التجاريه لزياده معدلات التحويل والاداء العام للاعمال من خلال تحليل البيانات"
  },
  {
   "posting_id": 103,
@@ -4041,14 +4105,6 @@
  },
  {
   "posting_id": 104,
-  "skill_id": 45,
-  "importance": "required",
-  "extraction_method": "keyword",
-  "confidence": 0.7,
-  "source_span": "تحليل البيانات الماليه وتحديد الاتجاهات او التباينات"
- },
- {
-  "posting_id": 104,
   "skill_id": 52,
   "importance": "required",
   "extraction_method": "keyword",
@@ -4094,6 +4150,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "يجب ان يكون لدي المرشح المثالي درجه البكالوريوس في المحاسبه او الماليه، بالاضافه الي 35 سنوات من الخبره في المحاسبه العامه واجاده البرامج المحاسبيه"
+ },
+ {
+  "posting_id": 104,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تحليل البيانات الماليه وتحديد الاتجاهات او التباينات"
  },
  {
   "posting_id": 107,
@@ -4686,6 +4750,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "الوصف: حالما تتولي هذا الدور، ستكون مسؤولا عن الاشراف والاداره العامه للانشطه الماليه والمحاسبيه في المؤسسه، بما في ذلك الميزانيات والتنبؤات الماليه"
+ },
+ {
+  "posting_id": 123,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "المهام الرئيسيه: توفير المعلومات الماليه وتحليل بياناتها"
  },
  {
   "posting_id": 124,
@@ -5553,14 +5625,6 @@
  },
  {
   "posting_id": 133,
-  "skill_id": 45,
-  "importance": "required",
-  "extraction_method": "keyword",
-  "confidence": 0.7,
-  "source_span": "تحليل البيانات الماليه لتحديد الاتجاهات، والاختلافات، والفرص للتحسين"
- },
- {
-  "posting_id": 133,
   "skill_id": 53,
   "importance": "required",
   "extraction_method": "keyword",
@@ -5582,6 +5646,14 @@
   "extraction_method": "keyword",
   "confidence": 0.7,
   "source_span": "مراقبه انشطه التدفق النقدي اليوميه والمساعده في اعداد تقارير السيوله"
+ },
+ {
+  "posting_id": 133,
+  "skill_id": 71,
+  "importance": "required",
+  "extraction_method": "keyword",
+  "confidence": 0.7,
+  "source_span": "تحليل البيانات الماليه لتحديد الاتجاهات، والاختلافات، والفرص للتحسين"
  },
  {
   "posting_id": 134,

@@ -83,5 +83,9 @@ def test_match_title_accepts_feminine_form_and_spelling_variants():
 
 
 def test_match_title_unknown_is_404():
-    response = client.get("/api/career/titles/match", params={"job_title": "محللة بيانات"})
+    response = client.get("/api/career/titles/match", params={"job_title": "مسؤول سلامة"})
     assert response.status_code == 404
+
+
+def test_feminine_senior_matches_the_masculine_title_words():
+    assert service._title_words("محللة بيانات أولى") == service._title_words("محلل بيانات أول")

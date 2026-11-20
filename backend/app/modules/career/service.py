@@ -45,9 +45,13 @@ def list_titles(repo: CareerRepository) -> list[JobTitle]:
     ]
 
 
+FEMININE_WORDS = {"اولي": "اول"}  # «أولى» after normalization
+
+
 def _title_words(name: str) -> list[str]:
-    # The feminine form («محاسبة») names the same job as the masculine title («محاسب»).
-    return [w.removesuffix("ه") for w in normalize_arabic(name).split()]
+    # The feminine form («محاسبة», «أولى») names the same job as the masculine title.
+    words = normalize_arabic(name).split()
+    return [FEMININE_WORDS.get(w, w.removesuffix("ه")) for w in words]
 
 
 def match_title(repo: CareerRepository, job_title: str) -> JobTitle:

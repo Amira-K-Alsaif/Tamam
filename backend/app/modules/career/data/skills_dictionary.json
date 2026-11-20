@@ -744,11 +744,9 @@
    "skill_type": "skill",
    "aliases": [
     "google analytics",
-    "analytics",
     "roi",
     "conversion",
     "ادوات التحليل",
-    "تحليل البيانات",
     "العائد على الاستثمار",
     "مقاييس الاداء",
     "تحليل الحملات"
@@ -1161,6 +1159,115 @@
     "رخصة قيادة",
     "رخصة سارية",
     "رخصه قياده"
+   ]
+  },
+  {
+   "key": "data_analysis",
+   "label_ar": "تحليل البيانات",
+   "label_en": "data analysis",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "data analysis",
+    "analyzing data",
+    "analyse data",
+    "analyze data",
+    "data analytics",
+    "analytics",
+    "تحليل البيانات",
+    "تحليل بيانات"
+   ]
+  },
+  {
+   "key": "bi_dashboards",
+   "label_ar": "لوحات المؤشرات وأدوات ذكاء الأعمال",
+   "label_en": "BI dashboards (Power BI, Tableau)",
+   "category": "tool",
+   "skill_type": "tool",
+   "aliases": [
+    "power bi",
+    "powerbi",
+    "tableau",
+    "qlik",
+    "looker",
+    "dashboard",
+    "dashboards",
+    "business intelligence",
+    "لوحات المعلومات",
+    "لوحات المؤشرات",
+    "لوحة المؤشرات",
+    "ذكاء الاعمال",
+    "باور بي اي"
+   ]
+  },
+  {
+   "key": "statistics",
+   "label_ar": "الإحصاء",
+   "label_en": "statistics",
+   "category": "technical",
+   "skill_type": "knowledge",
+   "aliases": [
+    "statistics",
+    "statistical",
+    "quantitative analysis",
+    "الاحصاء",
+    "احصاء",
+    "احصائي",
+    "احصائية",
+    "التحليل الكمي"
+   ]
+  },
+  {
+   "key": "data_quality",
+   "label_ar": "جودة البيانات وتنظيفها",
+   "label_en": "data cleaning and quality",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "data cleaning",
+    "cleaning",
+    "data quality",
+    "data integrity",
+    "data validation",
+    "تنظيف البيانات",
+    "جودة البيانات",
+    "التحقق من البيانات",
+    "سلامة البيانات"
+   ]
+  },
+  {
+   "key": "etl",
+   "label_ar": "تكامل البيانات و ETL",
+   "label_en": "data integration (ETL)",
+   "category": "technical",
+   "skill_type": "skill",
+   "aliases": [
+    "etl",
+    "ssis",
+    "informatica",
+    "data pipeline",
+    "data pipelines",
+    "data integration",
+    "data warehouse",
+    "تكامل البيانات",
+    "مستودع البيانات"
+   ]
+  },
+  {
+   "key": "machine_learning",
+   "label_ar": "تعلّم الآلة",
+   "label_en": "machine learning",
+   "category": "technical",
+   "skill_type": "knowledge",
+   "aliases": [
+    "machine learning",
+    "predictive model",
+    "predictive modeling",
+    "تعلم الآلة",
+    "تعلم الاله",
+    "التعلم الآلي",
+    "التعلم الالي",
+    "النمذجة التنبؤية"
    ]
   }
  ]

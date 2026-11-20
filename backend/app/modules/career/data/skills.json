@@ -628,5 +628,59 @@
   "label_en": "driving licence",
   "skill_type": "knowledge",
   "category": "domain"
+ },
+ {
+  "id": 71,
+  "key": "data_analysis",
+  "esco_id": null,
+  "label_ar": "تحليل البيانات",
+  "label_en": "data analysis",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 72,
+  "key": "bi_dashboards",
+  "esco_id": null,
+  "label_ar": "لوحات المؤشرات وأدوات ذكاء الأعمال",
+  "label_en": "BI dashboards (Power BI, Tableau)",
+  "skill_type": "tool",
+  "category": "tool"
+ },
+ {
+  "id": 73,
+  "key": "statistics",
+  "esco_id": null,
+  "label_ar": "الإحصاء",
+  "label_en": "statistics",
+  "skill_type": "knowledge",
+  "category": "technical"
+ },
+ {
+  "id": 74,
+  "key": "data_quality",
+  "esco_id": null,
+  "label_ar": "جودة البيانات وتنظيفها",
+  "label_en": "data cleaning and quality",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 75,
+  "key": "etl",
+  "esco_id": null,
+  "label_ar": "تكامل البيانات و ETL",
+  "label_en": "data integration (ETL)",
+  "skill_type": "skill",
+  "category": "technical"
+ },
+ {
+  "id": 76,
+  "key": "machine_learning",
+  "esco_id": null,
+  "label_ar": "تعلّم الآلة",
+  "label_en": "machine learning",
+  "skill_type": "knowledge",
+  "category": "technical"
  }
 ]

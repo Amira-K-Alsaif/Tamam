@@ -40,3 +40,11 @@ def test_driving_licence_is_not_leadership():
 def test_source_span_keeps_the_matching_sentence():
     found = keys("المهام: إعداد التسويات البنكية. دوام مرن")
     assert "التسويات" in found["reconciliation"].source_span
+
+
+def test_data_analyst_skills():
+    found = keys("Build Power BI dashboards, write SQL, data cleaning and تحليل البيانات الإحصائي")
+    assert {"bi_dashboards", "databases", "data_quality", "data_analysis", "statistics"} <= set(
+        found
+    )
+    assert "marketing_analytics" not in found
