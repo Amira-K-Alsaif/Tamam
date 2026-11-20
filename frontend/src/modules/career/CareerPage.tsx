@@ -1,14 +1,22 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
 import { PageHeader } from '../../components/PageHeader'
 import { ProgressBar } from '../../components/ProgressBar'
 import { StatusBadge, type Status } from '../../components/StatusBadge'
-import { getGapAnalysis, getTitles, type GapAnalysis, type GapSkill, type JobTitle } from './api'
+import { ApiError, getMe } from '../../lib/api'
+import { getGapAnalysis, getTitles, matchTitle, type GapAnalysis, type GapSkill, type JobTitle } from './api'
 import { GapRadar } from './GapRadar'
 
 const percent = new Intl.NumberFormat('ar-SA', { style: 'percent', maximumFractionDigits: 0 })
 const PRIORITY = { high: 'أولوية عالية', medium: 'أولوية متوسطة', low: 'أولوية منخفضة' } as const
+
+// Where the current title came from: the employee's profile, or nothing to prefill.
+type ProfileTitle =
+  | { state: 'loading' }
+  | { state: 'matched'; jobTitle: string }
+  | { state: 'unmatched'; jobTitle: string }
+  | { state: 'error' }
 
 type Load<T> = { state: 'idle' } | { state: 'loading' } | { state: 'error' } | { state: 'done'; data: T }
 
@@ -20,6 +28,8 @@ export default function CareerPage() {
   const [currentId, setCurrentId] = useState<number | null>(null)
   const [targetId, setTargetId] = useState<number | null>(null)
   const [result, setResult] = useState<Load<GapAnalysis>>({ state: 'idle' })
+  const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
+  const userChose = useRef(false)
 
   useEffect(() => {
     getTitles()
@@ -27,12 +37,39 @@ export default function CareerPage() {
       .catch(() => setTitles({ state: 'error' }))
   }, [])
 
+  useEffect(() => {
+    if (titles.state !== 'done') return
+    let cancelled = false
+    getMe()
+      .then(async (me) => {
+        try {
+          const match = await matchTitle(me.job_title)
+          if (cancelled) return
+          if (!userChose.current) {
+            setCurrentId(match.id)
+            setTargetId(match.next_title_id)
+          }
+          setProfileTitle({ state: 'matched', jobTitle: me.job_title })
+        } catch (err) {
+          if (!(err instanceof ApiError && err.status === 404)) throw err
+          if (!cancelled) setProfileTitle({ state: 'unmatched', jobTitle: me.job_title })
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setProfileTitle({ state: 'error' })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [titles.state])
+
   const byId = useMemo(
     () => new Map(titles.state === 'done' ? titles.data.map((t) => [t.id, t]) : []),
     [titles],
   )
 
   function chooseCurrent(id: number) {
+    userChose.current = true
     setCurrentId(id)
     setTargetId(byId.get(id)?.next_title_id ?? null)
     setResult({ state: 'idle' })
@@ -62,6 +99,7 @@ export default function CareerPage() {
 
       {titles.state === 'done' && (
         <Card>
+          <ProfileTitleNote profileTitle={profileTitle} />
           <div className="grid items-end gap-4 sm:grid-cols-3">
             <label className="flex flex-col gap-2 text-sm text-muted">
               المنصب الحالي
@@ -121,6 +159,17 @@ export default function CareerPage() {
       {result.state === 'done' && <GapResult result={result.data} titles={byId} />}
     </>
   )
+}
+
+function ProfileTitleNote({ profileTitle }: { profileTitle: ProfileTitle }) {
+  if (profileTitle.state === 'loading') return null
+  const text =
+    profileTitle.state === 'matched'
+      ? `اخترنا منصبك الحالي من ملفك: «${profileTitle.jobTitle}». تقدرين تغيّرينه.`
+      : profileTitle.state === 'unmatched'
+        ? `منصبك في ملفك «${profileTitle.jobTitle}» ما عندنا له إعلانات وظائف للحين، اختاري أقرب منصب له.`
+        : 'ما قدرنا نقرأ ملفك، اختاري منصبك الحالي بنفسك.'
+  return <p className="m-0 text-sm text-muted">{text}</p>
 }
 
 function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number, JobTitle> }) {

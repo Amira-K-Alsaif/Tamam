@@ -10,7 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal
 
-from .text_ar import has_arabic, normalize
+from app.ai.arabic import normalize_arabic as normalize
+
+from .text_ar import has_arabic
 
 DATA_DIR = Path(__file__).parent / "data"
 

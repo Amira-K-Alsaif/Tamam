@@ -48,3 +48,8 @@ export function getGapAnalysis(currentTitleId: number, targetTitleId: number): P
   })
   return apiGet<GapAnalysis>(`/api/career/gap-analysis?${query}`)
 }
+
+// The career title that matches an employee profile's job_title; rejects with a 404 ApiError when none does.
+export function matchTitle(jobTitle: string): Promise<JobTitle> {
+  return apiGet<JobTitle>(`/api/career/titles/match?${new URLSearchParams({ job_title: jobTitle })}`)
+}
