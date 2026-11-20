@@ -1,7 +1,7 @@
 import pytest
 
 from app.ai import llm
-from app.ai.llm import LLMUnavailableError
+from app.ai.llm import LLMQuotaExceededError, LLMUnavailableError
 from app.modules.career import compare, extraction
 from app.modules.career.extraction import (
     ExtractedSkill,
@@ -180,4 +180,48 @@ def test_provider_errors_become_llm_unavailable(monkeypatch):
 
     monkeypatch.setattr(llm, "_client", lambda: Client())
     with pytest.raises(LLMUnavailableError):
+        llm.generate("system", "user")
+
+
+class QuotaModel:
+    """Answers `allowed` postings, then refuses every call as over quota."""
+
+    def __init__(self, allowed: int):
+        self.allowed, self.calls = allowed, 0
+
+    def extract(self, text):
+        self.calls += 1
+        if self.calls > self.allowed:
+            raise LLMQuotaExceededError("429 RESOURCE_EXHAUSTED")
+        return [ExtractedSkill("databases", "required", "llm", 0.9, "sql")]
+
+
+def test_quota_stops_model_calls_and_reports_what_is_cached(monkeypatch):
+    monkeypatch.setattr(compare, "RETRY_DELAY_SECONDS", 0)
+    postings = [_posting(f"P-{i}", "SQL") for i in range(5)]
+    model, cache = QuotaModel(allowed=2), {"P-4": ["databases"]}
+    result = compare.compare(postings, EXTRACTOR, model, cache)
+    assert model.calls == 3  # two answers, then one refused call and no more
+    assert set(cache) == {"P-0", "P-1", "P-4"}
+    assert result.quota_hit and result.postings == 3 and result.not_asked == 2
+    assert result.failed == []
+    assert "خلصت حصة" in compare.render(result, {})
+
+
+def test_cached_only_never_calls_the_model():
+    postings = [_posting("P-1", "SQL"), _posting("P-2", "SQL")]
+    result = compare.compare(postings, EXTRACTOR, None, {"P-1": ["databases"]})
+    assert result.postings == 1 and result.not_asked == 1 and not result.quota_hit
+    assert "الإجابات المحفوظة" in compare.render(result, {})
+
+
+def test_rate_limit_becomes_quota_exceeded(monkeypatch):
+    from langchain_core.exceptions import ModelRateLimitError
+
+    class Client:
+        def invoke(self, messages):
+            raise ModelRateLimitError("429 RESOURCE_EXHAUSTED")
+
+    monkeypatch.setattr(llm, "_client", lambda: Client())
+    with pytest.raises(LLMQuotaExceededError):
         llm.generate("system", "user")

@@ -10,7 +10,11 @@ class LLMNotConfiguredError(RuntimeError):
 
 
 class LLMUnavailableError(RuntimeError):
-    """Raised when the model call fails after the client's own retries (timeout, 5xx, quota)."""
+    """Raised when the model call fails after the client's own retries (timeout, 5xx)."""
+
+
+class LLMQuotaExceededError(LLMUnavailableError):
+    """Raised when the provider refuses for rate or quota limits; retrying soon will not help."""
 
 
 @lru_cache
@@ -31,10 +35,17 @@ def _client():
 
 def generate(system: str, user: str) -> str:
     """Sends the instructions and the user message, and returns the model's reply text."""
-    from langchain_core.exceptions import ModelAPIError
+    from langchain_core.exceptions import (
+        ModelAPIError,
+        ModelConnectionError,
+        ModelRateLimitError,
+        ModelTimeoutError,
+    )
 
     try:
         response = _client().invoke([("system", system), ("human", user)])
-    except ModelAPIError as error:
+    except ModelRateLimitError as error:
+        raise LLMQuotaExceededError(str(error)) from error
+    except (ModelAPIError, ModelConnectionError, ModelTimeoutError) as error:
         raise LLMUnavailableError(str(error)) from error
     return response.text
