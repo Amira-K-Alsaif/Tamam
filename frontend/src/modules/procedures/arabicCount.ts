@@ -11,3 +11,4 @@ export function arabicCount(n: number, forms: Forms): string {
 export const STEPS: Forms = { one: 'خطوة واحدة', two: 'خطوتان', few: 'خطوات', many: 'خطوة' }
 export const FORMS: Forms = { one: 'نموذج واحد', two: 'نموذجان', few: 'نماذج', many: 'نموذجًا' }
 export const PROCEDURES: Forms = { one: 'إجراء واحد', two: 'إجراءان', few: 'إجراءات', many: 'إجراءً' }
+export const FIELDS: Forms = { one: 'حقل واحد', two: 'حقلان', few: 'حقول', many: 'حقلًا' }
