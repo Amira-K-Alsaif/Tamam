@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
+from app.ai.arabic import normalize_arabic
 from app.modules.knowledge.cli import DEFAULT_MANIFEST, prepare_corpus
-from app.modules.knowledge.normalization import normalize_arabic
 from app.modules.knowledge.schemas import Document
 from app.modules.knowledge.service import (
     build_chunks,
