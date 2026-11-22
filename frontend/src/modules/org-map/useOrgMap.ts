@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router'
 import {
   getDepartment,
   getOverview,
@@ -46,13 +47,18 @@ const overviewKey = 'overview'
 export function useOrgMap() {
   const [attempt, setAttempt] = useState(0)
   const overview = useLoad<OrgOverview>(overviewKey, getOverview, attempt)
-  // Until the viewer picks something, show their own department and manager.
+  // Other modules link `?person=<employee id>` (e.g. «أشخاص تقابلهم» in onboarding).
+  const [params] = useSearchParams()
+  const linkedPerson = params.get('person')
+  // Until the viewer picks something, show the linked person, or their own manager.
   const [chosenDepartment, setDepartmentId] = useState<string | null>(null)
   const [chosenPerson, setPersonId] = useState<string | null>(null)
-  const departmentId = chosenDepartment ?? overview.data?.my_department_id ?? null
-  const personId = chosenPerson ?? overview.data?.my_manager_id ?? null
-  const department = useLoad<DepartmentDetail>(departmentId, getDepartment, attempt)
+  const personId = chosenPerson ?? linkedPerson ?? overview.data?.my_manager_id ?? null
   const person = useLoad<PersonDetail>(personId, getPerson, attempt)
+  // A linked person opens in their own department once their card has loaded.
+  const linkedDepartment = linkedPerson && person.data?.id === linkedPerson ? person.data.department_id : null
+  const departmentId = chosenDepartment ?? linkedDepartment ?? overview.data?.my_department_id ?? null
+  const department = useLoad<DepartmentDetail>(departmentId, getDepartment, attempt)
 
   const [search, setSearch] = useState<Load<SearchResponse>>(IDLE)
 

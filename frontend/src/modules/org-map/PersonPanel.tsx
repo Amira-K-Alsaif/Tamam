@@ -91,7 +91,7 @@ export function PersonPanel({ person, loading, error }: PersonPanelProps) {
             {person.procedures.map((procedure) => (
               <li key={procedure.id}>
                 <Link
-                  to="/procedures"
+                  to={`/procedures?id=${encodeURIComponent(procedure.id)}`}
                   className="flex items-center justify-between gap-3 rounded-xl bg-sunken px-4 py-3 text-sm text-ink no-underline hover:bg-raised"
                 >
                   {procedure.title}

@@ -65,7 +65,7 @@ function detail(person: PersonSummary, extra: Partial<PersonDetail> = {}): Perso
 const PEOPLE: Record<string, PersonDetail> = {
   'emp-201': detail(reem, {
     contact_topics: ['اعتماد الإجازات', 'موافقة الصلاحيات'],
-    procedures: [{ id: 'warehouse', title: 'صلاحية بيانات المستودع' }],
+    procedures: [{ id: 'proc-warehouse', title: 'صلاحية بيانات المستودع' }],
   }),
   'emp-202': detail(fahad, { contact_topics: ['حوكمة البيانات'] }),
 }
@@ -94,9 +94,9 @@ function backend({ overviewStatus = 200 } = {}) {
   )
 }
 
-function renderPage() {
+function renderPage(path = '/org-map') {
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[path]}>
       <OrgMapPage />
     </MemoryRouter>,
   )
@@ -118,7 +118,10 @@ describe('OrgMapPage', () => {
     expect(await within(panel).findByText('مديرتك المباشرة')).toBeInTheDocument()
     expect(within(panel).getByText('كلّميها عن')).toBeInTheDocument()
     expect(within(panel).getByText('موافقة الصلاحيات')).toBeInTheDocument()
-    expect(within(panel).getByRole('link', { name: 'صلاحية بيانات المستودع' })).toBeInTheDocument()
+    expect(within(panel).getByRole('link', { name: 'صلاحية بيانات المستودع' })).toHaveAttribute(
+      'href',
+      '/procedures?id=proc-warehouse',
+    )
   })
 
   it('marks the viewer and filters members by team', async () => {
@@ -147,6 +150,15 @@ describe('OrgMapPage', () => {
 
     const panel = screen.getByRole('complementary', { name: 'بطاقة الشخص' })
     expect(await within(panel).findByText('كلّميه عن')).toBeInTheDocument()
+  })
+
+  it('opens a person linked from another module', async () => {
+    backend()
+    renderPage('/org-map?person=emp-202')
+
+    const panel = await screen.findByRole('complementary', { name: 'بطاقة الشخص' })
+    expect(await within(panel).findByText('كلّميه عن')).toBeInTheDocument()
+    expect(within(panel).getByText('حوكمة البيانات')).toBeInTheDocument()
   })
 
   it('tells the user what to do when the backend fails', async () => {

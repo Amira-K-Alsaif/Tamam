@@ -10,13 +10,13 @@ def test_overview():
 
     assert response.status_code == 200
     body = response.json()
-    assert body["my_department_id"] == "analytics"
+    assert body["my_department_id"] == "dep-data"
     assert len(body["departments"]) == 5
 
 
 def test_department_and_person():
-    department = client.get("/api/org-map/departments/analytics")
-    person = client.get("/api/org-map/people/emp-203")
+    department = client.get("/api/org-map/departments/dep-data")
+    person = client.get("/api/org-map/people/emp-003")
 
     assert department.status_code == 200
     assert len(department.json()["members"]) == 6
