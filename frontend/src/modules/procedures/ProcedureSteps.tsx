@@ -20,7 +20,7 @@ const MARKER: Record<StepState, string> = {
   upcoming: 'border-2 border-faint/60 bg-night',
 }
 
-/** The procedure as a stepper: tick each step, and the next unticked one becomes the current step. */
+/** The procedure as a stepper: finish the current step, and the next one becomes current. */
 export function ProcedureSteps({ procedureId, steps }: { procedureId: string; steps: ProcedureStep[] }) {
   const ordered = [...steps].sort((a, b) => a.order - b.order)
   const checklist = useChecklist(`${procedureId}.steps`)
@@ -59,7 +59,6 @@ export function ProcedureSteps({ procedureId, steps }: { procedureId: string; st
         {ordered.map((step, index) => {
           const state = stateOf(step)
           const last = index === ordered.length - 1
-          const checkboxId = `${procedureId}-step-${step.order}`
           return (
             <li key={step.order} aria-current={state === 'current' ? 'step' : undefined} className="flex gap-4">
               <div className="flex flex-col items-center pt-2">
@@ -84,23 +83,13 @@ export function ProcedureSteps({ procedureId, steps }: { procedureId: string; st
                 </div>
                 <p className={`m-0 text-sm ${state === 'done' ? 'text-faint' : 'text-soft'}`}>{step.detail}</p>
 
-                <div className="flex flex-wrap items-center gap-3 pt-1">
-                  <label htmlFor={checkboxId} className="inline-flex cursor-pointer items-center gap-2 text-sm text-muted">
-                    <input
-                      id={checkboxId}
-                      type="checkbox"
-                      checked={state === 'done'}
-                      onChange={() => checklist.toggle(key(step))}
-                      className="size-4 cursor-pointer accent-mint"
-                    />
-                    تمّت الخطوة {step.order}
-                  </label>
-                  {state === 'current' && (
+                {state === 'current' && (
+                  <div className="pt-1">
                     <Button className="h-9 px-4" onClick={() => checklist.check(key(step))}>
                       {last ? 'تمّت، آخر خطوة' : 'تمّت، التالي'}
                     </Button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </li>
           )

@@ -163,7 +163,9 @@ describe('ProceduresPage detail', () => {
 
     const steps = within(screen.getByRole('list', { name: 'خطوات الإجراء' })).getAllByRole('listitem')
     expect(steps[1]).toHaveAttribute('aria-current', 'step')
-    expect(screen.getByLabelText('تمّت الخطوة 1')).toBeChecked()
+    expect(within(steps[0]).getByText('مكتملة')).toBeInTheDocument()
+    // One way to finish a step: the button. No checkbox repeats it.
+    expect(within(steps[0]).queryByRole('checkbox')).not.toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'أنجزتِ 1 من 2 خطوات' })).toHaveAttribute('aria-valuenow', '50')
 
     await userEvent.click(screen.getByRole('button', { name: 'تمّت، آخر خطوة' }))
