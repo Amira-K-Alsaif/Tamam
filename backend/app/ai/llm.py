@@ -1,4 +1,8 @@
-"""Calls the language model. The only place that talks to Gemini."""
+"""Calls the language model. The only place that talks to it.
+
+Gemini is reached through OpenRouter, which takes prepaid credit by card. Google Cloud
+billing in Saudi Arabia goes through a reseller contract, which a student project cannot get.
+"""
 
 import logging
 from functools import lru_cache
@@ -7,9 +11,11 @@ from app.config import get_settings
 
 logger = logging.getLogger(__name__)
 
+OPENROUTER_URL = "https://openrouter.ai/api/v1"
+
 
 class LLMNotConfiguredError(RuntimeError):
-    """Raised when TAMAM_GOOGLE_API_KEY is missing."""
+    """Raised when TAMAM_OPENROUTER_API_KEY is missing or rejected."""
 
 
 class LLMUnavailableError(RuntimeError):
@@ -17,23 +23,27 @@ class LLMUnavailableError(RuntimeError):
 
 
 class LLMQuotaExceededError(LLMUnavailableError):
-    """Raised when the provider refuses for rate or quota limits; retrying soon will not help."""
+    """Raised when the provider refuses for rate or credit limits; retrying soon will not help."""
 
 
 @lru_cache
 def _client(model: str):
-    from langchain_google_genai import ChatGoogleGenerativeAI
+    from langchain_openai import ChatOpenAI
 
     settings = get_settings()
-    if not settings.google_api_key:
-        raise LLMNotConfiguredError("Set TAMAM_GOOGLE_API_KEY in backend/.env")
-    return ChatGoogleGenerativeAI(
+    if not settings.openrouter_api_key:
+        raise LLMNotConfiguredError("Set TAMAM_OPENROUTER_API_KEY in backend/.env")
+    return ChatOpenAI(
         model=model,
-        google_api_key=settings.google_api_key,
+        api_key=settings.openrouter_api_key,
+        base_url=OPENROUTER_URL,
         temperature=0,  # Policy answers should be repeatable, not creative.
-        # Answering from given sources needs no extended reasoning. Turning it off cut the
-        # average answer time from about 24 s to 8 s with the same answers.
-        thinking_budget=0,
+        # Answering from given sources needs no extended reasoning. These models refuse to
+        # turn it off; "minimal" gave the same answers in about 3 s with no reasoning tokens.
+        extra_body={"reasoning": {"effort": "minimal"}},
+        # Without a cap OpenRouter reserves credit for the model's 65k-token maximum.
+        # The longest output, a procedure or a quiz as JSON, fits well within this.
+        max_tokens=8192,
         timeout=30,
         # A model with a fallback after it gets one try, so a busy model hands over quickly
         # and the worst-case wait stays what it was without a fallback.
@@ -53,6 +63,7 @@ def _models() -> list[str]:
 def _generate_with(model: str, system: str, user: str) -> str:
     from langchain_core.exceptions import (
         ModelAPIError,
+        ModelAuthenticationError,
         ModelConnectionError,
         ModelRateLimitError,
         ModelTimeoutError,
@@ -60,6 +71,8 @@ def _generate_with(model: str, system: str, user: str) -> str:
 
     try:
         response = _client(model).invoke([("system", system), ("human", user)])
+    except ModelAuthenticationError as error:
+        raise LLMNotConfiguredError("TAMAM_OPENROUTER_API_KEY was rejected") from error
     except ModelRateLimitError as error:
         raise LLMQuotaExceededError(str(error)) from error
     except (ModelAPIError, ModelConnectionError, ModelTimeoutError) as error:
@@ -70,8 +83,8 @@ def _generate_with(model: str, system: str, user: str) -> str:
 def generate(system: str, user: str) -> str:
     """Sends the instructions and the user message, and returns the model's reply text.
 
-    Gemini sometimes refuses a model for a while ("high demand", or its daily quota), so
-    when the main model fails the same request goes to the fallback model.
+    A model is sometimes refused for a while (high demand, or a rate limit), so when the
+    main model fails the same request goes to the fallback model.
     """
     models = _models()
     for model in models[:-1]:

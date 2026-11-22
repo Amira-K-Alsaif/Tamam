@@ -1,5 +1,9 @@
 import pytest
-from langchain_core.exceptions import ModelAPIError, ModelRateLimitError
+from langchain_core.exceptions import (
+    ModelAPIError,
+    ModelAuthenticationError,
+    ModelRateLimitError,
+)
 
 from app.ai import llm
 from app.config import get_settings
@@ -83,7 +87,7 @@ def test_the_main_model_retries_only_when_nothing_comes_after_it(
 ):
     monkeypatch.setattr(get_settings(), "llm_model", "main-model")
     monkeypatch.setattr(get_settings(), "llm_fallback_model", fallback)
-    monkeypatch.setattr(get_settings(), "google_api_key", "test-key")
+    monkeypatch.setattr(get_settings(), "openrouter_api_key", "test-key")
     llm._client.cache_clear()
 
     assert llm._client("main-model").max_retries == main_retries
@@ -98,3 +102,31 @@ def test_an_empty_fallback_asks_only_the_main_model(monkeypatch):
     with pytest.raises(llm.LLMUnavailableError):
         llm.generate("system", "question")
     assert asked == ["main-model"]
+
+
+def test_a_rejected_key_means_the_service_is_not_set_up(monkeypatch):
+    use_models(monkeypatch, {"main-model": Fails(ModelAuthenticationError("401 invalid key"))}, "")
+
+    with pytest.raises(llm.LLMNotConfiguredError):
+        llm.generate("system", "question")
+
+
+def test_a_missing_key_means_the_service_is_not_set_up(monkeypatch):
+    monkeypatch.setattr(get_settings(), "openrouter_api_key", "")
+    llm._client.cache_clear()
+
+    with pytest.raises(llm.LLMNotConfiguredError):
+        llm._client("main-model")
+
+
+def test_the_client_talks_to_openrouter_with_minimal_reasoning(monkeypatch):
+    monkeypatch.setattr(get_settings(), "openrouter_api_key", "test-key")
+    llm._client.cache_clear()
+
+    client = llm._client("google/gemini-3.6-flash")
+
+    assert str(client.openai_api_base).rstrip("/") == llm.OPENROUTER_URL
+    assert client.model_name == "google/gemini-3.6-flash"
+    assert client.extra_body == {"reasoning": {"effort": "minimal"}}
+    assert client.max_tokens == 8192
+    llm._client.cache_clear()
