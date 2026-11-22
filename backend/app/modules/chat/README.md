@@ -64,7 +64,7 @@ without touching the modules.
 | `arabic.py` | `normalize_arabic()`: one normalization for documents and questions alike. |
 | `embeddings.py` | `embed_passages()` / `embed_query()` with `multilingual-e5-small`. |
 | `reranker.py` | `rerank()` with `bge-reranker-v2-m3`. |
-| `llm.py` | `generate()` with Gemini through LangChain. Turns a used-up quota into `LLMUnavailableError`. |
+| `llm.py` | `generate()` with Gemini through LangChain. Turns a used-up quota into `LLMQuotaExceededError` and other failures into `LLMUnavailableError`. |
 
 ### Frontend — `frontend/src/modules/chat/`
 

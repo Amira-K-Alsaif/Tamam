@@ -56,6 +56,9 @@ that uses the contract.
     id, full_name, department_id, team, job_title, manager_id, years_of_experience,
     role (employee | admin)
 
+`GET /api/onboarding/me` also returns `manager_name`: the manager's `full_name`, or null
+for the CEO. Added for module 3's «عبّي النموذج عني» (agreed by 5).
+
 ### Department (owner: 4, used by 4, 5)
 
     id, name, head_id, parent_id, teams[]

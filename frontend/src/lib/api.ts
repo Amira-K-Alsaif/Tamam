@@ -52,18 +52,88 @@ export type RoadmapItem = {
   approver_role: string | null
   expected_days: number | null
   employee_id: string | null
+  topic: string | null
+  document_id: string | null
 }
 
 export type RoadmapWeek = { week: number; items: RoadmapItem[] }
 
 export type Roadmap = { employee_id: string; weeks: RoadmapWeek[] }
 
-export function getMe(): Promise<EmployeeProfile> {
-  return apiGet<EmployeeProfile>('/api/onboarding/me')
+// What /api/onboarding/me returns: the profile plus the manager's name (null only for the CEO).
+export type CurrentEmployee = EmployeeProfile & { manager_name: string | null }
+
+// Demo only, until auth exists: view the onboarding pages as one of getDemoEmployees().
+function asEmployee(employeeId?: string): string {
+  return employeeId ? `?employee_id=${encodeURIComponent(employeeId)}` : ''
 }
 
-export function getRoadmap(): Promise<Roadmap> {
-  return apiGet<Roadmap>('/api/onboarding/roadmap')
+export function getMe(employeeId?: string): Promise<CurrentEmployee> {
+  return apiGet<CurrentEmployee>(`/api/onboarding/me${asEmployee(employeeId)}`)
+}
+
+export function getRoadmap(employeeId?: string): Promise<Roadmap> {
+  return apiGet<Roadmap>(`/api/onboarding/roadmap${asEmployee(employeeId)}`)
+}
+
+export type Badge = { id: string; title: string; description: string; earned: boolean }
+
+export type Progress = {
+  employee_id: string
+  access_active: number
+  access_total: number
+  topics_passed: number
+  topics_total: number
+  percent: number
+  badges: Badge[]
+}
+
+export type TeamMember = { employee: EmployeeProfile; progress: Progress; next_step: string | null }
+
+export function getProgress(employeeId?: string): Promise<Progress> {
+  return apiGet<Progress>(`/api/onboarding/progress${asEmployee(employeeId)}`)
+}
+
+export function getTeam(employeeId?: string): Promise<TeamMember[]> {
+  return apiGet<TeamMember[]>(`/api/onboarding/team${asEmployee(employeeId)}`)
+}
+
+export function getDemoEmployees(): Promise<EmployeeProfile[]> {
+  return apiGet<EmployeeProfile[]>('/api/onboarding/demo-employees')
+}
+
+export type QuizQuestion = {
+  question: string
+  options: string[]
+  source: { document_id: string; document_title: string; section_title: string; quote: string }
+}
+
+export type Quiz = {
+  topic: string
+  document_id: string
+  document_title: string
+  questions: QuizQuestion[]
+}
+
+export type QuizResult = {
+  topic: string
+  score: number
+  passed: boolean
+  correct: boolean[]
+  correct_options: number[]
+}
+
+export function getLessonQuiz(documentId: string): Promise<Quiz> {
+  return apiGet<Quiz>(`/api/onboarding/lessons/${encodeURIComponent(documentId)}/quiz`)
+}
+
+export function answerLessonQuiz(
+  documentId: string,
+  answers: number[],
+  employeeId?: string,
+): Promise<QuizResult> {
+  const path = `/api/onboarding/lessons/${encodeURIComponent(documentId)}/attempt`
+  return apiPost<QuizResult>(`${path}${asEmployee(employeeId)}`, { answers })
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
