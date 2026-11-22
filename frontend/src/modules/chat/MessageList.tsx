@@ -1,4 +1,5 @@
 import { Card } from '../../components/Card'
+import { withoutCitationNumbers } from './citations'
 import type { Message } from './useChat'
 
 const SUGGESTIONS = ['كم يوم إجازتي في السنة؟', 'أبي أشتغل من البيت', 'كيف أطلب صلاحية نظام؟']
@@ -45,7 +46,7 @@ export function MessageList({ messages, loading, error, onSuggestion }: MessageL
                 message.reply.found ? '' : 'border border-dashed border-line-strong text-muted'
               }`}
             >
-              {message.reply.answer}
+              {withoutCitationNumbers(message.reply.answer)}
             </p>
           </div>
         ),

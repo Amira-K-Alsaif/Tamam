@@ -1,6 +1,6 @@
 import type { Source } from '../../lib/api'
 
-/** The sources of the latest answer, numbered to match its [1], [2] citations. */
+/** The sources of the latest answer. */
 export function SourcesPanel({ sources }: { sources: Source[] }) {
   return (
     <aside aria-label="مصادر الإجابة" className="side-column flex flex-col gap-3">
@@ -8,14 +8,12 @@ export function SourcesPanel({ sources }: { sources: Source[] }) {
       {sources.length === 0 ? (
         <p className="m-0 text-sm text-faint">بتظهر هنا مصادر آخر إجابة.</p>
       ) : (
-        sources.map((source, index) => (
+        sources.map((source) => (
           <article
             key={`${source.document_id}-${source.section_title}`}
             className="flex flex-col gap-2 rounded-2xl border border-line bg-surface p-4"
           >
-            <strong className="text-sm">
-              [{index + 1}] {source.document_title}
-            </strong>
+            <strong className="text-sm">{source.document_title}</strong>
             <span className="text-xs text-faint">
               {source.page === null ? '' : `صفحة ${source.page} · `}
               {source.section_title}

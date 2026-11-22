@@ -39,9 +39,10 @@ describe('ChatPage', () => {
 
     await ask('كم يوم إجازتي؟')
 
-    expect(await screen.findByText('إجازتك ٢١ يوماً [1].')).toBeInTheDocument()
+    expect(await screen.findByText('إجازتك ٢١ يوماً.')).toBeInTheDocument()
+    expect(screen.queryByText(/\[1\]/)).not.toBeInTheDocument()
     const sources = screen.getByRole('complementary', { name: 'مصادر الإجابة' })
-    expect(within(sources).getByText('[1] سياسة الإجازات')).toBeInTheDocument()
+    expect(within(sources).getByText('سياسة الإجازات')).toBeInTheDocument()
     expect(within(sources).getByText('صفحة 4 · الإجازة السنوية')).toBeInTheDocument()
   })
 
