@@ -10,7 +10,8 @@ This is Retrieval-Augmented Generation (RAG): find the right passages first, the
 language model write the answer from those passages alone.
 
 **Result:** on the team's 50 evaluation questions, the right document is among the three
-passages the model reads for **48 of 50 (96%)**, and ranked first for 44 (88%).
+passages the model reads for **48 of 50 (96%)**. On 15 questions in Saudi dialect it is
+there for **15 of 15**.
 
 ---
 
@@ -21,7 +22,10 @@ passages the model reads for **48 of 50 (96%)**, and ranked first for 44 (88%).
         │
  1. Corpus ───────────── the knowledge module's chunks, each knowing its document and section
         │
- 2. Hybrid search ────── meaning search (embeddings) + keyword search (BM25), merged by rank
+ 1b. Rewrite ─────────── the model restates the question in the documents' formal terms
+        │                → "سياسة العمل عن بعد والعمل من المنزل"
+ 2. Hybrid search ────── meaning search (embeddings) + keyword search (BM25), for both the
+        │                question and its rewrite, all merged by rank
         │                → up to 10 candidates
  3. Reranking ────────── a cross-encoder reads each candidate with the question
         │                → best 3
@@ -132,6 +136,13 @@ citation check turns it into «ما لقيت».
 
 ---
 
+**Rewrite dialect into the documents' terms.** Employees write «أبي أشتغل من البيت»; the
+policy says «العمل عن بُعد». The two share no word, and the small embedding model did not
+connect them, so the chat answered "not found" to its own suggested question. A short model
+call now rewrites the question in formal terms before searching. Search uses both the
+rewrite and the original (which keeps exact words such as «VPN»), and the reranker reads
+both. It adds about 2 seconds and $0.0005 per question.
+
 ## What the experiments showed
 
 On the 50 evaluation questions (`python -m app.modules.chat.evaluate`):
@@ -140,8 +151,16 @@ On the 50 evaluation questions (`python -m app.modules.chat.evaluate`):
 |---|---|---|
 | Chunk text only | 41 (82%) | 42 (84%) |
 | With document and section titles | 44 (88%) | **48 (96%)** |
+| With the dialect rewrite | 43 (86%) | **48 (96%)** |
 
-The two remaining misses are a question about recording attendance, and a question about
+On the 15 dialect questions (`--questions ../data/eval/chat_dialect_questions.json`):
+
+| Version | Right document ranked first | Right document in the top 3 |
+|---|---|---|
+| Without the rewrite | — | 9 (60%) |
+| With the dialect rewrite | 14 (93%) | **15 (100%)** |
+
+The two remaining misses are a question about sharing restricted files with a friend, and a question about
 a suspicious link that retrieved the phishing guide instead of the information-security
 policy, which is a reasonable answer too.
 

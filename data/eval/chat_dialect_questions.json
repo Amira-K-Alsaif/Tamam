@@ -1,0 +1,77 @@
+[
+  {
+    "id": "DQ-001",
+    "question": "أبي أشتغل من البيت",
+    "expected_document_id": "remote-work"
+  },
+  {
+    "id": "DQ-002",
+    "question": "ودي أداوم من بيتي كم يوم مسموح؟",
+    "expected_document_id": "remote-work"
+  },
+  {
+    "id": "DQ-003",
+    "question": "أبغى آخذ إجازة الأسبوع الجاي",
+    "expected_document_id": "annual-leave"
+  },
+  {
+    "id": "DQ-004",
+    "question": "صار عندي ظرف طارئ في أهلي وش أسوي؟",
+    "expected_document_id": "emergency-leave"
+  },
+  {
+    "id": "DQ-005",
+    "question": "تأخرت اليوم على الدوام وش يصير؟",
+    "expected_document_id": "attendance"
+  },
+  {
+    "id": "DQ-006",
+    "question": "ضاعت بطاقتي حقت الدخول",
+    "expected_document_id": "id-badge"
+  },
+  {
+    "id": "DQ-007",
+    "question": "جاني إيميل غريب يطلب الباسوورد حقي",
+    "expected_document_id": "phishing"
+  },
+  {
+    "id": "DQ-008",
+    "question": "ما أقدر أدخل على شبكة الشركة من برا",
+    "expected_document_id": "vpn"
+  },
+  {
+    "id": "DQ-009",
+    "question": "نسيت الباسورد",
+    "expected_document_id": "mfa-password"
+  },
+  {
+    "id": "DQ-010",
+    "question": "اللابتوب حقي خربان",
+    "expected_document_id": "devices"
+  },
+  {
+    "id": "DQ-011",
+    "question": "أبي أسافر للشغل كيف أطلب؟",
+    "expected_document_id": "business-travel"
+  },
+  {
+    "id": "DQ-012",
+    "question": "صرفت من جيبي على شغل الشركة كيف أسترجع فلوسي؟",
+    "expected_document_id": "reimbursements"
+  },
+  {
+    "id": "DQ-013",
+    "question": "أبي أحضر دورة برا الشركة",
+    "expected_document_id": "training-request"
+  },
+  {
+    "id": "DQ-014",
+    "question": "أبي صلاحية على نظام",
+    "expected_document_id": "system-access"
+  },
+  {
+    "id": "DQ-015",
+    "question": "المكيف في المكتب خربان لمين أقول؟",
+    "expected_document_id": "office-support"
+  }
+]
