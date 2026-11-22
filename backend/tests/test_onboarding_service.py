@@ -15,6 +15,8 @@ from app.modules.onboarding.service import (
     people_to_meet,
 )
 
+pytestmark = pytest.mark.usefixtures("new_hires_assessed")
+
 
 def test_retaken_quiz_replaces_the_old_score():
     old = AssessmentResult(

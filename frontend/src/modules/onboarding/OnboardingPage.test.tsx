@@ -120,10 +120,11 @@ const ROUTES: Record<string, unknown> = {
   },
 }
 
-function serve() {
+function serve(overrides: Record<string, unknown> = {}) {
+  const routes = { ...ROUTES, ...overrides }
   const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
     const url = new URL(String(input))
-    const body = ROUTES[url.pathname + url.search]
+    const body = routes[url.pathname + url.search]
     return new Response(body === undefined ? '' : JSON.stringify(body), { status: body === undefined ? 404 : 200 })
   })
   vi.stubGlobal('fetch', fetchMock)
@@ -174,6 +175,40 @@ describe('OnboardingPage', () => {
 
     expect(await screen.findByText('فريقي')).toBeInTheDocument()
     expect(screen.getByRole('progressbar', { name: 'الخطوة الجاية: الشبكة الخاصة (VPN)' })).toBeInTheDocument()
+  })
+
+  it('starts a new hire with the assessment and reloads the path after answering', async () => {
+    const fetchMock = serve({
+      '/api/onboarding/progress?employee_id=emp-004': { ...PROGRESS, topics_passed: 0, topics_total: 0 },
+      '/api/onboarding/assessment': {
+        questions: [{ ...QUIZ.questions[0], topic: 'أمن المعلومات' }],
+      },
+      '/api/onboarding/assessment/attempt?employee_id=emp-004': {
+        scores: [{ topic: 'أمن المعلومات', score: 0, passed: false }],
+        correct: [false],
+        correct_options: [1],
+      },
+    })
+    renderPage()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'ابدئي التقييم' }))
+    await userEvent.click(await screen.findByLabelText('أرسلها لزميلي'))
+    await userEvent.click(screen.getByRole('button', { name: 'سلّمي الإجابات' }))
+
+    expect(
+      await screen.findByRole('progressbar', { name: 'أمن المعلومات: صار درس في مسارك' }),
+    ).toHaveAttribute('aria-valuenow', '0')
+    await userEvent.click(screen.getByRole('button', { name: 'اعرضي مساري' }))
+    const progressCalls = fetchMock.mock.calls.filter(([url]) => String(url).includes('/progress?employee_id=emp-004'))
+    expect(progressCalls.length).toBe(2)
+  })
+
+  it('hides the assessment once the employee has scores', async () => {
+    serve()
+    renderPage()
+
+    await screen.findByText(/أهلاً نورة العتيبي/)
+    expect(screen.queryByRole('button', { name: 'ابدئي التقييم' })).not.toBeInTheDocument()
   })
 
   it('takes a lesson quiz and reloads the roadmap after answering', async () => {

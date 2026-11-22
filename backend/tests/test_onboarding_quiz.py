@@ -7,6 +7,8 @@ from app.ai import llm
 from app.main import app
 from app.modules.onboarding import quiz, service
 
+pytestmark = pytest.mark.usefixtures("new_hires_assessed")
+
 client = TestClient(app)
 
 # Two questions quoted from data/company/documents/infosec.md, and one with an invented quote.

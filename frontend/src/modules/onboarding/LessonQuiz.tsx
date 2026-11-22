@@ -45,7 +45,7 @@ export function LessonQuiz({
   if (state.kind === 'unavailable') {
     return (
       <p className="m-0 text-sm text-warning">
-        الاختبار ما تجهّز. تأكدي إن مفتاح Gemini (TAMAM_GOOGLE_API_KEY) موجود في backend/.env.
+        الاختبار ما تجهّز. حاولي مرة ثانية بعد شوي.
       </p>
     )
   }

@@ -2,8 +2,10 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from . import mock_data, quiz, service
+from . import assessment, mock_data, quiz, service
 from .schemas import (
+    Assessment,
+    AssessmentOutcome,
     CurrentEmployee,
     EmployeeProfile,
     Progress,
@@ -57,6 +59,26 @@ def get_team(employee_id: str | None = EmployeeId) -> list[TeamMember]:
 def get_demo_employees() -> list[EmployeeProfile]:
     """The employees the demo can switch between."""
     return [service.get_employee(i) for i in mock_data.DEMO_EMPLOYEE_IDS]
+
+
+@router.get("/assessment", response_model=Assessment)
+def get_assessment() -> Assessment:
+    """The starting assessment, generated from the policy documents. No answers inside."""
+    try:
+        return assessment.get_assessment()
+    except quiz.QuizUnavailableError as error:
+        raise HTTPException(status_code=503, detail="Assessment unavailable") from error
+
+
+@router.post("/assessment/attempt", response_model=AssessmentOutcome)
+def answer_assessment(body: QuizAnswers, employee_id: str | None = EmployeeId) -> AssessmentOutcome:
+    """Grades the starting assessment and records a score per topic, so the roadmap has lessons."""
+    try:
+        return assessment.grade_assessment(_resolve(employee_id), body.answers)
+    except LookupError as error:
+        raise HTTPException(status_code=404, detail="Open the assessment first") from error
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail="One answer per question") from error
 
 
 @router.get("/lessons/{document_id}/quiz", response_model=Quiz)

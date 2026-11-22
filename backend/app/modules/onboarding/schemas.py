@@ -159,3 +159,29 @@ class QuizResult(BaseModel):
     passed: bool
     correct: list[bool]
     correct_options: list[int]
+
+
+class AssessmentQuestion(QuizQuestion):
+    """A starting-assessment question, labelled with the topic it measures."""
+
+    topic: str
+
+
+class Assessment(BaseModel):
+    """The starting assessment: a few questions per topic, generated from the policies."""
+
+    questions: list[AssessmentQuestion]
+
+
+class TopicScore(BaseModel):
+    topic: str
+    score: int = Field(ge=0, le=100)
+    passed: bool
+
+
+class AssessmentOutcome(BaseModel):
+    """The scores per topic; a topic below the passing score becomes a lesson."""
+
+    scores: list[TopicScore]
+    correct: list[bool]
+    correct_options: list[int]

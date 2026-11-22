@@ -136,6 +136,25 @@ export function answerLessonQuiz(
   return apiPost<QuizResult>(`${path}${asEmployee(employeeId)}`, { answers })
 }
 
+// The starting assessment: a few questions per topic, generated from the policy documents.
+export type AssessmentQuestion = QuizQuestion & { topic: string }
+
+export type Assessment = { questions: AssessmentQuestion[] }
+
+export type AssessmentOutcome = {
+  scores: { topic: string; score: number; passed: boolean }[]
+  correct: boolean[]
+  correct_options: number[]
+}
+
+export function getAssessment(): Promise<Assessment> {
+  return apiGet<Assessment>('/api/onboarding/assessment')
+}
+
+export function answerAssessment(answers: number[], employeeId?: string): Promise<AssessmentOutcome> {
+  return apiPost<AssessmentOutcome>(`/api/onboarding/assessment/attempt${asEmployee(employeeId)}`, { answers })
+}
+
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: 'POST',

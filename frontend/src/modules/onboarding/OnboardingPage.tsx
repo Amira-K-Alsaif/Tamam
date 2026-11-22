@@ -19,6 +19,7 @@ import type {
 } from '../../lib/api'
 import { moduleById } from '../modules'
 import { LessonQuiz } from './LessonQuiz'
+import { StartingAssessment } from './StartingAssessment'
 
 const ACCESS_BADGES: Record<AccessStatus, { status: Status; label: string }> = {
   active: { status: 'done', label: 'مفعّلة' },
@@ -46,7 +47,7 @@ export default function OnboardingPage() {
   const [data, setData] = useState<PageData | null>(null)
   const [failedId, setFailedId] = useState<string | null>(null)
   const [selectedWeek, setSelectedWeek] = useState(1)
-  // Bumped after a quiz is answered, so the roadmap, progress, and badges reload.
+  // Bumped after a quiz or the assessment is answered, so the roadmap, progress, and badges reload.
   const [reloadKey, setReloadKey] = useState(0)
 
   // Until auth exists, the page shows the first demo employee unless another is chosen.
@@ -129,6 +130,10 @@ export default function OnboardingPage() {
         actions={switcher}
       />
 
+      {/* No scored topic yet means the starting assessment has not been taken. */}
+      {progress.topics_total === 0 && (
+        <StartingAssessment employeeId={me.id} onDone={() => setReloadKey((key) => key + 1)} />
+      )}
       <ProgressSummary items={allItems} progress={progress} />
       <BadgesSection badges={progress.badges} />
       {team.length > 0 && <TeamSection team={team} />}

@@ -240,6 +240,8 @@ EMPLOYEE_ACCESS: list[EmployeeAccess] = [
     ),
 ]
 
+# Starting-assessment scores of the employees who joined before Tamam. New hires (emp-004,
+# emp-006, emp-007) have none: they take the generated assessment on their first visit.
 ASSESSMENT_RESULTS: list[AssessmentResult] = [
     *_results(
         "emp-002",
@@ -259,36 +261,6 @@ ASSESSMENT_RESULTS: list[AssessmentResult] = [
             "أمن المعلومات": 88,
             "السفر والانتداب": 75,
             "المصروفات والمطالبات": 80,
-        },
-    ),
-    *_results(
-        "emp-004",
-        {
-            "سياسة الإجازات": 80,
-            "الحضور والانصراف": 65,
-            "أمن المعلومات": 40,
-            "السفر والانتداب": 30,
-            "المصروفات والمطالبات": 55,
-        },
-    ),
-    *_results(
-        "emp-006",
-        {
-            "سياسة الإجازات": 90,
-            "الحضور والانصراف": 85,
-            "أمن المعلومات": 75,
-            "السفر والانتداب": 60,
-            "المصروفات والمطالبات": 80,
-        },
-    ),
-    *_results(
-        "emp-007",
-        {
-            "سياسة الإجازات": 50,
-            "الحضور والانصراف": 45,
-            "أمن المعلومات": 35,
-            "السفر والانتداب": 20,
-            "المصروفات والمطالبات": 40,
         },
     ),
 ]

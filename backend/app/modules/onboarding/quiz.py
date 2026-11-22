@@ -69,7 +69,9 @@ def _comparable(text: str) -> str:
     return " ".join(normalize_arabic(text).split())
 
 
-def parse_quiz(raw: str, document_id: str, title: str, markdown: str) -> tuple[Quiz, list[int]]:
+def parse_questions(
+    raw: str, document_id: str, title: str, markdown: str
+) -> tuple[list[QuizQuestion], list[int]]:
     """Keeps only questions whose answer index is valid and whose quote is really in the text."""
     try:
         parsed = _LLMQuiz.model_validate(json.loads(_FENCE.sub("", raw.strip())))
@@ -100,25 +102,31 @@ def parse_quiz(raw: str, document_id: str, title: str, markdown: str) -> tuple[Q
         key.append(item.answer)
     if not questions:
         raise QuizUnavailableError("No question could be traced to the document")
-    quiz = Quiz(
-        topic=topic_for(document_id),
-        document_id=document_id,
-        document_title=title,
-        questions=questions,
-    )
-    return quiz, key
+    return questions, key
+
+
+def generate_questions(document_id: str, count: int) -> tuple[list[QuizQuestion], list[int]]:
+    """Asks the model for `count` questions on the document, keeping only traceable ones."""
+    title, markdown = load_document(document_id)
+    try:
+        raw = llm.generate(prompts.build_system(count), prompts.build_user_prompt(title, markdown))
+    except (llm.LLMNotConfiguredError, llm.LLMUnavailableError) as error:
+        raise QuizUnavailableError(str(error)) from error
+    return parse_questions(raw, document_id, title, markdown)
 
 
 def get_quiz(document_id: str) -> Quiz:
     """The lesson's quiz, generated once per server run from its policy document."""
-    topic_for(document_id)
+    topic = topic_for(document_id)
     if document_id not in _quizzes:
-        title, markdown = load_document(document_id)
-        try:
-            raw = llm.generate(prompts.SYSTEM, prompts.build_user_prompt(title, markdown))
-        except (llm.LLMNotConfiguredError, llm.LLMUnavailableError) as error:
-            raise QuizUnavailableError(str(error)) from error
-        _quizzes[document_id] = parse_quiz(raw, document_id, title, markdown)
+        questions, key = generate_questions(document_id, prompts.QUESTION_COUNT)
+        quiz = Quiz(
+            topic=topic,
+            document_id=document_id,
+            document_title=questions[0].source.document_title,
+            questions=questions,
+        )
+        _quizzes[document_id] = (quiz, key)
     return _quizzes[document_id][0]
 
 

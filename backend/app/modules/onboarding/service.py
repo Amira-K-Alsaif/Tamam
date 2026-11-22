@@ -19,6 +19,8 @@ from .schemas import (
 PASSING_SCORE = 70
 # How many lessons go in each week, lowest scores first.
 LESSONS_PER_WEEK = 2
+# A new hire's first step, before their lessons are known.
+STARTING_ASSESSMENT = "التقييم الأولي"
 # The approver_role value that means "the employee's own manager".
 DIRECT_MANAGER_ROLE = "المدير المباشر"
 
@@ -37,28 +39,40 @@ def get_current_employee(employee_id: str) -> CurrentEmployee:
     return CurrentEmployee(**employee.model_dump(), manager_name=manager_name)
 
 
-# Quiz retakes during this run of the server. They join the starting assessment, and the newest
-# score per topic counts, so the roadmap reorders as quizzes are retaken. Moves to Supabase later.
-_retakes: list[AssessmentResult] = []
+# Scores recorded during this run of the server: the starting assessment and quiz retakes.
+# The newest score per topic counts, so the roadmap reorders as quizzes are retaken.
+# Moves to Supabase later.
+_recorded: list[AssessmentResult] = []
 
 
 def assessment_results(employee_id: str) -> list[AssessmentResult]:
-    every = [*mock_data.ASSESSMENT_RESULTS, *_retakes]
+    every = [*mock_data.ASSESSMENT_RESULTS, *_recorded]
     return [result for result in every if result.employee_id == employee_id]
 
 
-def record_quiz_score(employee_id: str, topic: str, score: int) -> None:
+def has_assessment(employee_id: str) -> bool:
+    """Whether the employee has taken the starting assessment, so the roadmap has lessons."""
+    return bool(assessment_results(employee_id))
+
+
+def record_scores(
+    employee_id: str, scores: dict[str, int], taken_at: datetime | None = None
+) -> None:
     get_employee(employee_id)
-    _retakes.append(
-        AssessmentResult(
-            employee_id=employee_id, topic=topic, score=score, taken_at=datetime.now(UTC)
-        )
+    when = taken_at or datetime.now(UTC)
+    _recorded.extend(
+        AssessmentResult(employee_id=employee_id, topic=topic, score=score, taken_at=when)
+        for topic, score in scores.items()
     )
 
 
+def record_quiz_score(employee_id: str, topic: str, score: int) -> None:
+    record_scores(employee_id, {topic: score})
+
+
 def clear_quiz_scores() -> None:
-    """Forgets every retake; for tests and for restarting a demo."""
-    _retakes.clear()
+    """Forgets every recorded score; for tests and for restarting a demo."""
+    _recorded.clear()
 
 
 def latest_scores(results: list[AssessmentResult]) -> dict[str, int]:
@@ -203,7 +217,13 @@ def build_badges(
             description=f"كل مواضيع التقييم فوق {PASSING_SCORE}",
             earned=topics_done,
         ),
-        Badge(id="tamam", title="تمّام", description="أكملت مسارك كامل", earned=percent == 100),
+        Badge(
+            id="tamam",
+            title="تمّام",
+            description="أكملت مسارك كامل",
+            # Without the assessment there are no lessons yet, so the path is not complete.
+            earned=has_assessment and percent == 100,
+        ),
     ]
 
 
@@ -243,12 +263,14 @@ def build_team(manager_id: str) -> list[TeamMember]:
             continue
         roadmap = build_roadmap(employee.id)
         # Meeting people is not a step to report on; the next access item or lesson is.
-        steps = [i for w in roadmap.weeks for i in w.items if i.kind != "person"]
+        steps = [i.title for w in roadmap.weeks for i in w.items if i.kind != "person"]
+        if not has_assessment(employee.id):
+            steps.insert(0, STARTING_ASSESSMENT)
         members.append(
             TeamMember(
                 employee=employee,
                 progress=build_progress(employee.id),
-                next_step=steps[0].title if steps else None,
+                next_step=steps[0] if steps else None,
             )
         )
     return sorted(members, key=lambda member: member.progress.percent)
