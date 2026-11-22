@@ -178,7 +178,7 @@ def test_provider_errors_become_llm_unavailable(monkeypatch):
         def invoke(self, messages):
             raise ModelAPIError("504 DEADLINE_EXCEEDED")
 
-    monkeypatch.setattr(llm, "_client", lambda: Client())
+    monkeypatch.setattr(llm, "_client", lambda model: Client())
     with pytest.raises(LLMUnavailableError):
         llm.generate("system", "user")
 
@@ -222,6 +222,6 @@ def test_rate_limit_becomes_quota_exceeded(monkeypatch):
         def invoke(self, messages):
             raise ModelRateLimitError("429 RESOURCE_EXHAUSTED")
 
-    monkeypatch.setattr(llm, "_client", lambda: Client())
+    monkeypatch.setattr(llm, "_client", lambda model: Client())
     with pytest.raises(LLMQuotaExceededError):
         llm.generate("system", "user")

@@ -76,7 +76,8 @@ Do not silently replace, upgrade, or introduce alternatives to these technologie
 
 - PostgreSQL on Supabase, with `pgvector` for embeddings
 - Supabase Auth and Supabase Storage
-- LLM: Google Gemini (`gemini-3.6-flash`), behind `backend/app/ai/`
+- LLM: Google Gemini (`gemini-3.6-flash`, with `gemini-3.5-flash` as the fallback when it
+  is busy), behind `backend/app/ai/`
 - RAG tooling: LangChain for text splitting, model access, and prompt templates.
   Tamam's own rules stay in our code: Arabic normalization, the "not found" threshold,
   citation checks, and evaluation.
