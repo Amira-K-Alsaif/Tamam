@@ -123,3 +123,49 @@ def test_every_title_links_to_its_esco_occupation():
     # ESCO has no senior data analyst, so both levels point to «data analyst».
     assert uri["DA-1"] == uri["DA-2"]
     assert len(set(uri.values())) == len(uri) - 1
+
+
+def test_measured_levels_from_the_skill_profile_replace_the_estimate():
+    from app.modules.onboarding import skill_profile
+
+    repo = get_repository()
+    estimated = service.analyze_gap(repo, ACCOUNTANT, FINANCE_MANAGER)
+    top = estimated.radar[0].skill_id
+    skill_profile.save("emp-004", {top: 4}, source="assessment", evidence={})
+
+    mine = client.get(
+        "/api/career/gap-analysis",
+        params={
+            "current_title_id": ACCOUNTANT,
+            "target_title_id": FINANCE_MANAGER,
+            "employee_id": "emp-004",
+        },
+    ).json()
+    someone_else = client.get(
+        "/api/career/gap-analysis",
+        params={
+            "current_title_id": ACCOUNTANT,
+            "target_title_id": FINANCE_MANAGER,
+            "employee_id": "emp-006",
+        },
+    ).json()
+
+    assert mine["level_source"] == "employee_profile"
+    assert next(s for s in mine["radar"] if s["skill_id"] == top)["employee_level"] == 4
+    assert someone_else["level_source"] == "current_title_market_proxy"
+
+
+def test_unmeasured_skills_keep_the_market_estimate():
+    repo = get_repository()
+    estimate = {
+        row["skill_id"]: service.proxy_level(row["frequency"]) for row in repo.profiles[ACCOUNTANT]
+    }
+    some_skill = next(iter(estimate))
+
+    levels = service.employee_levels(repo, ACCOUNTANT, {some_skill: 0, 999: 3})
+
+    assert levels[some_skill] == 0
+    assert levels[999] == 3
+    assert {k: v for k, v in levels.items() if k not in (some_skill, 999)} == {
+        k: v for k, v in estimate.items() if k != some_skill
+    }

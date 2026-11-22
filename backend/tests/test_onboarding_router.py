@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
-pytestmark = pytest.mark.usefixtures("new_hires_assessed")
+pytestmark = pytest.mark.usefixtures("employees_assessed")
 
 client = TestClient(app)
 

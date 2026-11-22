@@ -49,6 +49,8 @@ export default function CareerPage() {
   const [result, setResult] = useState<Load<GapAnalysis>>({ state: 'idle' })
   const [plan, setPlan] = useState<Load<DevelopmentPlan>>({ state: 'idle' })
   const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
+  // Whose measured skill levels the gap uses, from the onboarding assessment and CV.
+  const [employeeId, setEmployeeId] = useState<string | undefined>(undefined)
   const userChose = useRef(false)
 
   useEffect(() => {
@@ -62,6 +64,7 @@ export default function CareerPage() {
     let cancelled = false
     getMe()
       .then(async (me) => {
+        if (!cancelled) setEmployeeId(me.id)
         try {
           const match = await matchTitle(me.job_title)
           if (cancelled) return
@@ -99,10 +102,10 @@ export default function CareerPage() {
     if (currentId === null || targetId === null) return
     setResult({ state: 'loading' })
     setPlan({ state: 'loading' })
-    getGapAnalysis(currentId, targetId)
+    getGapAnalysis(currentId, targetId, employeeId)
       .then((data) => setResult({ state: 'done', data }))
       .catch(() => setResult({ state: 'error' }))
-    getPlan(currentId, targetId)
+    getPlan(currentId, targetId, employeeId)
       .then((data) => setPlan({ state: 'done', data }))
       .catch(() => setPlan({ state: 'error' }))
   }
@@ -214,8 +217,8 @@ function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number
           <p className="m-0 text-muted">
             مبني على {evidence_postings} إعلان وظيفي لمنصب «{target?.name_ar}».{' '}
             {result.level_source === 'employee_profile'
-              ? 'مستواك مأخوذ من ملف مهاراتك.'
-              : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق، لين يجهز ملف مهاراتك.'}
+              ? 'مستواك مأخوذ من تقييمك الأولي وسيرتك الذاتية، والمهارات اللي ما قسناها مقدّرة من السوق.'
+              : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق. خلّصي التقييم الأولي في مساري التأهيلي عشان نقيس مستواك الحقيقي.'}
           </p>
           {target?.esco_occupation_uri && (
             <p className="m-0 mt-2 text-xs text-faint">

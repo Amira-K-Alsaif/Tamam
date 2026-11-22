@@ -76,6 +76,29 @@ for the CEO. Added for module 3's «عبّي النموذج عني» (agreed by 
 
     employee_id, topic, score (0-100), taken_at
 
+`topic` is the title of the company policy the questions came from (`Document.title`).
+
+### Employee skill profile (owner: 5 writes, 6 reads)
+
+    employee_id, skill_id (career skills.id), level (0-4), source (cv | assessment),
+    evidence, updated_at
+
+Written by onboarding from the employee's CV (a skill the CV shows: level 1) and from the
+starting assessment (a basic and an advanced question per skill: 0 to 4). Career reads it so
+the gap analysis uses the employee's measured levels instead of the market estimate. Private
+to the employee. Read through `app.modules.onboarding.skill_profile.levels(employee_id)` until
+the `employee_skills` table (`supabase/migrations/20261123_employee_skills.sql`) is wired in.
+Agreed by 5 and 6.
+
+### Title skills (owner: 6, used by 5)
+
+    career.service.match_title(repo, job_title) -> JobTitle
+    career.service.title_skills(repo, title_id) -> [TitleSkill]
+    career.service.expected_level(frequency, required_ratio) -> 0-4
+
+Onboarding uses these to choose the specialization skills of the starting assessment and the
+level each one needs. Agreed by 5 and 6.
+
 ### Document (owner: 2, used by 1, 3)
 
     id, title, kind (policy | procedure | form | faq), department, file_path, status, updated_at

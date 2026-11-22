@@ -27,10 +27,15 @@ const ITEM = {
   employee_id: null,
   topic: null,
   document_id: null,
+  skill_id: null,
+  level: null,
+  expected_level: null,
 }
 
 const ROADMAP: Roadmap = {
   employee_id: 'emp-004',
+  assessed: true,
+  drawn_by: 'ai',
   weeks: [
     {
       week: 1,
@@ -75,6 +80,8 @@ const PROGRESS: Progress = {
   access_total: 5,
   topics_passed: 1,
   topics_total: 5,
+  skills_ready: 0,
+  skills_total: 0,
   percent: 30,
   badges: [
     { id: 'first-step', title: 'أول خطوة', description: 'خلّصت التقييم الأولي', earned: true },
@@ -107,7 +114,7 @@ const ROUTES: Record<string, unknown> = {
   '/api/onboarding/progress?employee_id=emp-004': PROGRESS,
   '/api/onboarding/team?employee_id=emp-004': [],
   '/api/onboarding/me?employee_id=emp-002': { ...SARA, manager_name: null },
-  '/api/onboarding/roadmap?employee_id=emp-002': { employee_id: 'emp-002', weeks: [] },
+  '/api/onboarding/roadmap?employee_id=emp-002': { employee_id: 'emp-002', assessed: true, drawn_by: 'rules', weeks: [] },
   '/api/onboarding/progress?employee_id=emp-002': { ...PROGRESS, employee_id: 'emp-002', percent: 100 },
   '/api/onboarding/team?employee_id=emp-002': [{ employee: NOURA, progress: PROGRESS, next_step: 'الشبكة الخاصة (VPN)' }],
   '/api/onboarding/lessons/infosec/quiz': QUIZ,
@@ -177,38 +184,76 @@ describe('OnboardingPage', () => {
     expect(screen.getByRole('progressbar', { name: 'الخطوة الجاية: الشبكة الخاصة (VPN)' })).toBeInTheDocument()
   })
 
-  it('starts a new hire with the assessment and reloads the path after answering', async () => {
+  it('starts with the CV and the assessment, then shows the path drawn from the result', async () => {
     const fetchMock = serve({
-      '/api/onboarding/progress?employee_id=emp-004': { ...PROGRESS, topics_passed: 0, topics_total: 0 },
-      '/api/onboarding/assessment': {
-        questions: [{ ...QUIZ.questions[0], topic: 'أمن المعلومات' }],
+      '/api/onboarding/roadmap?employee_id=emp-004': { employee_id: 'emp-004', assessed: false, drawn_by: 'rules', weeks: [] },
+      '/api/onboarding/cv?employee_id=emp-004': [{ skill_id: 7, label_ar: 'تحليل البيانات', quote: 'حللت بيانات المبيعات' }],
+      '/api/onboarding/assessment?employee_id=emp-004': {
+        questions: [
+          { ...QUIZ.questions[0], kind: 'company', topic: 'سياسة أمن المعلومات', skill_id: null },
+          {
+            kind: 'skill',
+            topic: 'تحليل البيانات',
+            question: 'أي دالة تجمع القيم؟',
+            options: ['SUM', 'COUNT'],
+            source: null,
+            skill_id: 7,
+          },
+        ],
       },
       '/api/onboarding/assessment/attempt?employee_id=emp-004': {
-        scores: [{ topic: 'أمن المعلومات', score: 0, passed: false }],
-        correct: [false],
-        correct_options: [1],
+        topics: [{ topic: 'سياسة أمن المعلومات', document_id: 'infosec', score: 0, passed: false }],
+        skills: [{ skill_id: 7, label_ar: 'تحليل البيانات', level: 2, expected_level: 4 }],
+        correct: [false, true],
+        correct_options: [1, 0],
       },
     })
     renderPage()
 
-    await userEvent.click(await screen.findByRole('button', { name: 'ابدئي التقييم' }))
-    await userEvent.click(await screen.findByLabelText('أرسلها لزميلي'))
+    expect(await screen.findByText('قبل ما نبدأ: تقييمك الأولي')).toBeInTheDocument()
+    expect(screen.queryByText('شاراتك')).not.toBeInTheDocument()
+
+    const cv = new File(['حللت بيانات المبيعات'], 'cv.txt', { type: 'text/plain' })
+    await userEvent.upload(screen.getByLabelText('السيرة الذاتية'), cv)
+    await userEvent.click(screen.getByRole('button', { name: 'اقرأ سيرتي' }))
+    expect(await screen.findByText('من سيرتك: «حللت بيانات المبيعات»')).toBeInTheDocument()
+
+    await userEvent.click(screen.getByRole('button', { name: 'ابدئي الأسئلة' }))
+    expect(await screen.findByText('عن الشركة')).toBeInTheDocument()
+    expect(screen.getByText('عن تخصصك')).toBeInTheDocument()
+    await userEvent.click(screen.getByLabelText('أرسلها لزميلي'))
+    await userEvent.click(screen.getByLabelText('SUM'))
     await userEvent.click(screen.getByRole('button', { name: 'سلّمي الإجابات' }))
 
     expect(
-      await screen.findByRole('progressbar', { name: 'أمن المعلومات: صار درس في مسارك' }),
+      await screen.findByRole('progressbar', { name: 'سياسة أمن المعلومات: صارت درس في مسارك' }),
     ).toHaveAttribute('aria-valuenow', '0')
+    expect(
+      screen.getByRole('progressbar', { name: 'تحليل البيانات: مستواك 2 من 4، ومسماك يحتاج 4' }),
+    ).toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: 'اعرضي مساري' }))
-    const progressCalls = fetchMock.mock.calls.filter(([url]) => String(url).includes('/progress?employee_id=emp-004'))
-    expect(progressCalls.length).toBe(2)
+    const roadmapCalls = fetchMock.mock.calls.filter(([url]) => String(url).includes('/roadmap?employee_id=emp-004'))
+    expect(roadmapCalls.length).toBe(2)
   })
 
-  it('hides the assessment once the employee has scores', async () => {
+  it('can skip the CV', async () => {
+    serve({
+      '/api/onboarding/roadmap?employee_id=emp-004': { employee_id: 'emp-004', assessed: false, drawn_by: 'rules', weeks: [] },
+    })
+    renderPage()
+
+    await userEvent.click(await screen.findByRole('button', { name: 'كمّلي بدون سيرة' }))
+
+    expect(await screen.findByText('التقييم ما تجهّز. حاولي مرة ثانية بعد شوي.')).toBeInTheDocument()
+  })
+
+  it('shows the path, not the assessment, once the employee is assessed', async () => {
     serve()
     renderPage()
 
     await screen.findByText(/أهلاً نورة العتيبي/)
-    expect(screen.queryByRole('button', { name: 'ابدئي التقييم' })).not.toBeInTheDocument()
+    expect(screen.queryByText('قبل ما نبدأ: تقييمك الأولي')).not.toBeInTheDocument()
+    expect(screen.getByText('رتّب تمّام دروسك ومهاراتك من نتيجة تقييمك الأولي.')).toBeInTheDocument()
   })
 
   it('takes a lesson quiz and reloads the roadmap after answering', async () => {

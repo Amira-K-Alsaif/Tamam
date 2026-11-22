@@ -7,18 +7,15 @@ recorded, so the roadmap reorders as quizzes are retaken.
 
 import json
 import re
-from functools import lru_cache
-from pathlib import Path
 
 from pydantic import BaseModel, Field, ValidationError
 
 from app.ai import llm
 from app.ai.arabic import normalize_arabic
 
-from . import mock_data, prompts, service
+from . import prompts, service
+from .documents import load_document, topic_for
 from .schemas import Quiz, QuizQuestion, QuizResult, SourceCitation
-
-COMPANY_DIR = Path(__file__).resolve().parents[4] / "data" / "company"
 
 _FENCE = re.compile(r"^```(?:json)?\s*|\s*```$")
 
@@ -41,28 +38,6 @@ class _LLMQuiz(BaseModel):
 
 # One quiz per document per server run, with its answer key: (quiz, correct option per question).
 _quizzes: dict[str, tuple[Quiz, list[int]]] = {}
-
-
-def topic_for(document_id: str) -> str:
-    for topic, doc_id in mock_data.TOPIC_DOCUMENTS.items():
-        if doc_id == document_id:
-            return topic
-    raise LookupError(f"No lesson for document: {document_id}")
-
-
-@lru_cache
-def _titles() -> dict[str, str]:
-    manifest = json.loads((COMPANY_DIR / "manifest.json").read_text(encoding="utf-8"))
-    return {document["id"]: document["title"] for document in manifest}
-
-
-def load_document(document_id: str) -> tuple[str, str]:
-    """The document's title and Markdown text."""
-    title = _titles().get(document_id)
-    if title is None:
-        raise LookupError(f"Unknown document: {document_id}")
-    markdown = (COMPANY_DIR / "documents" / f"{document_id}.md").read_text(encoding="utf-8")
-    return title, markdown
 
 
 def _comparable(text: str) -> str:

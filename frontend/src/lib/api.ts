@@ -41,7 +41,7 @@ export type EmployeeProfile = {
 export type AccessStatus = 'active' | 'requested' | 'missing'
 
 export type RoadmapItem = {
-  kind: 'lesson' | 'access' | 'person'
+  kind: 'lesson' | 'skill' | 'access' | 'person'
   title: string
   reason: string
   week: number
@@ -54,11 +54,20 @@ export type RoadmapItem = {
   employee_id: string | null
   topic: string | null
   document_id: string | null
+  skill_id: number | null
+  level: number | null
+  expected_level: number | null
 }
 
 export type RoadmapWeek = { week: number; items: RoadmapItem[] }
 
-export type Roadmap = { employee_id: string; weeks: RoadmapWeek[] }
+// `assessed` is false until the starting assessment is taken; `drawn_by` says who ordered the gaps.
+export type Roadmap = {
+  employee_id: string
+  assessed: boolean
+  drawn_by: 'ai' | 'rules'
+  weeks: RoadmapWeek[]
+}
 
 // What /api/onboarding/me returns: the profile plus the manager's name (null only for the CEO).
 export type CurrentEmployee = EmployeeProfile & { manager_name: string | null }
@@ -84,6 +93,8 @@ export type Progress = {
   access_total: number
   topics_passed: number
   topics_total: number
+  skills_ready: number
+  skills_total: number
   percent: number
   badges: Badge[]
 }
@@ -136,23 +147,46 @@ export function answerLessonQuiz(
   return apiPost<QuizResult>(`${path}${asEmployee(employeeId)}`, { answers })
 }
 
-// The starting assessment: a few questions per topic, generated from the policy documents.
-export type AssessmentQuestion = QuizQuestion & { topic: string }
+// The starting assessment: questions on the company's policies and on the employee's skills.
+// Skill questions come from general knowledge of the skill, so they have no source.
+export type AssessmentQuestion = {
+  kind: 'company' | 'skill'
+  topic: string
+  question: string
+  options: string[]
+  source: QuizQuestion['source'] | null
+  skill_id: number | null
+}
 
 export type Assessment = { questions: AssessmentQuestion[] }
 
 export type AssessmentOutcome = {
-  scores: { topic: string; score: number; passed: boolean }[]
+  topics: { topic: string; document_id: string; score: number; passed: boolean }[]
+  skills: { skill_id: number; label_ar: string; level: number; expected_level: number | null }[]
   correct: boolean[]
   correct_options: number[]
 }
 
-export function getAssessment(): Promise<Assessment> {
-  return apiGet<Assessment>('/api/onboarding/assessment')
+export type CvSkill = { skill_id: number; label_ar: string; quote: string }
+
+export function getAssessment(employeeId?: string): Promise<Assessment> {
+  return apiGet<Assessment>(`/api/onboarding/assessment${asEmployee(employeeId)}`)
 }
 
 export function answerAssessment(answers: number[], employeeId?: string): Promise<AssessmentOutcome> {
   return apiPost<AssessmentOutcome>(`/api/onboarding/assessment/attempt${asEmployee(employeeId)}`, { answers })
+}
+
+// The CV is read for its skills and not kept.
+export async function uploadCv(file: File, employeeId?: string): Promise<CvSkill[]> {
+  const path = `/api/onboarding/cv${asEmployee(employeeId)}`
+  const form = new FormData()
+  form.append('file', file)
+  const response = await fetch(`${API_BASE_URL}${path}`, { method: 'POST', body: form })
+  if (!response.ok) {
+    throw new ApiError(response.status, `POST ${path} failed`)
+  }
+  return (await response.json()) as CvSkill[]
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {

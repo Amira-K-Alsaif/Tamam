@@ -1,8 +1,8 @@
-"""Builds the onboarding roadmap: knowledge gaps, missing access, and people to meet."""
+"""Builds the onboarding roadmap: knowledge and skill gaps, missing access, and people to meet."""
 
 from datetime import UTC, datetime
 
-from . import mock_data
+from . import documents, mock_data, roadmap_ai, skill_profile, specialization
 from .schemas import (
     AssessmentResult,
     Badge,
@@ -17,7 +17,7 @@ from .schemas import (
 
 # A topic scored below this becomes a lesson on the roadmap.
 PASSING_SCORE = 70
-# How many lessons go in each week, lowest scores first.
+# Without a drawn plan: how many lessons or skills go in each week, weakest first.
 LESSONS_PER_WEEK = 2
 # A new hire's first step, before their lessons are known.
 STARTING_ASSESSMENT = "التقييم الأولي"
@@ -46,13 +46,20 @@ _recorded: list[AssessmentResult] = []
 
 
 def assessment_results(employee_id: str) -> list[AssessmentResult]:
-    every = [*mock_data.ASSESSMENT_RESULTS, *_recorded]
-    return [result for result in every if result.employee_id == employee_id]
+    return [result for result in _recorded if result.employee_id == employee_id]
+
+
+# Employees who took the starting assessment during this run of the server.
+_assessed: set[str] = set()
+
+
+def mark_assessed(employee_id: str) -> None:
+    _assessed.add(employee_id)
 
 
 def has_assessment(employee_id: str) -> bool:
-    """Whether the employee has taken the starting assessment, so the roadmap has lessons."""
-    return bool(assessment_results(employee_id))
+    """Whether the employee has taken the starting assessment, so the roadmap has its gaps."""
+    return employee_id in _assessed or bool(assessment_results(employee_id))
 
 
 def record_scores(
@@ -73,6 +80,7 @@ def record_quiz_score(employee_id: str, topic: str, score: int) -> None:
 def clear_quiz_scores() -> None:
     """Forgets every recorded score; for tests and for restarting a demo."""
     _recorded.clear()
+    _assessed.clear()
 
 
 def latest_scores(results: list[AssessmentResult]) -> dict[str, int]:
@@ -99,9 +107,38 @@ def knowledge_gaps(employee_id: str) -> list[RoadmapItem]:
             week=index // LESSONS_PER_WEEK + 1,
             score=score,
             topic=topic,
-            document_id=mock_data.TOPIC_DOCUMENTS.get(topic),
+            document_id=documents.document_for(topic),
         )
         for index, (topic, score) in enumerate(weak)
+    ]
+
+
+def skill_gaps(employee_id: str) -> list[RoadmapItem]:
+    """Measured skills below the level the employee's title needs, biggest gap first."""
+    employee = get_employee(employee_id)
+    expected = specialization.expected_levels(employee.job_title)
+    measured = skill_profile.profile(employee_id)
+    gaps = sorted(
+        (
+            (row, expected[skill_id])
+            for skill_id, row in measured.items()
+            if row.source == "assessment"
+            and skill_id in expected
+            and row.level < expected[skill_id]
+        ),
+        key=lambda pair: pair[0].level - pair[1],
+    )
+    return [
+        RoadmapItem(
+            kind="skill",
+            title=specialization.by_id(row.skill_id).label_ar,
+            reason=f"مستواك {row.level} من 4، ومسماك يحتاج {needed}.",
+            week=index // LESSONS_PER_WEEK + 1,
+            skill_id=row.skill_id,
+            level=row.level,
+            expected_level=needed,
+        )
+        for index, (row, needed) in enumerate(gaps)
     ]
 
 
@@ -161,16 +198,35 @@ def people_to_meet(employee: EmployeeProfile, access_items: list[RoadmapItem]) -
     return people
 
 
+def _place(employee_id: str, gaps: list[RoadmapItem]) -> list[RoadmapItem]:
+    """Puts each gap where the drawn plan says, with its reason; the rest go after the plan."""
+    planned = [(gap, roadmap_ai.placement(employee_id, gap)) for gap in gaps]
+    last_week = max((place.week for _, place in planned if place), default=0)
+    placed: list[RoadmapItem] = []
+    for gap, place in planned:
+        if place:
+            placed.append(gap.model_copy(update={"week": place.week, "reason": place.reason}))
+        else:
+            placed.append(gap.model_copy(update={"week": last_week + gap.week}))
+    return placed
+
+
 def build_roadmap(employee_id: str) -> Roadmap:
     employee = get_employee(employee_id)
     access = missing_access(employee)
-    items = access + people_to_meet(employee, access) + knowledge_gaps(employee_id)
+    gaps = knowledge_gaps(employee_id) + skill_gaps(employee_id)
+    drawn = roadmap_ai.has_plan(employee_id)
+    items = (
+        access + people_to_meet(employee, access) + (_place(employee_id, gaps) if drawn else gaps)
+    )
 
     weeks: dict[int, list[RoadmapItem]] = {}
     for item in items:
         weeks.setdefault(item.week, []).append(item)
     return Roadmap(
         employee_id=employee_id,
+        assessed=has_assessment(employee_id),
+        drawn_by="ai" if drawn else "rules",
         weeks=[RoadmapWeek(week=week, items=weeks[week]) for week in sorted(weeks)],
     )
 
@@ -232,11 +288,20 @@ def build_progress(employee_id: str) -> Progress:
     statuses = access_statuses(employee)
     scores = latest_scores(assessment_results(employee_id))
 
+    expected = specialization.expected_levels(employee.job_title)
+    measured = {
+        skill_id: row.level
+        for skill_id, row in skill_profile.profile(employee_id).items()
+        if row.source == "assessment" and skill_id in expected
+    }
+
     access_active = sum(1 for status in statuses.values() if status == "active")
     topics_passed = sum(1 for score in scores.values() if score >= PASSING_SCORE)
-    total = len(statuses) + len(scores)
-    done = access_active + topics_passed
+    skills_ready = sum(1 for skill_id, level in measured.items() if level >= expected[skill_id])
+    total = len(statuses) + len(scores) + len(measured)
+    done = access_active + topics_passed + skills_ready
     percent = 100 if total == 0 else round(done * 100 / total)
+    assessed = has_assessment(employee_id)
 
     return Progress(
         employee_id=employee_id,
@@ -244,9 +309,11 @@ def build_progress(employee_id: str) -> Progress:
         access_total=len(statuses),
         topics_passed=topics_passed,
         topics_total=len(scores),
+        skills_ready=skills_ready,
+        skills_total=len(measured),
         percent=percent,
         badges=build_badges(
-            has_assessment=bool(scores),
+            has_assessment=assessed,
             access_done=access_active == len(statuses),
             topics_done=bool(scores) and topics_passed == len(scores),
             percent=percent,

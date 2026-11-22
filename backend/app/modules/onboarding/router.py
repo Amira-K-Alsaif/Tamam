@@ -1,12 +1,15 @@
 """Onboarding roadmap: knowledge gaps, missing access, people to meet. See docs/team.md."""
 
-from fastapi import APIRouter, HTTPException, Query
+from typing import Annotated
 
-from . import assessment, mock_data, quiz, service
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile
+
+from . import assessment, cv, mock_data, quiz, service
 from .schemas import (
     Assessment,
     AssessmentOutcome,
     CurrentEmployee,
+    CvSkill,
     EmployeeProfile,
     Progress,
     Quiz,
@@ -62,17 +65,33 @@ def get_demo_employees() -> list[EmployeeProfile]:
 
 
 @router.get("/assessment", response_model=Assessment)
-def get_assessment() -> Assessment:
-    """The starting assessment, generated from the policy documents. No answers inside."""
+def get_assessment(employee_id: str | None = EmployeeId) -> Assessment:
+    """The employee's starting assessment: their company and their specialization. No answers."""
     try:
-        return assessment.get_assessment()
+        return assessment.get_assessment(_resolve(employee_id))
     except quiz.QuizUnavailableError as error:
         raise HTTPException(status_code=503, detail="Assessment unavailable") from error
 
 
+@router.post("/cv", response_model=list[CvSkill])
+async def upload_cv(
+    file: Annotated[UploadFile, File()], employee_id: str | None = EmployeeId
+) -> list[CvSkill]:
+    """Finds the employee's skills in their CV. The CV itself is not kept."""
+    employee = _resolve(employee_id)
+    try:
+        return cv.read_cv(employee, file.filename or "", await file.read())
+    except cv.CvError as error:
+        raise HTTPException(
+            status_code=422, detail="Unreadable CV: use PDF, Word, or text"
+        ) from error
+    except cv.CvUnavailableError as error:
+        raise HTTPException(status_code=503, detail="CV reading unavailable") from error
+
+
 @router.post("/assessment/attempt", response_model=AssessmentOutcome)
 def answer_assessment(body: QuizAnswers, employee_id: str | None = EmployeeId) -> AssessmentOutcome:
-    """Grades the starting assessment and records a score per topic, so the roadmap has lessons."""
+    """Grades the assessment, records policy scores and skill levels, and draws the roadmap."""
     try:
         return assessment.grade_assessment(_resolve(employee_id), body.answers)
     except LookupError as error:

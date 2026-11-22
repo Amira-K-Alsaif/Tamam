@@ -59,18 +59,22 @@ export function getTitles(): Promise<JobTitle[]> {
   return apiGet<JobTitle[]>('/api/career/titles')
 }
 
-export function getGapAnalysis(currentTitleId: number, targetTitleId: number): Promise<GapAnalysis> {
+// With employeeId, the employee's measured skill levels replace the market estimate.
+export function getGapAnalysis(currentTitleId: number, targetTitleId: number, employeeId?: string): Promise<GapAnalysis> {
   const query = new URLSearchParams({
     current_title_id: String(currentTitleId),
     target_title_id: String(targetTitleId),
+    ...(employeeId ? { employee_id: employeeId } : {}),
   })
   return apiGet<GapAnalysis>(`/api/career/gap-analysis?${query}`)
 }
 
-export function getPlan(currentTitleId: number, targetTitleId: number): Promise<DevelopmentPlan> {
+// With employeeId, the employee's measured skill levels replace the market estimate.
+export function getPlan(currentTitleId: number, targetTitleId: number, employeeId?: string): Promise<DevelopmentPlan> {
   const query = new URLSearchParams({
     current_title_id: String(currentTitleId),
     target_title_id: String(targetTitleId),
+    ...(employeeId ? { employee_id: employeeId } : {}),
   })
   return apiGet<DevelopmentPlan>(`/api/career/plan?${query}`)
 }

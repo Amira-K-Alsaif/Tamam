@@ -27,9 +27,14 @@ const ACCESS_BADGES: Record<AccessStatus, { status: Status; label: string }> = {
   missing: { status: 'missing', label: 'ناقصة' },
 }
 
-const KIND_TONES = { access: 'teal', person: 'blue', lesson: 'mint' } as const
+const KIND_TONES = { access: 'teal', person: 'blue', lesson: 'mint', skill: 'mint' } as const
 
-const SECTION_TITLES = { access: 'صلاحيات ناقصة', person: 'أشخاص تقابلهم', lesson: 'دروس' } as const
+const SECTION_TITLES = {
+  access: 'صلاحيات ناقصة',
+  person: 'أشخاص تقابلهم',
+  lesson: 'دروس عن الشركة',
+  skill: 'مهارات تطوّرينها',
+} as const
 
 type PageData = {
   employeeId: string
@@ -119,6 +124,25 @@ export default function OnboardingPage() {
   }
 
   const { me, roadmap, progress, team } = data
+
+  // Every employee starts with the assessment: the path is drawn from its result.
+  if (!roadmap.assessed) {
+    return (
+      <>
+        <PageHeader title={info.title} description={`أهلاً ${me.full_name} · ${me.job_title}.`} actions={switcher} />
+        <StartingAssessment
+          key={me.id}
+          employeeId={me.id}
+          onDone={() => {
+            setSelectedWeek(1)
+            setReloadKey((key) => key + 1)
+          }}
+        />
+        {team.length > 0 && <TeamSection team={team} />}
+      </>
+    )
+  }
+
   const allItems = roadmap.weeks.flatMap((week) => week.items)
   const week = roadmap.weeks.find((w) => w.week === selectedWeek) ?? roadmap.weeks[0]
 
@@ -129,11 +153,10 @@ export default function OnboardingPage() {
         description={`أهلاً ${me.full_name} · ${me.job_title}. هذا كل اللي ناقصك، مرتّب بالأسابيع.`}
         actions={switcher}
       />
-
-      {/* No scored topic yet means the starting assessment has not been taken. */}
-      {progress.topics_total === 0 && (
-        <StartingAssessment employeeId={me.id} onDone={() => setReloadKey((key) => key + 1)} />
+      {roadmap.drawn_by === 'ai' && (
+        <p className="m-0 text-sm text-mint">رتّب تمّام دروسك ومهاراتك من نتيجة تقييمك الأولي.</p>
       )}
+
       <ProgressSummary items={allItems} progress={progress} />
       <BadgesSection badges={progress.badges} />
       {team.length > 0 && <TeamSection team={team} />}
@@ -167,7 +190,7 @@ export default function OnboardingPage() {
             })}
           </div>
 
-          {(['access', 'person', 'lesson'] as const).map((kind) => (
+          {(['access', 'person', 'lesson', 'skill'] as const).map((kind) => (
             <ItemsSection
               key={kind}
               title={SECTION_TITLES[kind]}
@@ -215,13 +238,15 @@ function ProgressSummary({ items, progress }: { items: RoadmapItem[]; progress: 
     { label: 'صلاحيات ناقصة', value: items.filter((i) => i.kind === 'access').length },
     { label: 'أشخاص تقابلهم', value: items.filter((i) => i.kind === 'person').length },
     { label: 'دروس', value: items.filter((i) => i.kind === 'lesson').length },
+    { label: 'مهارات تطوّرينها', value: items.filter((i) => i.kind === 'skill').length },
   ]
   return (
     <Card>
       <ProgressBar label="تقدّمك في المسار" value={progress.percent} />
       <p className="m-0 text-sm text-faint">
         {progress.access_active} من {progress.access_total} صلاحيات مفعّلة ·{' '}
-        {progress.topics_passed} من {progress.topics_total} مواضيع ناجحة
+        {progress.topics_passed} من {progress.topics_total} مواضيع ناجحة ·{' '}
+        {progress.skills_ready} من {progress.skills_total} مهارات بالمستوى المطلوب
       </p>
       <div className="flex flex-wrap gap-4">
         {counts.map((count) => (
@@ -336,6 +361,12 @@ function ItemsSection({
                 >
                   افتحي بطاقته في خريطة الشركة
                 </ButtonLink>
+              )}
+              {item.kind === 'skill' && item.level !== null && item.expected_level !== null && (
+                <ProgressBar
+                  label={`مستواك ${item.level} من 4، والمطلوب ${item.expected_level}`}
+                  value={(item.level / item.expected_level) * 100}
+                />
               )}
               {item.kind === 'lesson' && item.score !== null && (
                 <ProgressBar label="درجتك في التقييم" value={item.score} />

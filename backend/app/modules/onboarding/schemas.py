@@ -58,7 +58,7 @@ class AssessmentResult(BaseModel):
 
 # Response shapes for the onboarding roadmap (module 5 only, not shared contracts).
 
-RoadmapKind = Literal["lesson", "access", "person"]
+RoadmapKind = Literal["lesson", "skill", "access", "person"]
 
 
 class RoadmapItem(BaseModel):
@@ -81,6 +81,10 @@ class RoadmapItem(BaseModel):
     # lesson: the assessment topic and the policy document its quiz comes from
     topic: str | None = None
     document_id: str | None = None
+    # skill
+    skill_id: int | None = None
+    level: int | None = None
+    expected_level: int | None = None
 
 
 class RoadmapWeek(BaseModel):
@@ -90,6 +94,10 @@ class RoadmapWeek(BaseModel):
 
 class Roadmap(BaseModel):
     employee_id: str
+    # False until the starting assessment is taken; the page shows the assessment first.
+    assessed: bool
+    # Who ordered the lessons and skills: the model from the assessment, or the rules.
+    drawn_by: Literal["ai", "rules"]
     weeks: list[RoadmapWeek]
 
 
@@ -110,6 +118,8 @@ class Progress(BaseModel):
     access_total: int
     topics_passed: int
     topics_total: int
+    skills_ready: int  # Measured skills at the level the title needs
+    skills_total: int
     percent: int = Field(ge=0, le=100)
     badges: list[Badge]
 
@@ -161,27 +171,56 @@ class QuizResult(BaseModel):
     correct_options: list[int]
 
 
-class AssessmentQuestion(QuizQuestion):
-    """A starting-assessment question, labelled with the topic it measures."""
+AssessmentKind = Literal["company", "skill"]
 
-    topic: str
+
+class AssessmentQuestion(BaseModel):
+    """A starting-assessment question: on a company policy, or on a skill of the specialization.
+
+    Company questions carry the policy sentence that proves the answer. Skill questions are
+    written from general knowledge of the skill, so they carry no source.
+    """
+
+    kind: AssessmentKind
+    topic: str  # The policy's title, or the skill's Arabic name
+    question: str
+    options: list[str] = Field(min_length=2, max_length=4)
+    source: SourceCitation | None = None
+    skill_id: int | None = None
 
 
 class Assessment(BaseModel):
-    """The starting assessment: a few questions per topic, generated from the policies."""
+    """The starting assessment for one employee."""
 
     questions: list[AssessmentQuestion]
 
 
 class TopicScore(BaseModel):
     topic: str
+    document_id: str
     score: int = Field(ge=0, le=100)
     passed: bool
 
 
-class AssessmentOutcome(BaseModel):
-    """The scores per topic; a topic below the passing score becomes a lesson."""
+class SkillResult(BaseModel):
+    skill_id: int
+    label_ar: str
+    level: int = Field(ge=0, le=4)
+    expected_level: int | None  # What the employee's title needs; None if the title is unknown
 
-    scores: list[TopicScore]
+
+class AssessmentOutcome(BaseModel):
+    """Scores per policy and a level per skill; the roadmap is drawn from them."""
+
+    topics: list[TopicScore]
+    skills: list[SkillResult]
     correct: list[bool]
     correct_options: list[int]
+
+
+class CvSkill(BaseModel):
+    """A skill found in the employee's CV, with the CV's words that show it."""
+
+    skill_id: int
+    label_ar: str
+    quote: str

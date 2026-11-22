@@ -4,12 +4,9 @@ Used until Supabase tables and auth exist. Department ids must match the
 mock data of module 4 (org-map); procedure ids match data/company/procedures.json.
 """
 
-from datetime import UTC, datetime
-
 from .schemas import (
     AccessItem,
     AccessStatus,
-    AssessmentResult,
     EmployeeAccess,
     EmployeeProfile,
 )
@@ -19,19 +16,6 @@ CURRENT_EMPLOYEE_ID = "emp-004"
 
 # Employees the demo can switch between: three new hires with different paths, and a manager.
 DEMO_EMPLOYEE_IDS = ["emp-004", "emp-006", "emp-007", "emp-002"]
-
-# The policy document behind each assessment topic, from data/company/manifest.json. A low
-# topic becomes a lesson on this document, and its quiz is generated from it.
-TOPIC_DOCUMENTS = {
-    "سياسة الإجازات": "annual-leave",
-    "الحضور والانصراف": "attendance",
-    "أمن المعلومات": "infosec",
-    "السفر والانتداب": "business-travel",
-    "المصروفات والمطالبات": "reimbursements",
-}
-
-# When the mock starting assessment was taken (6am UTC = 9am Riyadh).
-ASSESSMENT_TAKEN_AT = datetime(2026, 11, 2, 6, 0, tzinfo=UTC)
 
 EMPLOYEES: list[EmployeeProfile] = [
     EmployeeProfile(
@@ -183,15 +167,6 @@ def _access(employee_id: str, statuses: dict[str, AccessStatus]) -> list[Employe
     ]
 
 
-def _results(employee_id: str, scores: dict[str, int]) -> list[AssessmentResult]:
-    return [
-        AssessmentResult(
-            employee_id=employee_id, topic=topic, score=score, taken_at=ASSESSMENT_TAKEN_AT
-        )
-        for topic, score in scores.items()
-    ]
-
-
 EMPLOYEE_ACCESS: list[EmployeeAccess] = [
     # Sara (manager) and Reem (senior analyst): everything active.
     *_access("emp-002", {"acc-email": "active", "acc-hr": "active"}),
@@ -236,31 +211,6 @@ EMPLOYEE_ACCESS: list[EmployeeAccess] = [
             "acc-vpn": "missing",
             "acc-git": "missing",
             "acc-staging": "missing",
-        },
-    ),
-]
-
-# Starting-assessment scores of the employees who joined before Tamam. New hires (emp-004,
-# emp-006, emp-007) have none: they take the generated assessment on their first visit.
-ASSESSMENT_RESULTS: list[AssessmentResult] = [
-    *_results(
-        "emp-002",
-        {
-            "سياسة الإجازات": 95,
-            "الحضور والانصراف": 90,
-            "أمن المعلومات": 92,
-            "السفر والانتداب": 85,
-            "المصروفات والمطالبات": 88,
-        },
-    ),
-    *_results(
-        "emp-003",
-        {
-            "سياسة الإجازات": 90,
-            "الحضور والانصراف": 85,
-            "أمن المعلومات": 88,
-            "السفر والانتداب": 75,
-            "المصروفات والمطالبات": 80,
         },
     ),
 ]
