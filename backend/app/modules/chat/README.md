@@ -64,7 +64,7 @@ without touching the modules.
 | `arabic.py` | `normalize_arabic()`: one normalization for documents and questions alike. |
 | `embeddings.py` | `embed_passages()` / `embed_query()` with `multilingual-e5-small`. |
 | `reranker.py` | `rerank()` with `bge-reranker-v2-m3`. |
-| `llm.py` | `generate()` with Gemini through LangChain. Falls back to a second model when the main one is busy. Turns a used-up quota into `LLMQuotaExceededError` and other failures into `LLMUnavailableError`. |
+| `llm.py` | `generate()` with Gemini through OpenRouter and LangChain. Falls back to a second model when the main one is busy. Turns a used-up quota into `LLMQuotaExceededError` and other failures into `LLMUnavailableError`. |
 
 ### Frontend — `frontend/src/modules/chat/`
 
@@ -162,7 +162,7 @@ filtering.
 
 ## Running and testing
 
-From `backend/`, with `TAMAM_GOOGLE_API_KEY` set in `backend/.env`:
+From `backend/`, with `TAMAM_OPENROUTER_API_KEY` set in `backend/.env`:
 
 ```bash
 pip install -e ".[dev,rag]"
@@ -177,13 +177,15 @@ python -m app.modules.knowledge.cli
 
 Then open http://localhost:8000/docs and try `POST /api/chat/ask`.
 
-Gemini's free tier allows only about 20 answers per day per model. When the quota is used
-up, the chat shows «خدمة الإجابة غير متاحة حالياً». For a demo, keep a spare key or enable
-billing.
+Gemini is reached through [OpenRouter](https://openrouter.ai), which takes prepaid credit
+by card. Google Cloud billing in Saudi Arabia goes through a reseller contract, and Gemini's
+free tier allows only about 20 answers per day. One question costs about $0.0015, so $5 of
+credit covers thousands. When the credit runs out, the chat shows «خدمة الإجابة غير متاحة
+حالياً».
 
-Gemini also refuses a model for a while when demand is high (503 UNAVAILABLE). When the
-main model (`TAMAM_LLM_MODEL`) is busy or out of quota, the same request goes to
-`TAMAM_LLM_FALLBACK_MODEL` (`gemini-3.5-flash` by default; empty turns it off). The chat
+A model is sometimes refused for a while when demand is high. When the main model
+(`TAMAM_LLM_MODEL`) is busy or rate-limited, the same request goes to
+`TAMAM_LLM_FALLBACK_MODEL` (`google/gemini-3.7-flash` by default; empty turns it off). The chat
 shows the error only when both fail.
 
 Loading the embedding and reranker models takes from a few seconds to over a minute. Set
@@ -195,7 +197,7 @@ Tests never call a real model; they replace it with `monkeypatch`.
 ```bash
 pytest tests/chat tests/test_ai_arabic.py tests/test_ai_llm.py
 python -m app.modules.chat.evaluate            # retrieval accuracy, no Gemini calls
-python -m app.modules.chat.evaluate --answers  # also checks Gemini's answers (uses quota)
+python -m app.modules.chat.evaluate --answers  # also checks Gemini's answers (uses credit)
 ```
 
 | Test file | Covers |
@@ -213,6 +215,6 @@ python -m app.modules.chat.evaluate --answers  # also checks Gemini's answers (u
 
 ## Next steps
 
-- Measure the answers themselves with `evaluate --answers` once there is enough quota.
+- Measure the answers themselves with `evaluate --answers` now that there is credit.
 - Rewrite dialect questions into standard Arabic before searching.
 - Stream the answer as it is generated.
