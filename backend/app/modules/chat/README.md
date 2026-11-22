@@ -64,7 +64,7 @@ without touching the modules.
 | `arabic.py` | `normalize_arabic()`: one normalization for documents and questions alike. |
 | `embeddings.py` | `embed_passages()` / `embed_query()` with `multilingual-e5-small`. |
 | `reranker.py` | `rerank()` with `bge-reranker-v2-m3`. |
-| `llm.py` | `generate()` with Gemini through LangChain. Turns a used-up quota into `LLMQuotaExceededError` and other failures into `LLMUnavailableError`. |
+| `llm.py` | `generate()` with Gemini through LangChain. Falls back to a second model when the main one is busy. Turns a used-up quota into `LLMQuotaExceededError` and other failures into `LLMUnavailableError`. |
 
 ### Frontend — `frontend/src/modules/chat/`
 
@@ -180,6 +180,11 @@ Then open http://localhost:8000/docs and try `POST /api/chat/ask`.
 Gemini's free tier allows only about 20 answers per day per model. When the quota is used
 up, the chat shows «خدمة الإجابة غير متاحة حالياً». For a demo, keep a spare key or enable
 billing.
+
+Gemini also refuses a model for a while when demand is high (503 UNAVAILABLE). When the
+main model (`TAMAM_LLM_MODEL`) is busy or out of quota, the same request goes to
+`TAMAM_LLM_FALLBACK_MODEL` (`gemini-3.5-flash` by default; empty turns it off). The chat
+shows the error only when both fail.
 
 Loading the embedding and reranker models takes from a few seconds to over a minute. Set
 `TAMAM_WARM_UP_MODELS=true` in `backend/.env` to load them while the server starts, so
