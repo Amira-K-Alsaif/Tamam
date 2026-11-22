@@ -48,6 +48,14 @@ const ROADMAP: Roadmap = {
         },
         {
           ...ITEM,
+          kind: 'person',
+          title: 'فهد المطيري · مسؤول الصلاحيات',
+          reason: 'يوافق على الشبكة الخاصة (VPN)',
+          week: 1,
+          employee_id: 'emp-005',
+        },
+        {
+          ...ITEM,
           kind: 'lesson',
           title: 'درس: أمن المعلومات',
           reason: 'درجتك في التقييم 40 من 100، والمطلوب 70.',
@@ -145,6 +153,16 @@ describe('OnboardingPage', () => {
     expect(screen.getByText('أول خطوة')).toBeInTheDocument()
     expect(screen.getByText('1 من 2')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'خطوات الطلب' })).toHaveAttribute('href', '/procedures?id=proc-vpn')
+  })
+
+  it('links each person to meet to their card in the company map', async () => {
+    serve()
+    renderPage()
+
+    expect(await screen.findByRole('link', { name: 'افتحي بطاقته في خريطة الشركة' })).toHaveAttribute(
+      'href',
+      '/org-map?person=emp-005',
+    )
   })
 
   it("shows the manager's team when the demo switches to a manager", async () => {

@@ -323,6 +323,15 @@ function ItemsSection({
               </div>
               <span className="text-muted">{item.reason}</span>
               {item.kind === 'access' && <AccessDetails item={item} />}
+              {item.kind === 'person' && item.employee_id && (
+                <ButtonLink
+                  variant="secondary"
+                  className="h-9 self-start"
+                  to={`/org-map?person=${encodeURIComponent(item.employee_id)}`}
+                >
+                  افتحي بطاقته في خريطة الشركة
+                </ButtonLink>
+              )}
               {item.kind === 'lesson' && item.score !== null && (
                 <ProgressBar label="درجتك في التقييم" value={item.score} />
               )}
