@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { DevelopmentPlan, GapAnalysis, JobTitle } from './api'
@@ -49,12 +49,19 @@ const PLAN: DevelopmentPlan = {
   ],
 }
 
+// The current title comes from the profile; analysis can start once it is matched.
+async function readyToAnalyze() {
+  const button = await screen.findByRole('button', { name: 'حلّلي الفجوة' })
+  await waitFor(() => expect(button).toBeEnabled())
+  return button
+}
+
 const json = (body: unknown, status = 200) => Promise.resolve(new Response(JSON.stringify(body), { status }))
 
 // `me` is the signed-in employee's job_title; null makes the profile request fail.
-function stubApi(gap: GapAnalysis | 'fail' = GAP, me: string | null = 'مهندسة طيران', plan: DevelopmentPlan | 'fail' = PLAN) {
+function stubApi(gap: GapAnalysis | 'fail' = GAP, me: string | null = 'محاسب', plan: DevelopmentPlan | 'fail' = PLAN) {
   const fetchMock = vi.fn((url: string) => {
-    if (url.includes('/api/onboarding/me')) return me === null ? json({}, 500) : json({ job_title: me })
+    if (url.includes('/api/onboarding/me')) return me === null ? json({}, 500) : json({ id: 'emp-004', job_title: me })
     if (url.includes('/api/career/titles/match')) {
       const jobTitle = new URL(url).searchParams.get('job_title')
       const match = TITLES.find((t) => t.name_ar === jobTitle)
@@ -77,16 +84,16 @@ describe('CareerPage', () => {
     const user = userEvent.setup()
     render(<CareerPage />)
 
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
+    await user.click(await readyToAnalyze())
     expect(screen.getByLabelText('المنصب المستهدف')).toHaveValue('8')
-
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
 
     expect(await screen.findByRole('img', { name: /رادار الفجوة/ })).toBeInTheDocument()
     expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '42')
     expect(screen.getAllByText('قيادة الفرق')).toHaveLength(2) // radar axis + missing list
     expect(screen.getByText(/أولوية عالية/)).toBeInTheDocument()
-    expect(fetchMock).toHaveBeenCalledWith(expect.stringContaining('gap-analysis?current_title_id=7&target_title_id=8'))
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringContaining('gap-analysis?current_title_id=7&target_title_id=8&employee_id=emp-004'),
+    )
     expect(await screen.findByText('بناء الأساس في «قيادة الفرق»')).toBeInTheDocument()
     expect(screen.getByText('أول ٣٠ يوم')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'ESCO' })).toHaveAttribute(
@@ -100,8 +107,7 @@ describe('CareerPage', () => {
     stubApi({ ...GAP, gap: { ...GAP.gap, evidence_postings: 1, low_evidence: true } })
     const user = userEvent.setup()
     render(<CareerPage />)
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await user.click(await readyToAnalyze())
     expect(await screen.findByRole('note')).toHaveTextContent('النتيجة تقريبية')
   })
 
@@ -109,68 +115,64 @@ describe('CareerPage', () => {
     stubApi()
     const user = userEvent.setup()
     render(<CareerPage />)
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await user.click(await readyToAnalyze())
     await screen.findByRole('progressbar')
     expect(screen.queryByRole('note')).not.toBeInTheDocument()
   })
 
   it('says so when there is nothing to learn', async () => {
-    stubApi(GAP, 'مهندسة طيران', { ...PLAN, phases: [] })
+    stubApi(GAP, 'محاسب', { ...PLAN, phases: [] })
     const user = userEvent.setup()
     render(<CareerPage />)
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await user.click(await readyToAnalyze())
     expect(await screen.findByText(/ما تحتاجين خطة/)).toBeInTheDocument()
   })
 
   it('keeps the gap result when only the plan fails', async () => {
-    stubApi(GAP, 'مهندسة طيران', 'fail')
+    stubApi(GAP, 'محاسب', 'fail')
     const user = userEvent.setup()
     render(<CareerPage />)
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await user.click(await readyToAnalyze())
     expect(await screen.findByRole('alert')).toHaveTextContent('ما قدرنا نجهّز الخطة')
     expect(screen.getByRole('progressbar')).toBeInTheDocument()
   })
 
-  it('keeps the button disabled until both titles are chosen', async () => {
+  it('has no picker for the current title', async () => {
     stubApi()
     render(<CareerPage />)
-    await screen.findByLabelText('المنصب الحالي')
-    expect(screen.getByRole('button', { name: 'حلّلي الفجوة' })).toBeDisabled()
+    await readyToAnalyze()
+    expect(screen.queryByLabelText('المنصب الحالي')).not.toBeInTheDocument()
+    expect(screen.getAllByRole('combobox')).toHaveLength(1)
   })
 
   it('shows an Arabic error when the analysis fails', async () => {
     stubApi('fail')
     const user = userEvent.setup()
     render(<CareerPage />)
-    await user.selectOptions(await screen.findByLabelText('المنصب الحالي'), '7')
-    await user.click(screen.getByRole('button', { name: 'حلّلي الفجوة' }))
+    await user.click(await readyToAnalyze())
     expect(await screen.findByRole('alert')).toHaveTextContent('صار خطأ في التحليل')
   })
 
-  it('prefills the current and next title from the employee profile', async () => {
+  it('takes the current title from the profile and suggests the next one', async () => {
     stubApi(GAP, 'محاسب')
     render(<CareerPage />)
-    expect(await screen.findByText(/اخترنا منصبك الحالي من ملفك: «محاسب»/)).toBeInTheDocument()
-    expect(screen.getByLabelText('المنصب الحالي')).toHaveValue('7')
+    await readyToAnalyze()
+    expect(screen.getByText('محاسب')).toBeInTheDocument()
     expect(screen.getByLabelText('المنصب المستهدف')).toHaveValue('8')
-    expect(screen.getByRole('button', { name: 'حلّلي الفجوة' })).toBeEnabled()
   })
 
-  it('asks for a manual choice when the profile title has no postings', async () => {
+  it('cannot analyze when the profile title has no postings', async () => {
     stubApi(GAP, 'مهندسة طيران')
     render(<CareerPage />)
     expect(await screen.findByText(/«مهندسة طيران» ما عندنا له إعلانات/)).toBeInTheDocument()
-    expect(screen.getByLabelText('المنصب الحالي')).toHaveValue('')
+    expect(screen.getByRole('button', { name: 'حلّلي الفجوة' })).toBeDisabled()
   })
 
-  it('still works by hand when the profile cannot load', async () => {
+  it('says so when the profile cannot load', async () => {
     stubApi(GAP, null)
     render(<CareerPage />)
-    expect(await screen.findByText('ما قدرنا نقرأ ملفك، اختاري منصبك الحالي بنفسك.')).toBeInTheDocument()
-    expect(screen.getByLabelText('المنصب الحالي')).toHaveValue('')
+    expect(await screen.findByText('ما قدرنا نقرأ ملفك. حدّثي الصفحة وحاولي مرة ثانية.')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'حلّلي الفجوة' })).toBeDisabled()
   })
 
   it('shows an error when titles cannot load', async () => {

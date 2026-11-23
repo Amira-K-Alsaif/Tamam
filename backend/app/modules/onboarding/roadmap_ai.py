@@ -78,7 +78,7 @@ def draw(employee: EmployeeProfile, lessons: list[RoadmapItem], skills: list[Roa
     system = prompts.ROADMAP_SYSTEM.format(per_week=ITEMS_PER_WEEK)
     try:
         raw = llm.generate(
-            system, prompts.build_roadmap_prompt(profile, [_describe(g) for g in gaps])
+            system, prompts.build_roadmap_prompt(profile, [_describe(g) for g in gaps]), fast=True
         )
         parsed = _LLMPlan.model_validate(json.loads(_FENCE.sub("", raw.strip())))
     except (llm.LLMNotConfiguredError, llm.LLMUnavailableError) as error:

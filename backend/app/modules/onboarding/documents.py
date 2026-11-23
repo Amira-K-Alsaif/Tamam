@@ -5,6 +5,11 @@ from functools import lru_cache
 from pathlib import Path
 
 COMPANY_DIR = Path(__file__).resolve().parents[4] / "data" / "company"
+# Questions written once from each policy by build_questions.py, with their answers.
+QUESTION_BANK = Path(__file__).resolve().parent / "data" / "policy_questions.json"
+
+# Policies every employee should know, after the ones of their own department.
+COMPANY_WIDE = ["infosec", "code-conduct", "data-privacy", "attendance", "annual-leave"]
 
 
 @lru_cache
@@ -19,6 +24,20 @@ def _titles() -> dict[str, str]:
 def policies() -> list[tuple[str, str]]:
     """(id, title) of every company policy, the documents the assessment can ask about."""
     return [(d["id"], d["title"]) for d in _manifest() if d["kind"] == "policy"]
+
+
+def policies_for(team: str, count: int) -> list[str]:
+    """The policies of the employee's own department first, then the company-wide ones."""
+    own = [d["id"] for d in _manifest() if d["kind"] == "policy" and d["department"] == team]
+    return list(dict.fromkeys(own[:2] + COMPANY_WIDE))[:count]
+
+
+@lru_cache
+def bank() -> dict[str, list[dict]]:
+    """The saved questions per policy, or none if the bank has not been built."""
+    if not QUESTION_BANK.is_file():
+        return {}
+    return json.loads(QUESTION_BANK.read_text(encoding="utf-8"))
 
 
 def topic_for(document_id: str) -> str:

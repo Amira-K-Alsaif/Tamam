@@ -122,9 +122,7 @@ def skill_gaps(employee_id: str) -> list[RoadmapItem]:
         (
             (row, expected[skill_id])
             for skill_id, row in measured.items()
-            if row.source == "assessment"
-            and skill_id in expected
-            and row.level < expected[skill_id]
+            if skill_id in expected and row.level < expected[skill_id]
         ),
         key=lambda pair: pair[0].level - pair[1],
     )
@@ -292,7 +290,7 @@ def build_progress(employee_id: str) -> Progress:
     measured = {
         skill_id: row.level
         for skill_id, row in skill_profile.profile(employee_id).items()
-        if row.source == "assessment" and skill_id in expected
+        if skill_id in expected
     }
 
     access_active = sum(1 for status in statuses.values() if status == "active")

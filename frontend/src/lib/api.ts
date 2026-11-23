@@ -147,8 +147,8 @@ export function answerLessonQuiz(
   return apiPost<QuizResult>(`${path}${asEmployee(employeeId)}`, { answers })
 }
 
-// The starting assessment: questions on the company's policies and on the employee's skills.
-// Skill questions come from general knowledge of the skill, so they have no source.
+// The starting assessment: questions on the company's policies, and the employee's own level
+// in each skill of their specialization (option index = level 0-4, no right answer, no source).
 export type AssessmentQuestion = {
   kind: 'company' | 'skill'
   topic: string
@@ -163,11 +163,9 @@ export type Assessment = { questions: AssessmentQuestion[] }
 export type AssessmentOutcome = {
   topics: { topic: string; document_id: string; score: number; passed: boolean }[]
   skills: { skill_id: number; label_ar: string; level: number; expected_level: number | null }[]
-  correct: boolean[]
-  correct_options: number[]
+  correct: (boolean | null)[]
+  correct_options: (number | null)[]
 }
-
-export type CvSkill = { skill_id: number; label_ar: string; quote: string }
 
 export function getAssessment(employeeId?: string): Promise<Assessment> {
   return apiGet<Assessment>(`/api/onboarding/assessment${asEmployee(employeeId)}`)
@@ -175,18 +173,6 @@ export function getAssessment(employeeId?: string): Promise<Assessment> {
 
 export function answerAssessment(answers: number[], employeeId?: string): Promise<AssessmentOutcome> {
   return apiPost<AssessmentOutcome>(`/api/onboarding/assessment/attempt${asEmployee(employeeId)}`, { answers })
-}
-
-// The CV is read for its skills and not kept.
-export async function uploadCv(file: File, employeeId?: string): Promise<CvSkill[]> {
-  const path = `/api/onboarding/cv${asEmployee(employeeId)}`
-  const form = new FormData()
-  form.append('file', file)
-  const response = await fetch(`${API_BASE_URL}${path}`, { method: 'POST', body: form })
-  if (!response.ok) {
-    throw new ApiError(response.status, `POST ${path} failed`)
-  }
-  return (await response.json()) as CvSkill[]
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {

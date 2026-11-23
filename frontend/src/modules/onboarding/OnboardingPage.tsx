@@ -217,8 +217,8 @@ function DemoSwitcher({
   if (employees.length === 0) return null
   return (
     <label className="flex items-center gap-2 text-sm text-muted">
-      عرض تجريبي كـ
       <select
+        aria-label="الموظف"
         value={value ?? ''}
         onChange={(event) => onChange(event.target.value)}
         className="rounded-full border border-line bg-surface px-3 py-1.5 font-body text-ink"

@@ -10,7 +10,7 @@ from app.modules.career import service as career
 from app.modules.career.repository import get_repository
 
 # How many of the title's most requested skills the assessment measures.
-TITLE_SKILLS = 4
+TITLE_SKILLS = 6
 
 
 @dataclass(frozen=True)

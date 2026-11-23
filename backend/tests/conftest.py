@@ -2,7 +2,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from app.modules.onboarding import assessment, roadmap_ai, service, skill_profile
+from app.modules.onboarding import assessment, documents, roadmap_ai, service, skill_profile
 
 # Policy scores for four employees, as if each had taken the starting assessment.
 # Roadmap tests need lessons to order; nobody has any until they take it.
@@ -48,8 +48,10 @@ def employees_assessed():
 
 
 @pytest.fixture(autouse=True)
-def fresh_onboarding_state():
-    """Every test starts with no assessment, skill profile, plan, or score recorded."""
+def fresh_onboarding_state(monkeypatch):
+    """Every test starts with no assessment, skill profile, plan, or score recorded, and no
+    saved question bank, so questions come from the (faked) model unless a test adds a bank."""
+    monkeypatch.setattr(documents, "bank", lambda: {})
     yield
     assessment.clear_assessment()
     roadmap_ai.clear()

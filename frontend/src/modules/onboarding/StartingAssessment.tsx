@@ -3,112 +3,23 @@ import { useEffect, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
 import { ProgressBar } from '../../components/ProgressBar'
-import { answerAssessment, getAssessment, uploadCv } from '../../lib/api'
-import type { Assessment, AssessmentOutcome, CvSkill } from '../../lib/api'
+import { answerAssessment, getAssessment } from '../../lib/api'
+import type { Assessment, AssessmentOutcome } from '../../lib/api'
 
-const CV_TYPES = '.pdf,.docx,.txt'
-const SECTION_TITLES = { company: 'عن الشركة', skill: 'عن تخصصك' } as const
+const SECTION_TITLES = { company: 'عن الشركة', skill: 'عن تخصصك: وين مستواك؟' } as const
 
-// Every employee starts here. Their CV (optional) says which skills they have; the questions
-// measure what they know about the company and how well they know their specialization. The
-// path is drawn from the result, so nothing else shows until it is done.
+// Every employee starts here: questions on the company's policies, and their own level in each
+// skill of their specialization. The path is drawn from the answers, so nothing else shows
+// until it is done.
 export function StartingAssessment({ employeeId, onDone }: { employeeId: string; onDone: () => void }) {
-  const [step, setStep] = useState<'cv' | 'questions'>('cv')
-
   return (
     <Card title="قبل ما نبدأ: تقييمك الأولي">
       <p className="m-0 text-muted">
         نبي نعرف وش تعرفين عن الشركة ووين مستواك في تخصصك، عشان يرسم لك تمّام مسار بدايتك: وش تحتاجين تتعلمين،
         ووش تطوّرين من مهاراتك.
       </p>
-      {step === 'cv' ? (
-        <CvStep employeeId={employeeId} onNext={() => setStep('questions')} />
-      ) : (
-        <QuestionsStep employeeId={employeeId} onDone={onDone} />
-      )}
+      <QuestionsStep employeeId={employeeId} onDone={onDone} />
     </Card>
-  )
-}
-
-function CvStep({ employeeId, onNext }: { employeeId: string; onNext: () => void }) {
-  const [file, setFile] = useState<File | null>(null)
-  const [state, setState] = useState<'idle' | 'reading' | 'unreadable' | 'unavailable'>('idle')
-  const [skills, setSkills] = useState<CvSkill[] | null>(null)
-
-  async function read() {
-    if (!file) return
-    setState('reading')
-    try {
-      setSkills(await uploadCv(file, employeeId))
-      setState('idle')
-    } catch (error) {
-      const status = (error as { status?: number }).status
-      setState(status === 422 ? 'unreadable' : 'unavailable')
-    }
-  }
-
-  if (skills) {
-    return (
-      <div className="flex flex-col gap-3 rounded-2xl border border-line bg-sunken p-4">
-        <strong>{skills.length > 0 ? 'هذي المهارات اللي لقيناها في سيرتك' : 'ما لقينا مهارات واضحة في سيرتك'}</strong>
-        {skills.length > 0 && (
-          <ul className="m-0 flex list-none flex-col gap-2 p-0">
-            {skills.map((skill) => (
-              <li key={skill.skill_id} className="flex flex-col">
-                <span>{skill.label_ar}</span>
-                <span className="text-xs text-faint">من سيرتك: «{skill.quote}»</span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="m-0 text-sm text-muted">بنتأكد من مستواك فيها بأسئلة قصيرة.</p>
-        <Button variant="ai" className="self-start" onClick={onNext}>
-          ابدئي الأسئلة
-        </Button>
-      </div>
-    )
-  }
-
-  return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-line bg-sunken p-4">
-      <strong>١. أرفقي سيرتك الذاتية (اختياري)</strong>
-      <p className="m-0 text-sm text-muted">نقرأ منها مهاراتك بس، وما نحتفظ بالملف. PDF أو Word أو نص.</p>
-      <label className="flex flex-col gap-2 text-sm">
-        السيرة الذاتية
-        <input
-          type="file"
-          accept={CV_TYPES}
-          onChange={(event) => {
-            setFile(event.target.files?.[0] ?? null)
-            setState('idle')
-          }}
-          className="text-muted"
-        />
-      </label>
-      {state === 'reading' && (
-        <p role="status" className="m-0 text-sm text-muted">
-          تمّام يقرأ سيرتك…
-        </p>
-      )}
-      {state === 'unreadable' && (
-        <p role="alert" className="m-0 text-sm text-warning">
-          ما قدرنا نقرأ الملف. جرّبي PDF أو Word أو ملف نص أصغر من ٢ ميجا.
-        </p>
-      )}
-      {state === 'unavailable' && (
-        <p role="alert" className="m-0 text-sm text-warning">
-          قراءة السيرة ما تشتغل الحين. تقدرين تكمّلين بدونها.
-        </p>
-      )}
-      <div className="flex flex-wrap gap-3">
-        <Button variant="ai" onClick={read} disabled={!file || state === 'reading'}>
-          اقرأ سيرتي
-        </Button>
-        <Button variant="secondary" onClick={onNext} disabled={state === 'reading'}>
-          كمّلي بدون سيرة
-        </Button>
-      </div>
-    </div>
   )
 }
 
@@ -138,7 +49,7 @@ function QuestionsStep({ employeeId, onDone }: { employeeId: string; onDone: () 
   if (state.kind === 'loading') {
     return (
       <p role="status" className="m-0 text-sm text-muted">
-        تمّام يجهّز أسئلتك من وثائق الشركة ومهارات تخصصك…
+        نجهّز أسئلتك…
       </p>
     )
   }
@@ -167,7 +78,6 @@ function QuestionsStep({ employeeId, onDone }: { employeeId: string; onDone: () 
 
   return (
     <div className="flex flex-col gap-4 rounded-2xl border border-line bg-sunken p-4">
-      <strong>٢. الأسئلة</strong>
       {questions.map((question, index) => {
         const previous = questions[index - 1]
         const newSection = index === 0 || previous.kind !== question.kind
@@ -175,13 +85,17 @@ function QuestionsStep({ employeeId, onDone }: { employeeId: string; onDone: () 
         return (
           <fieldset key={`${question.topic}-${question.question}`} className="m-0 flex flex-col gap-2 border-0 p-0">
             {newSection && <h3 className="m-0 font-display text-lg">{SECTION_TITLES[question.kind]}</h3>}
-            {newTopic && <p className="m-0 text-sm font-semibold text-mint">{question.topic}</p>}
+            {newTopic && question.kind === 'company' && (
+              <p className="m-0 text-sm font-semibold text-mint">{question.topic}</p>
+            )}
             <legend className="mb-2 font-semibold">
               {index + 1}. {question.question}
             </legend>
             {question.options.map((option, optionIndex) => {
-              const isRight = outcome?.correct_options[index] === optionIndex
-              const isWrongPick = outcome && answers[index] === optionIndex && !isRight
+              // Self-rated skill questions have no right answer, so only company ones are marked.
+              const isRight = outcome !== null && outcome.correct_options[index] === optionIndex
+              const isWrongPick =
+                outcome !== null && question.kind === 'company' && answers[index] === optionIndex && !isRight
               return (
                 <label
                   key={option}
@@ -231,7 +145,7 @@ function QuestionsStep({ employeeId, onDone }: { employeeId: string; onDone: () 
 function Outcome({ outcome, onDone }: { outcome: AssessmentOutcome; onDone: () => void }) {
   return (
     <div className="flex flex-col gap-3">
-      <strong>٣. نتيجتك</strong>
+      <strong>نتيجتك</strong>
       {outcome.topics.map((topic) => (
         <ProgressBar
           key={topic.document_id}

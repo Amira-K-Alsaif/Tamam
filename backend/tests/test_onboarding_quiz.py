@@ -44,7 +44,7 @@ FAKE_MODEL_REPLY = json.dumps(
 
 @pytest.fixture(autouse=True)
 def fake_model(monkeypatch):
-    monkeypatch.setattr(llm, "generate", lambda system, user: FAKE_MODEL_REPLY)
+    monkeypatch.setattr(llm, "generate", lambda system, user, **_: FAKE_MODEL_REPLY)
     yield
     quiz.clear_quizzes()
     service.clear_quiz_scores()
@@ -113,7 +113,7 @@ def test_quiz_errors():
 
 
 def test_quiz_is_unavailable_without_the_model(monkeypatch):
-    def not_configured(system, user):
+    def not_configured(system, user, **_):
         raise llm.LLMNotConfiguredError("no key")
 
     monkeypatch.setattr(llm, "generate", not_configured)

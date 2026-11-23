@@ -5,8 +5,7 @@ CREATE TABLE IF NOT EXISTS public.employee_skills (
     employee_id TEXT NOT NULL,
     skill_id INT NOT NULL REFERENCES public.skills(id),
     level SMALLINT NOT NULL CHECK (level BETWEEN 0 AND 4),
-    source TEXT NOT NULL CHECK (source IN ('cv', 'assessment')),
-    evidence TEXT NOT NULL DEFAULT '',
+    source TEXT NOT NULL CHECK (source IN ('self')),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (employee_id, skill_id)
 );

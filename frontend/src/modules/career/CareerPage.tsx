@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
 import { PageHeader } from '../../components/PageHeader'
@@ -51,7 +51,6 @@ export default function CareerPage() {
   const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
   // Whose measured skill levels the gap uses, from the onboarding assessment and CV.
   const [employeeId, setEmployeeId] = useState<string | undefined>(undefined)
-  const userChose = useRef(false)
 
   useEffect(() => {
     getTitles()
@@ -68,10 +67,8 @@ export default function CareerPage() {
         try {
           const match = await matchTitle(me.job_title)
           if (cancelled) return
-          if (!userChose.current) {
-            setCurrentId(match.id)
-            setTargetId(match.next_title_id)
-          }
+          setCurrentId(match.id)
+          setTargetId(match.next_title_id)
           setProfileTitle({ state: 'matched', jobTitle: me.job_title })
         } catch (err) {
           if (!(err instanceof ApiError && err.status === 404)) throw err
@@ -91,13 +88,6 @@ export default function CareerPage() {
     [titles],
   )
 
-  function chooseCurrent(id: number) {
-    userChose.current = true
-    setCurrentId(id)
-    setTargetId(byId.get(id)?.next_title_id ?? null)
-    setResult({ state: 'idle' })
-  }
-
   function analyze() {
     if (currentId === null || targetId === null) return
     setResult({ state: 'loading' })
@@ -114,7 +104,7 @@ export default function CareerPage() {
     <>
       <PageHeader
         title="مساري المهني"
-        description="اختاري منصبك الحالي والمنصب اللي تبين توصلين له، ونقارنك بإعلانات الوظائف في السوق."
+        description="اختاري المنصب اللي تبين توصلين له، ونقارن مهاراتك بإعلانات الوظائف في السوق."
       />
 
       {titles.state === 'loading' && <p className="m-0 text-muted">نجهّز المسميات الوظيفية…</p>}
@@ -128,23 +118,12 @@ export default function CareerPage() {
         <Card>
           <ProfileTitleNote profileTitle={profileTitle} />
           <div className="grid items-end gap-4 sm:grid-cols-3">
-            <label className="flex flex-col gap-2 text-sm text-muted">
-              المنصب الحالي
-              <select
-                className={selectClass}
-                value={currentId ?? ''}
-                onChange={(e) => chooseCurrent(Number(e.target.value))}
-              >
-                <option value="" disabled>
-                  اختاري…
-                </option>
-                {titles.data.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name_ar}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="flex flex-col gap-2 text-sm text-muted">
+              منصبك الحالي
+              <span className="flex h-11 items-center rounded-full border border-line bg-sunken px-4 text-base text-ink">
+                {currentId === null ? '—' : (byId.get(currentId)?.name_ar ?? '—')}
+              </span>
+            </div>
             <label className="flex flex-col gap-2 text-sm text-muted">
               المنصب المستهدف
               <select
@@ -197,11 +176,11 @@ function ProfileTitleNote({ profileTitle }: { profileTitle: ProfileTitle }) {
   if (profileTitle.state === 'loading') return null
   const text =
     profileTitle.state === 'matched'
-      ? `اخترنا منصبك الحالي من ملفك: «${profileTitle.jobTitle}». تقدرين تغيّرينه.`
+      ? null
       : profileTitle.state === 'unmatched'
-        ? `منصبك في ملفك «${profileTitle.jobTitle}» ما عندنا له إعلانات وظائف للحين، اختاري أقرب منصب له.`
-        : 'ما قدرنا نقرأ ملفك، اختاري منصبك الحالي بنفسك.'
-  return <p className="m-0 text-sm text-muted">{text}</p>
+        ? `منصبك في ملفك «${profileTitle.jobTitle}» ما عندنا له إعلانات وظائف للحين، فما نقدر نقارنه بالسوق.`
+        : 'ما قدرنا نقرأ ملفك. حدّثي الصفحة وحاولي مرة ثانية.'
+  return text && <p className="m-0 text-sm text-warning">{text}</p>
 }
 
 function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number, JobTitle> }) {

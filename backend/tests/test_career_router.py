@@ -131,7 +131,7 @@ def test_measured_levels_from_the_skill_profile_replace_the_estimate():
     repo = get_repository()
     estimated = service.analyze_gap(repo, ACCOUNTANT, FINANCE_MANAGER)
     top = estimated.radar[0].skill_id
-    skill_profile.save("emp-004", {top: 4}, source="assessment", evidence={})
+    skill_profile.save("emp-004", {top: 4})
 
     mine = client.get(
         "/api/career/gap-analysis",

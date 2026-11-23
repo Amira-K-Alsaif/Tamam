@@ -80,12 +80,11 @@ for the CEO. Added for module 3's «عبّي النموذج عني» (agreed by 
 
 ### Employee skill profile (owner: 5 writes, 6 reads)
 
-    employee_id, skill_id (career skills.id), level (0-4), source (cv | assessment),
-    evidence, updated_at
+    employee_id, skill_id (career skills.id), level (0-4), source (self), updated_at
 
-Written by onboarding from the employee's CV (a skill the CV shows: level 1) and from the
-starting assessment (a basic and an advanced question per skill: 0 to 4). Career reads it so
-the gap analysis uses the employee's measured levels instead of the market estimate. Private
+Written by onboarding from the starting assessment, where the employee rates their level in
+each of their title's top skills: «ما أعرفها» 0, «مبتدئ» 1, «متوسط» 2, «متقدم» 3, «خبير» 4.
+Career reads it so the gap analysis uses these levels instead of the market estimate. Private
 to the employee. Read through `app.modules.onboarding.skill_profile.levels(employee_id)` until
 the `employee_skills` table (`supabase/migrations/20261123_employee_skills.sql`) is wired in.
 Agreed by 5 and 6.

@@ -175,16 +175,16 @@ AssessmentKind = Literal["company", "skill"]
 
 
 class AssessmentQuestion(BaseModel):
-    """A starting-assessment question: on a company policy, or on a skill of the specialization.
+    """A starting-assessment question: on a company policy, or the employee's level in a skill.
 
-    Company questions carry the policy sentence that proves the answer. Skill questions are
-    written from general knowledge of the skill, so they carry no source.
+    Company questions carry the policy sentence that proves the answer. Skill questions ask the
+    employee to rate themselves, from «ما أعرفها» (0) to «خبير» (4), so they have no right answer.
     """
 
     kind: AssessmentKind
     topic: str  # The policy's title, or the skill's Arabic name
     question: str
-    options: list[str] = Field(min_length=2, max_length=4)
+    options: list[str] = Field(min_length=2, max_length=5)
     source: SourceCitation | None = None
     skill_id: int | None = None
 
@@ -214,13 +214,6 @@ class AssessmentOutcome(BaseModel):
 
     topics: list[TopicScore]
     skills: list[SkillResult]
-    correct: list[bool]
-    correct_options: list[int]
-
-
-class CvSkill(BaseModel):
-    """A skill found in the employee's CV, with the CV's words that show it."""
-
-    skill_id: int
-    label_ar: str
-    quote: str
+    # None for the self-rated skill questions, which have no right answer.
+    correct: list[bool | None]
+    correct_options: list[int | None]

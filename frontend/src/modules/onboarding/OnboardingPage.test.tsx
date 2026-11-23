@@ -184,18 +184,17 @@ describe('OnboardingPage', () => {
     expect(screen.getByRole('progressbar', { name: 'الخطوة الجاية: الشبكة الخاصة (VPN)' })).toBeInTheDocument()
   })
 
-  it('starts with the CV and the assessment, then shows the path drawn from the result', async () => {
+  it('starts with the assessment, then shows the path drawn from the result', async () => {
     const fetchMock = serve({
       '/api/onboarding/roadmap?employee_id=emp-004': { employee_id: 'emp-004', assessed: false, drawn_by: 'rules', weeks: [] },
-      '/api/onboarding/cv?employee_id=emp-004': [{ skill_id: 7, label_ar: 'تحليل البيانات', quote: 'حللت بيانات المبيعات' }],
       '/api/onboarding/assessment?employee_id=emp-004': {
         questions: [
           { ...QUIZ.questions[0], kind: 'company', topic: 'سياسة أمن المعلومات', skill_id: null },
           {
             kind: 'skill',
             topic: 'تحليل البيانات',
-            question: 'أي دالة تجمع القيم؟',
-            options: ['SUM', 'COUNT'],
+            question: 'وين مستواك في تحليل البيانات؟',
+            options: ['ما أعرفها', 'مبتدئ', 'متوسط', 'متقدم', 'خبير'],
             source: null,
             skill_id: 7,
           },
@@ -204,8 +203,8 @@ describe('OnboardingPage', () => {
       '/api/onboarding/assessment/attempt?employee_id=emp-004': {
         topics: [{ topic: 'سياسة أمن المعلومات', document_id: 'infosec', score: 0, passed: false }],
         skills: [{ skill_id: 7, label_ar: 'تحليل البيانات', level: 2, expected_level: 4 }],
-        correct: [false, true],
-        correct_options: [1, 0],
+        correct: [false, null],
+        correct_options: [1, null],
       },
     })
     renderPage()
@@ -213,16 +212,10 @@ describe('OnboardingPage', () => {
     expect(await screen.findByText('قبل ما نبدأ: تقييمك الأولي')).toBeInTheDocument()
     expect(screen.queryByText('شاراتك')).not.toBeInTheDocument()
 
-    const cv = new File(['حللت بيانات المبيعات'], 'cv.txt', { type: 'text/plain' })
-    await userEvent.upload(screen.getByLabelText('السيرة الذاتية'), cv)
-    await userEvent.click(screen.getByRole('button', { name: 'اقرأ سيرتي' }))
-    expect(await screen.findByText('من سيرتك: «حللت بيانات المبيعات»')).toBeInTheDocument()
-
-    await userEvent.click(screen.getByRole('button', { name: 'ابدئي الأسئلة' }))
     expect(await screen.findByText('عن الشركة')).toBeInTheDocument()
-    expect(screen.getByText('عن تخصصك')).toBeInTheDocument()
+    expect(screen.getByText('عن تخصصك: وين مستواك؟')).toBeInTheDocument()
     await userEvent.click(screen.getByLabelText('أرسلها لزميلي'))
-    await userEvent.click(screen.getByLabelText('SUM'))
+    await userEvent.click(screen.getByLabelText('متوسط'))
     await userEvent.click(screen.getByRole('button', { name: 'سلّمي الإجابات' }))
 
     expect(
@@ -236,13 +229,11 @@ describe('OnboardingPage', () => {
     expect(roadmapCalls.length).toBe(2)
   })
 
-  it('can skip the CV', async () => {
+  it('says so when the assessment cannot load', async () => {
     serve({
       '/api/onboarding/roadmap?employee_id=emp-004': { employee_id: 'emp-004', assessed: false, drawn_by: 'rules', weeks: [] },
     })
     renderPage()
-
-    await userEvent.click(await screen.findByRole('button', { name: 'كمّلي بدون سيرة' }))
 
     expect(await screen.findByText('التقييم ما تجهّز. حاولي مرة ثانية بعد شوي.')).toBeInTheDocument()
   })

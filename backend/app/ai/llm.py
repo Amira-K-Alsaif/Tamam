@@ -80,13 +80,15 @@ def _generate_with(model: str, system: str, user: str) -> str:
     return response.text
 
 
-def generate(system: str, user: str) -> str:
+def generate(system: str, user: str, fast: bool = False) -> str:
     """Sends the instructions and the user message, and returns the model's reply text.
 
     A model is sometimes refused for a while (high demand, or a rate limit), so when the
-    main model fails the same request goes to the fallback model.
+    main model fails the same request goes to the fallback model. `fast` tries the lighter
+    model first, for short structured replies the employee waits on, such as a roadmap.
     """
-    models = _models()
+    fast_model = get_settings().llm_fast_model if fast else ""
+    models = list(dict.fromkeys([fast_model, *_models()] if fast_model else _models()))
     for model in models[:-1]:
         try:
             return _generate_with(model, system, user)

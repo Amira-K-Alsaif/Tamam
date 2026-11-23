@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field, ValidationError
 from app.ai import llm
 from app.ai.arabic import normalize_arabic
 
-from . import prompts, service
+from . import documents, prompts, service
 from .documents import load_document, topic_for
 from .schemas import Quiz, QuizQuestion, QuizResult, SourceCitation
 
@@ -90,11 +90,37 @@ def generate_questions(document_id: str, count: int) -> tuple[list[QuizQuestion]
     return parse_questions(raw, document_id, title, markdown)
 
 
+# The first saved questions of a policy go in the starting assessment, the rest in its lesson.
+ASSESSMENT_QUESTIONS = 2
+
+
+def _saved(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    rows = documents.bank().get(document_id, [])
+    questions = [QuizQuestion(**{k: v for k, v in row.items() if k != "answer"}) for row in rows]
+    return questions, [row["answer"] for row in rows]
+
+
+def assessment_questions(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    """From the saved bank, so the assessment opens at once; generated if the bank lacks it."""
+    questions, key = _saved(document_id)
+    if len(questions) >= ASSESSMENT_QUESTIONS:
+        return questions[:ASSESSMENT_QUESTIONS], key[:ASSESSMENT_QUESTIONS]
+    return generate_questions(document_id, ASSESSMENT_QUESTIONS)
+
+
+def lesson_questions(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    """Saved questions the assessment did not ask, or new ones if none are left."""
+    questions, key = _saved(document_id)
+    if len(questions) > ASSESSMENT_QUESTIONS:
+        return questions[ASSESSMENT_QUESTIONS:], key[ASSESSMENT_QUESTIONS:]
+    return generate_questions(document_id, prompts.QUESTION_COUNT)
+
+
 def get_quiz(document_id: str) -> Quiz:
-    """The lesson's quiz, generated once per server run from its policy document."""
+    """The lesson's quiz on its policy, kept for this server run."""
     topic = topic_for(document_id)
     if document_id not in _quizzes:
-        questions, key = generate_questions(document_id, prompts.QUESTION_COUNT)
+        questions, key = lesson_questions(document_id)
         quiz = Quiz(
             topic=topic,
             document_id=document_id,
