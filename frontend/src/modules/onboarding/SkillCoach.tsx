@@ -2,11 +2,12 @@ import { ArrowLeft, MessageCircle, Minus, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { checkSkillLevel, coachReply } from '../../lib/api'
-import type { CoachMessage, LevelCheck } from '../../lib/api'
+import { coachReply } from '../../lib/api'
+import type { CoachMessage, CoachReply } from '../../lib/api'
 
-// Answers needed before the level can be checked; matches coach.MIN_ANSWERS on the server.
-const MIN_ANSWERS = 3
+// What the chat shows: the conversation, plus notes where the coach changed the level.
+// Only the conversation goes back to the server.
+type ChatEntry = CoachMessage | { role: 'note'; text: string }
 
 // The conversation is kept in this browser, per employee and skill, so it can be reopened.
 // The server never stores it. Storage can be unavailable (private mode), so every access is guarded.
@@ -14,16 +15,16 @@ function storageKey(employeeId: string, skillId: number) {
   return `tamam.coach.${employeeId}.${skillId}`
 }
 
-function loadConversation(employeeId: string, skillId: number): CoachMessage[] {
+function loadConversation(employeeId: string, skillId: number): ChatEntry[] {
   try {
     const saved = window.localStorage.getItem(storageKey(employeeId, skillId))
-    return saved ? (JSON.parse(saved) as CoachMessage[]) : []
+    return saved ? (JSON.parse(saved) as ChatEntry[]) : []
   } catch {
     return []
   }
 }
 
-function saveConversation(employeeId: string, skillId: number, messages: CoachMessage[]) {
+function saveConversation(employeeId: string, skillId: number, messages: ChatEntry[]) {
   try {
     window.localStorage.setItem(storageKey(employeeId, skillId), JSON.stringify(messages))
   } catch {
@@ -39,27 +40,41 @@ type SkillCoachProps = {
   onClose: () => void
 }
 
+function conversationOf(entries: ChatEntry[]): CoachMessage[] {
+  return entries.filter((entry): entry is CoachMessage => entry.role !== 'note')
+}
+
+function levelNote(skillName: string, change: NonNullable<CoachReply['level_change']>): string {
+  const direction = change.level > change.previous_level ? 'تحسّن' : 'تغيّر'
+  const reached = change.needed_level !== null && change.level >= change.needed_level
+  return `${direction} مستواك في ${skillName}: من ${change.previous_level} إلى ${change.level} من 4${
+    reached ? '، ووصلتي للمستوى المطلوب' : change.needed_level !== null ? `، والمطلوب ${change.needed_level}` : ''
+  }`
+}
+
 // A chat window over the page: Tamam coaches one skill, one short idea and question at a time.
-// It can be minimised to a button and reopened; after a few answers it can judge the level.
+// The coach follows the level from the answers and says when it changes; the path follows it.
 export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onClose }: SkillCoachProps) {
-  const [messages, setMessages] = useState<CoachMessage[]>(() => loadConversation(employeeId, skillId))
+  const [messages, setMessages] = useState<ChatEntry[]>(() => loadConversation(employeeId, skillId))
   const [draft, setDraft] = useState('')
   const [waiting, setWaiting] = useState(false)
   const [failed, setFailed] = useState(false)
-  const [check, setCheck] = useState<LevelCheck | null>(null)
-  const [checking, setChecking] = useState(false)
   const [minimised, setMinimised] = useState(false)
   const bottom = useRef<HTMLDivElement>(null)
   // Whether the window opened on a saved conversation; the parent remounts it per skill.
   const resumed = useRef(messages.length > 0)
 
-  async function send(next: CoachMessage[]) {
+  async function send(next: ChatEntry[]) {
     setMessages(next)
     setWaiting(true)
     setFailed(false)
     try {
-      const reply = await coachReply(skillId, next, employeeId)
-      const withReply: CoachMessage[] = [...next, { role: 'coach', text: reply.text }]
+      const reply = await coachReply(skillId, conversationOf(next), employeeId)
+      const withReply: ChatEntry[] = [...next, { role: 'coach', text: reply.text }]
+      if (reply.level_change) {
+        withReply.push({ role: 'note', text: levelNote(skillName, reply.level_change) })
+        onLevelChanged()
+      }
       setMessages(withReply)
       saveConversation(employeeId, skillId, withReply)
     } catch {
@@ -77,7 +92,7 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
     coachReply(skillId, [], employeeId)
       .then((reply) => {
         if (cancelled) return
-        const opening: CoachMessage[] = [{ role: 'coach', text: reply.text }]
+        const opening: ChatEntry[] = [{ role: 'coach', text: reply.text }]
         setMessages(opening)
         saveConversation(employeeId, skillId, opening)
       })
@@ -94,28 +109,14 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
 
   useEffect(() => {
     bottom.current?.scrollIntoView?.({ block: 'end' })
-  }, [messages, waiting, check])
+  }, [messages, waiting])
 
   function submit(event: FormEvent) {
     event.preventDefault()
     const text = draft.trim()
     if (!text || waiting) return
     setDraft('')
-    setCheck(null)
     void send([...messages, { role: 'employee', text }])
-  }
-
-  async function checkLevel() {
-    setChecking(true)
-    setFailed(false)
-    try {
-      setCheck(await checkSkillLevel(skillId, messages, employeeId))
-      onLevelChanged()
-    } catch {
-      setFailed(true)
-    } finally {
-      setChecking(false)
-    }
   }
 
   if (minimised) {
@@ -130,8 +131,6 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
       </button>
     )
   }
-
-  const answers = messages.filter((message) => message.role === 'employee').length
 
   return (
     <section
@@ -165,16 +164,26 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
 
       <div className="flex flex-1 flex-col gap-2.5 overflow-y-auto px-4 py-3">
         <ol aria-label="المحادثة" className="m-0 flex list-none flex-col gap-2.5 p-0">
-          {messages.map((message, index) => (
-            <li
-              key={index}
-              className={`max-w-4/5 whitespace-pre-line rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
-                message.role === 'coach' ? 'self-start rounded-ss-md bg-raised' : 'self-end rounded-se-md bg-mint/15'
-              }`}
-            >
-              {message.text}
-            </li>
-          ))}
+          {messages.map((message, index) =>
+            message.role === 'note' ? (
+              <li
+                key={index}
+                role="status"
+                className="self-center rounded-full border border-mint/35 px-3 py-1 text-center text-xs text-mint"
+              >
+                ✓ {message.text}
+              </li>
+            ) : (
+              <li
+                key={index}
+                className={`max-w-4/5 whitespace-pre-line rounded-2xl px-3.5 py-2 text-sm leading-relaxed ${
+                  message.role === 'coach' ? 'self-start rounded-ss-md bg-raised' : 'self-end rounded-se-md bg-mint/15'
+                }`}
+              >
+                {message.text}
+              </li>
+            ),
+          )}
         </ol>
         {waiting && (
           <p role="status" className="m-0 self-start rounded-2xl bg-raised px-3.5 py-2 text-sm text-muted">
@@ -186,36 +195,10 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
             تمّام ما رد. حاولي مرة ثانية بعد شوي.
           </p>
         )}
-        {check && (
-          <div role="status" className="flex flex-col gap-1 rounded-2xl border border-mint/35 p-3 text-sm">
-            <strong>
-              {check.level > check.previous_level
-                ? `ارتفع مستواك من ${check.previous_level} إلى ${check.level}`
-                : `مستواك ${check.level} من 4`}
-              {check.expected_level !== null && `، والمطلوب ${check.expected_level}`}
-            </strong>
-            <span className="text-muted">{check.reason}</span>
-            <span className="text-xs text-faint">تحدّث مسارك. تقدرين تكمّلين التدريب.</span>
-          </div>
-        )}
         <div ref={bottom} />
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line px-3 py-3">
-        {answers >= MIN_ANSWERS ? (
-          <button
-            type="button"
-            onClick={checkLevel}
-            disabled={waiting || checking}
-            className="cursor-pointer self-start rounded-full border border-mint/35 px-3 py-1 font-body text-xs text-mint disabled:opacity-50"
-          >
-            {checking ? 'تمّام يقيّم إجاباتك…' : 'قيّمي مستواي'}
-          </button>
-        ) : (
-          <span className="text-xs text-faint">
-            جاوبي {MIN_ANSWERS - answers} {MIN_ANSWERS - answers === 1 ? 'سؤال' : 'أسئلة'} ويقدر تمّام يقيّم مستواك.
-          </span>
-        )}
         <form
           onSubmit={submit}
           className="flex items-center gap-2 rounded-full border border-mint/35 bg-sunken ps-4 pe-1.5 focus-within:border-mint"

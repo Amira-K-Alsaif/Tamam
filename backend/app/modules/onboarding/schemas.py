@@ -230,14 +230,14 @@ class CoachRequest(BaseModel):
     messages: list[CoachMessage] = Field(max_length=40)
 
 
+class LevelChange(BaseModel):
+    """A level the coach changed during the conversation."""
+
+    previous_level: int = Field(ge=0, le=4)
+    level: int = Field(ge=0, le=4)
+    needed_level: int | None  # What the employee's title needs; None if the title is unknown
+
+
 class CoachReply(BaseModel):
     text: str
-
-
-class LevelCheck(BaseModel):
-    """The coach's judgement of the employee's level from their answers."""
-
-    level: int = Field(ge=0, le=4)
-    previous_level: int = Field(ge=0, le=4)
-    expected_level: int | None
-    reason: str
+    level_change: LevelChange | None = None

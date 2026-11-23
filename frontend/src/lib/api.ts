@@ -178,19 +178,13 @@ export function answerAssessment(answers: number[], employeeId?: string): Promis
 // The skill coach. The conversation is sent each time; the server keeps only the level.
 export type CoachMessage = { role: 'employee' | 'coach'; text: string }
 
-export type LevelCheck = {
-  level: number
-  previous_level: number
-  expected_level: number | null
-  reason: string
-}
+// A level the coach changed during the conversation, once the employee had shown it.
+export type LevelChange = { previous_level: number; level: number; needed_level: number | null }
 
-export function coachReply(skillId: number, messages: CoachMessage[], employeeId?: string): Promise<{ text: string }> {
-  return apiPost<{ text: string }>(`/api/onboarding/skills/${skillId}/coach${asEmployee(employeeId)}`, { messages })
-}
+export type CoachReply = { text: string; level_change: LevelChange | null }
 
-export function checkSkillLevel(skillId: number, messages: CoachMessage[], employeeId?: string): Promise<LevelCheck> {
-  return apiPost<LevelCheck>(`/api/onboarding/skills/${skillId}/level-check${asEmployee(employeeId)}`, { messages })
+export function coachReply(skillId: number, messages: CoachMessage[], employeeId?: string): Promise<CoachReply> {
+  return apiPost<CoachReply>(`/api/onboarding/skills/${skillId}/coach${asEmployee(employeeId)}`, { messages })
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {

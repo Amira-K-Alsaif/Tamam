@@ -3,16 +3,13 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { SkillCoach } from './SkillCoach'
 
+// The coach replies with how many messages it received; after the third answer it raises the level.
 function serve(coachStatus = 200) {
-  const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
-    const url = String(input)
-    if (url.includes('/level-check')) {
-      return new Response(
-        JSON.stringify({ level: 2, previous_level: 1, expected_level: 4, reason: 'أثبتي الأساسيات.' }),
-      )
-    }
-    const sent = JSON.parse(String(init?.body)).messages.length
-    return new Response(JSON.stringify({ text: `رد المدرّب ${sent}` }), { status: coachStatus })
+  const fetchMock = vi.fn(async (_input: RequestInfo | URL, init?: RequestInit) => {
+    const sent = JSON.parse(String(init?.body)).messages
+    const answers = sent.filter((m: { role: string }) => m.role === 'employee').length
+    const level_change = answers === 3 ? { previous_level: 1, level: 2, needed_level: 4 } : null
+    return new Response(JSON.stringify({ text: `رد المدرّب ${sent.length}`, level_change }), { status: coachStatus })
   })
   vi.stubGlobal('fetch', fetchMock)
   return fetchMock
@@ -89,23 +86,26 @@ describe('SkillCoach', () => {
     expect(onClose).toHaveBeenCalled()
   })
 
-  it('offers the level check after three answers and updates the path', async () => {
-    serve()
+  it('shows the level change inside the chat and updates the path, with no button to press', async () => {
+    const fetchMock = serve()
     const { onLevelChanged } = renderCoach()
     await screen.findByText('رد المدرّب 0')
 
-    expect(screen.queryByRole('button', { name: 'قيّمي مستواي' })).not.toBeInTheDocument()
     for (const [index, text] of ['أول', 'ثاني', 'ثالث'].entries()) {
       await answer(text)
       // Each answer sends the whole conversation: the coach's reply counts what it received.
       await screen.findByText(`رد المدرّب ${2 * (index + 1)}`)
     }
-    await userEvent.click(screen.getByRole('button', { name: 'قيّمي مستواي' }))
 
-    expect(await screen.findByText('ارتفع مستواك من 1 إلى 2، والمطلوب 4')).toBeInTheDocument()
-    expect(screen.getByText('أثبتي الأساسيات.')).toBeInTheDocument()
-    expect(onLevelChanged).toHaveBeenCalled()
-    expect(screen.getByLabelText('جوابك')).toBeEnabled()
+    expect(screen.getByText('✓ تحسّن مستواك في تحليل البيانات: من 1 إلى 2 من 4، والمطلوب 4')).toBeInTheDocument()
+    expect(onLevelChanged).toHaveBeenCalledTimes(1)
+    expect(screen.queryByRole('button', { name: 'قيّمي مستواي' })).not.toBeInTheDocument()
+
+    // The note is for the employee only; the coach receives the conversation without it.
+    await answer('رابع')
+    await screen.findByText('رد المدرّب 8')
+    const lastBody = JSON.parse(String(fetchMock.mock.calls.at(-1)?.[1]?.body))
+    expect(lastBody.messages.every((m: { role: string }) => m.role !== 'note')).toBe(true)
   })
 
   it('says so when the coach does not answer', async () => {

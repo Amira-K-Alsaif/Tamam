@@ -20,86 +20,103 @@ def conversation(answers: int) -> list[dict]:
     messages = [{"role": "coach", "text": "سؤال أول"}]
     for n in range(answers):
         messages += [{"role": "employee", "text": f"جوابي {n}"}, {"role": "coach", "text": "تمام"}]
-    return messages
+    return messages[:-1] if answers else messages
 
 
-def fake_model(monkeypatch, coach_text="فكرة وسؤال", judged_level=4):
+def fake_model(monkeypatch, text="فكرة وسؤال", level=None, raw=None):
     seen = []
 
     def reply(system, user, fast=False):
         seen.append((system, user, fast))
-        if system == prompts.LEVEL_CHECK_SYSTEM:
-            return json.dumps(
-                {"level": judged_level, "reason": "أثبتي الأساسيات."}, ensure_ascii=False
-            )
-        return coach_text
+        return (
+            raw
+            if raw is not None
+            else json.dumps({"text": text, "level": level}, ensure_ascii=False)
+        )
 
     monkeypatch.setattr(llm, "generate", reply)
     return seen
+
+
+def ask(skill_id: int, messages: list[dict]) -> dict:
+    response = client.post(
+        f"/api/onboarding/skills/{skill_id}/coach?employee_id={NOURA}", json={"messages": messages}
+    )
+    assert response.status_code == 200
+    return response.json()
 
 
 def test_the_coach_opens_at_the_employees_level_with_the_fast_model(monkeypatch, skill):
     seen = fake_model(monkeypatch)
     skill_profile.save(NOURA, {skill.id: 2})
 
-    body = client.post(
-        f"/api/onboarding/skills/{skill.id}/coach?employee_id={NOURA}", json={"messages": []}
-    ).json()
+    body = ask(skill.id, [])
 
-    assert body == {"text": "فكرة وسؤال"}
+    assert body == {"text": "فكرة وسؤال", "level_change": None}
     system, user, fast = seen[0]
     assert system == prompts.COACH_SYSTEM and fast
     assert f"<skill>{skill.label_ar}</skill>" in user and "<level>2</level>" in user
+    assert "<can_update>no</can_update>" in user
 
 
 def test_the_conversation_is_sent_back_to_the_coach(monkeypatch, skill):
     seen = fake_model(monkeypatch)
 
-    client.post(
-        f"/api/onboarding/skills/{skill.id}/coach?employee_id={NOURA}",
-        json={"messages": conversation(1)},
-    )
+    ask(skill.id, conversation(1))
 
     assert "الموظف: جوابي 0" in seen[0][1]
     assert "تمّام: سؤال أول" in seen[0][1]
 
 
-def test_the_level_moves_one_step_toward_the_judgement(monkeypatch, skill):
-    fake_model(monkeypatch, judged_level=4)
+def test_the_coach_raises_the_level_one_step_once_enough_answers_show_it(monkeypatch, skill):
+    seen = fake_model(monkeypatch, text="مستواك تحسّن!", level=4)
     skill_profile.save(NOURA, {skill.id: 1})
 
-    body = client.post(
-        f"/api/onboarding/skills/{skill.id}/level-check?employee_id={NOURA}",
-        json={"messages": conversation(3)},
-    ).json()
+    body = ask(skill.id, conversation(3))
 
-    assert (body["previous_level"], body["level"]) == (1, 2)
-    assert body["reason"] == "أثبتي الأساسيات."
+    assert "<can_update>yes</can_update>" in seen[0][1]
+    assert body["text"] == "مستواك تحسّن!"
+    change = body["level_change"]
+    assert (change["previous_level"], change["level"]) == (1, 2)
+    assert change["needed_level"] == specialization.expected_levels("محللة بيانات")[skill.id]
     assert skill_profile.levels(NOURA) == {skill.id: 2}
 
 
-def test_a_weak_conversation_lowers_the_level_one_step_at_most(monkeypatch, skill):
-    fake_model(monkeypatch, judged_level=0)
+def test_the_level_does_not_change_before_enough_answers(monkeypatch, skill):
+    fake_model(monkeypatch, level=4)
+    skill_profile.save(NOURA, {skill.id: 1})
+
+    body = ask(skill.id, conversation(2))
+
+    assert body["level_change"] is None
+    assert skill_profile.levels(NOURA) == {skill.id: 1}
+
+
+def test_weak_answers_lower_the_level_one_step_at_most(monkeypatch, skill):
+    fake_model(monkeypatch, level=0)
     skill_profile.save(NOURA, {skill.id: 3})
 
-    body = client.post(
-        f"/api/onboarding/skills/{skill.id}/level-check?employee_id={NOURA}",
-        json={"messages": conversation(3)},
-    ).json()
+    body = ask(skill.id, conversation(3))
 
-    assert body["level"] == 2
+    assert body["level_change"]["level"] == 2
 
 
-def test_the_level_needs_a_few_answers_first(monkeypatch, skill):
-    fake_model(monkeypatch)
+def test_no_judgement_or_the_same_level_changes_nothing(monkeypatch, skill):
+    skill_profile.save(NOURA, {skill.id: 2})
+    for level in (None, 2):
+        fake_model(monkeypatch, level=level)
+        assert ask(skill.id, conversation(4))["level_change"] is None
+    assert skill_profile.levels(NOURA) == {skill.id: 2}
 
-    response = client.post(
-        f"/api/onboarding/skills/{skill.id}/level-check?employee_id={NOURA}",
-        json={"messages": conversation(2)},
-    )
 
-    assert response.status_code == 422
-    assert skill_profile.levels(NOURA) is None
+def test_a_reply_that_is_not_json_is_shown_but_changes_no_level(monkeypatch, skill):
+    fake_model(monkeypatch, raw="رد عادي بدون تقييم")
+    skill_profile.save(NOURA, {skill.id: 1})
+
+    body = ask(skill.id, conversation(3))
+
+    assert body == {"text": "رد عادي بدون تقييم", "level_change": None}
+    assert skill_profile.levels(NOURA) == {skill.id: 1}
 
 
 def test_only_the_employees_own_skills_can_be_coached(monkeypatch):
@@ -125,16 +142,3 @@ def test_the_coach_is_unavailable_without_the_model(monkeypatch, skill):
     )
 
     assert response.status_code == 503
-
-
-def test_an_unusable_judgement_changes_nothing(monkeypatch, skill):
-    monkeypatch.setattr(llm, "generate", lambda system, user, **_: "مستواك ممتاز")
-    skill_profile.save(NOURA, {skill.id: 1})
-
-    response = client.post(
-        f"/api/onboarding/skills/{skill.id}/level-check?employee_id={NOURA}",
-        json={"messages": conversation(3)},
-    )
-
-    assert response.status_code == 503
-    assert skill_profile.levels(NOURA) == {skill.id: 1}

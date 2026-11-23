@@ -10,7 +10,6 @@ from .schemas import (
     CoachRequest,
     CurrentEmployee,
     EmployeeProfile,
-    LevelCheck,
     Progress,
     Quiz,
     QuizAnswers,
@@ -113,25 +112,13 @@ def answer_lesson_quiz(
 def coach_reply(
     skill_id: int, body: CoachRequest, employee_id: str | None = EmployeeId
 ) -> CoachReply:
-    """The skill coach's next message. The conversation is sent each time and not stored."""
+    """The coach's next message, and the level it changed once the employee has shown it.
+
+    The conversation is sent each time and not stored; only the level is.
+    """
     try:
-        return CoachReply(text=coach.reply(_resolve(employee_id), skill_id, body.messages))
+        return coach.reply(_resolve(employee_id), skill_id, body.messages)
     except LookupError as error:
         raise HTTPException(status_code=404, detail="Not one of your skills") from error
-    except coach.CoachUnavailableError as error:
-        raise HTTPException(status_code=503, detail="Coach unavailable") from error
-
-
-@router.post("/skills/{skill_id}/level-check", response_model=LevelCheck)
-def coach_level_check(
-    skill_id: int, body: CoachRequest, employee_id: str | None = EmployeeId
-) -> LevelCheck:
-    """Judges the level from the employee's answers and updates their skill profile."""
-    try:
-        return coach.check_level(_resolve(employee_id), skill_id, body.messages)
-    except LookupError as error:
-        raise HTTPException(status_code=404, detail="Not one of your skills") from error
-    except ValueError as error:
-        raise HTTPException(status_code=422, detail="Answer a few questions first") from error
     except coach.CoachUnavailableError as error:
         raise HTTPException(status_code=503, detail="Coach unavailable") from error
