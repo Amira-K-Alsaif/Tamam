@@ -20,6 +20,7 @@ import type {
 import { moduleById } from '../modules'
 import { LessonQuiz } from './LessonQuiz'
 import { StartingAssessment } from './StartingAssessment'
+import { taskCount, weekName } from './weeks'
 
 const ACCESS_BADGES: Record<AccessStatus, { status: Status; label: string }> = {
   active: { status: 'done', label: 'مفعّلة' },
@@ -180,11 +181,12 @@ export default function OnboardingPage() {
                   role="tab"
                   aria-selected={selected}
                   onClick={() => setSelectedWeek(w.week)}
-                  className={`cursor-pointer rounded-full border px-4 py-1.5 font-body ${
+                  className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-1.5 font-body ${
                     selected ? 'border-mint bg-raised text-ink' : 'border-line bg-surface text-muted'
                   }`}
                 >
-                  الأسبوع {w.week} · {w.items.length}
+                  {weekName(w.week)}
+                  <span className="text-xs text-faint">{taskCount(w.items.length)}</span>
                 </button>
               )
             })}
