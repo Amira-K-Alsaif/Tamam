@@ -27,3 +27,12 @@ def test_rerank_orders_by_the_reranker_and_keeps_the_top_k(monkeypatch, chunks, 
     monkeypatch.setattr(reranker, "rerank", lambda question, texts: [0.1, 0.9])
 
     assert retrieval.rerank("أبي أشتغل من البيت", chunks, k=1) == [remote]
+
+
+def test_search_merges_the_rewrite_and_the_question_without_duplicates(monkeypatch, leave, remote):
+    found_by = {"العمل عن بعد": [remote, leave], "أبي أشتغل من البيت": [leave]}
+    monkeypatch.setattr(retrieval, "hybrid_search", lambda text: found_by[text])
+
+    result = retrieval.search("أبي أشتغل من البيت", "العمل عن بعد")
+
+    assert [chunk.id for chunk in result] == ["leave", "remote"]

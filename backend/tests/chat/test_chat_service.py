@@ -4,6 +4,7 @@ import pytest
 
 from app.ai import llm
 from app.modules.chat import retrieval, service
+from app.modules.chat.prompts import REWRITE_PROMPT
 
 
 @pytest.fixture
@@ -46,13 +47,15 @@ def test_says_not_found_when_the_model_invents_a_source(monkeypatch, found):
     assert not result.found
 
 
-def test_skips_the_model_when_retrieval_finds_nothing(monkeypatch):
+def test_does_not_ask_for_an_answer_when_retrieval_finds_nothing(monkeypatch):
     monkeypatch.setattr(retrieval, "hybrid_search", lambda question: [])
 
-    def must_not_call(system, user):
-        raise AssertionError("the model should not be called")
+    def rewrite_only(system, user):
+        if system != REWRITE_PROMPT:
+            raise AssertionError("the model should not be asked for an answer")
+        return "أفضل المطاعم"
 
-    monkeypatch.setattr(llm, "generate", must_not_call)
+    monkeypatch.setattr(llm, "generate", rewrite_only)
 
     assert not service.answer("وش أحسن مطعم؟").found
 
@@ -70,4 +73,38 @@ def test_tells_the_model_which_company_it_works_for(monkeypatch, found):
     monkeypatch.setattr(llm, "generate", remember)
     service.answer("كم يوم إجازتي؟")
 
-    assert "شركة الواحة" in prompts_seen[0]
+    assert "شركة الواحة" in prompts_seen[-1]
+
+
+def model_that_rewrites(monkeypatch, rewritten: str, answer: str = "يومان في الأسبوع [1]."):
+    def reply(system, user):
+        return rewritten if system == REWRITE_PROMPT else answer
+
+    monkeypatch.setattr(llm, "generate", reply)
+
+
+def test_searches_with_the_dialect_question_and_its_formal_rewrite(monkeypatch, chunks):
+    searched, reranked = [], []
+    monkeypatch.setattr(retrieval, "hybrid_search", lambda text: searched.append(text) or chunks)
+    monkeypatch.setattr(
+        retrieval, "rerank", lambda text, candidates, k: reranked.append(text) or candidates[:k]
+    )
+    model_that_rewrites(monkeypatch, "سياسة العمل عن بعد")
+
+    result = service.answer("أبي أشتغل من البيت")
+
+    assert result.found
+    assert set(searched) == {"أبي أشتغل من البيت", "سياسة العمل عن بعد"}
+    assert reranked == ["أبي أشتغل من البيت سياسة العمل عن بعد"]
+
+
+def test_the_rewrite_keeps_only_its_first_line(monkeypatch):
+    model_that_rewrites(monkeypatch, "سياسة العمل عن بعد\nوهذا شرح زائد")
+
+    assert service.rewrite("أبي أشتغل من البيت") == "سياسة العمل عن بعد"
+
+
+def test_an_empty_rewrite_falls_back_to_the_question(monkeypatch):
+    model_that_rewrites(monkeypatch, "   ")
+
+    assert service.rewrite("أبي أشتغل من البيت") == "أبي أشتغل من البيت"

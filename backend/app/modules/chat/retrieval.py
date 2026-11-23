@@ -1,6 +1,7 @@
 """Pipeline steps 2 and 3: find the chunks most likely to answer a question.
 
-question ─┬─► semantic_search  (meaning: «من البيت» finds «عن بعد»)
+question + its formal rewrite, each searched by:
+          ┌─► semantic_search  (meaning: «من البيت» finds «عن بعد»)
           └─► keyword_search   (exact words: «VPN» finds «VPN»)
                     │
             hybrid_search      (merges both rankings)
@@ -75,6 +76,22 @@ def hybrid_search(question: str) -> list[Chunk]:
     chunks_by_id = {chunk.id: chunk for chunk in by_meaning + by_words}
     merged = ranking.reciprocal_rank_fusion(
         [[chunk.id for chunk in by_meaning], [chunk.id for chunk in by_words]]
+    )
+    return [chunks_by_id[chunk_id] for chunk_id in merged[:CANDIDATES]]
+
+
+def search(question: str, rewritten: str) -> list[Chunk]:
+    """Searches with the formal rewrite and the employee's own words, merged by rank.
+
+    The rewrite finds formal terms the question lacks; the original keeps exact words
+    such as «VPN» that a rewrite might drop.
+    """
+    by_rewrite = hybrid_search(rewritten)
+    by_question = hybrid_search(question)
+
+    chunks_by_id = {chunk.id: chunk for chunk in by_rewrite + by_question}
+    merged = ranking.reciprocal_rank_fusion(
+        [[chunk.id for chunk in by_rewrite], [chunk.id for chunk in by_question]]
     )
     return [chunks_by_id[chunk_id] for chunk_id in merged[:CANDIDATES]]
 

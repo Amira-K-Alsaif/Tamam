@@ -1,8 +1,9 @@
-"""Measures the chat on the evaluation questions in data/eval/knowledge_questions.json.
+"""Measures the chat on the evaluation questions in data/eval/.
 
 Run from backend/:
-    python -m app.modules.chat.evaluate             # retrieval only, no Gemini calls
-    python -m app.modules.chat.evaluate --answers   # also asks Gemini (slower, uses quota)
+    python -m app.modules.chat.evaluate             # retrieval (one short model call each)
+    python -m app.modules.chat.evaluate --answers   # also checks the answers (uses more credit)
+    python -m app.modules.chat.evaluate --questions ../data/eval/chat_dialect_questions.json
 
 Retrieval is a hit when the expected document is among the chunks the model reads.
 An answer is a hit when it is found and contains the expected phrase.
@@ -15,7 +16,7 @@ from pathlib import Path
 
 from app.ai.arabic import normalize_arabic
 
-from . import retrieval, service
+from . import service
 from .corpus import PROJECT_ROOT
 
 QUESTIONS_FILE = PROJECT_ROOT / "data/eval/knowledge_questions.json"
@@ -42,15 +43,14 @@ class Result:
 def evaluate(questions: list[dict], with_answers: bool) -> list[Result]:
     results = []
     for item in questions:
-        candidates = retrieval.hybrid_search(item["question"])
-        chunks = retrieval.rerank(item["question"], candidates, service.TOP_K) if candidates else []
+        chunks = service.find_chunks(item["question"])
         result = Result(
             id=item["id"],
             question=item["question"],
             expected_document_id=item["expected_document_id"],
             retrieved_document_ids=[chunk.document_id for chunk in chunks],
         )
-        if with_answers:
+        if with_answers and "expected_answer_hint" in item:
             reply = service.answer(item["question"])
             result.answer = reply.answer
             hint = normalize_arabic(item["expected_answer_hint"])

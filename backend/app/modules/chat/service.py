@@ -6,7 +6,7 @@ from app.config import get_settings
 
 from . import citations, retrieval
 from .corpus import Chunk
-from .prompts import build_system_prompt, build_user_prompt
+from .prompts import REWRITE_PROMPT, build_rewrite_prompt, build_system_prompt, build_user_prompt
 from .schemas import AskResponse, Source
 
 # How many chunks the model reads. One is too risky: an answer may need two chunks,
@@ -16,11 +16,9 @@ NOT_FOUND = "ما لقيت هذي المعلومة في وثائق الشركة.
 
 
 def answer(question: str) -> AskResponse:
-    # Steps 2-3: find the chunks most likely to answer the question.
-    candidates = retrieval.hybrid_search(question)
-    if not candidates:
+    chunks = find_chunks(question)
+    if not chunks:
         return _not_found()
-    chunks = retrieval.rerank(question, candidates, TOP_K)
 
     # Steps 4-5: ask the model to answer from those chunks only.
     system = build_system_prompt(get_settings().company_name)
@@ -36,6 +34,22 @@ def answer(question: str) -> AskResponse:
         found=True,
         sources=[_to_source(chunks[number - 1]) for number in cited],
     )
+
+
+def find_chunks(question: str) -> list[Chunk]:
+    """Steps 1b-3: the chunks most likely to answer the question."""
+    rewritten = rewrite(question)
+    candidates = retrieval.search(question, rewritten)
+    if not candidates:
+        return []
+    # The reranker reads both: the rewrite carries the formal terms, the question its intent.
+    return retrieval.rerank(f"{question} {rewritten}", candidates, TOP_K)
+
+
+def rewrite(question: str) -> str:
+    """The question in the documents' formal terms, or the question itself if none came back."""
+    reply = llm.generate(REWRITE_PROMPT, build_rewrite_prompt(question)).strip()
+    return reply.splitlines()[0].strip() if reply else question
 
 
 def _not_found() -> AskResponse:
