@@ -138,14 +138,16 @@ index.html ──loads──▶ main.tsx ──renders──▶ App.tsx
 
 1. `main.tsx` starts React inside `index.html`.
 2. `App.tsx` matches the address: `/` opens the home page, `/chat` the chat module, and so on.
-3. `AppShell` draws the side menu and places the matching page next to it.
+   Each module page loads the first time it is opened.
+3. `AppShell` draws the side menu (folded behind a menu button on phones) and places the
+   matching page next to it.
 
 ### Calling the backend
 
 ```
-AppShell ─▶ api.ts: getHealth() ─── GET /api/health ───▶ main.py
-   ▲                                                       │
-   └──── "backend connected" ◀────── {"status": "ok"} ◀────┘
+ChatPage ─▶ api.ts: askQuestion() ─── POST /api/chat/ask ───▶ chat/router.py
+   ▲                                                              │
+   └──── answer and sources ◀───── {answer, found, sources} ◀────┘
 ```
 
 Every call follows this path: a page calls a function in `api.ts`, which calls a route

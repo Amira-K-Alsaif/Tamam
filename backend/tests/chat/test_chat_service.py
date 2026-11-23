@@ -15,7 +15,7 @@ def found(monkeypatch, chunks):
 
 
 def answer_with(monkeypatch, model_text: str):
-    monkeypatch.setattr(llm, "generate", lambda system, user: model_text)
+    monkeypatch.setattr(llm, "generate", lambda system, user, **_: model_text)
     return service.answer("سؤال")
 
 
@@ -50,7 +50,7 @@ def test_says_not_found_when_the_model_invents_a_source(monkeypatch, found):
 def test_does_not_ask_for_an_answer_when_retrieval_finds_nothing(monkeypatch):
     monkeypatch.setattr(retrieval, "hybrid_search", lambda question: [])
 
-    def rewrite_only(system, user):
+    def rewrite_only(system, user, **_):
         if system != REWRITE_PROMPT:
             raise AssertionError("the model should not be asked for an answer")
         return "أفضل المطاعم"
@@ -66,7 +66,7 @@ def test_tells_the_model_which_company_it_works_for(monkeypatch, found):
     monkeypatch.setattr(get_settings(), "company_name", "شركة الواحة")
     prompts_seen = []
 
-    def remember(system, user):
+    def remember(system, user, **_):
         prompts_seen.append(system)
         return "إجازتك ٢١ يوماً [1]."
 
@@ -77,7 +77,7 @@ def test_tells_the_model_which_company_it_works_for(monkeypatch, found):
 
 
 def model_that_rewrites(monkeypatch, rewritten: str, answer: str = "يومان في الأسبوع [1]."):
-    def reply(system, user):
+    def reply(system, user, **_):
         return rewritten if system == REWRITE_PROMPT else answer
 
     monkeypatch.setattr(llm, "generate", reply)
@@ -108,3 +108,17 @@ def test_an_empty_rewrite_falls_back_to_the_question(monkeypatch):
     model_that_rewrites(monkeypatch, "   ")
 
     assert service.rewrite("أبي أشتغل من البيت") == "أبي أشتغل من البيت"
+
+
+def test_the_rewrite_uses_the_fast_model(monkeypatch):
+    asked_fast = []
+
+    def reply(system, user, fast=False):
+        asked_fast.append(fast)
+        return "سياسة العمل عن بعد"
+
+    monkeypatch.setattr(llm, "generate", reply)
+
+    service.rewrite("أبي أشتغل من البيت")
+
+    assert asked_fast == [True]

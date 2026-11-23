@@ -18,7 +18,7 @@ Run it once the document set changes, then review and commit the result:
 
     cd backend && python -m app.modules.procedures.cli
 
-It needs `TAMAM_GOOGLE_API_KEY` in `backend/.env` and prints a line for each document it rejected.
+It needs `TAMAM_OPENROUTER_API_KEY` in `backend/.env` and prints a line for each document it rejected.
 
 ## API
 

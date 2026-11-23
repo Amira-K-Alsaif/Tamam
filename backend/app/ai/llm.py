@@ -44,10 +44,12 @@ def _client(model: str):
         # Without a cap OpenRouter reserves credit for the model's 65k-token maximum.
         # The longest output, a procedure or a quiz as JSON, fits well within this.
         max_tokens=8192,
-        timeout=30,
-        # A model with a fallback after it gets one try, so a busy model hands over quickly
-        # and the worst-case wait stays what it was without a fallback.
-        max_retries=2 if model == _models()[-1] else 0,
+        # Healthy replies take 2-10 s; a model past 20 s has usually stalled, and waiting longer
+        # only delays the fallback. Measured: one stalled call held a chat answer for minutes.
+        timeout=20,
+        # A model with a fallback after it gets one try, so a busy model hands over quickly;
+        # the last model gets one retry.
+        max_retries=1 if model == _models()[-1] else 0,
     )
 
 

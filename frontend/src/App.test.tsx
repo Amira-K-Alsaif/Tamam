@@ -40,7 +40,20 @@ describe('App', () => {
     renderAt('/')
     const modules = screen.getByRole('list', { name: 'الأقسام' })
     await userEvent.click(within(modules).getByRole('link', { name: /مساري التأهيلي/ }))
-    expect(screen.getByRole('heading', { level: 1, name: 'مساري التأهيلي' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'مساري التأهيلي' })).toBeInTheDocument()
+  })
+
+  it('folds the menu behind a button on phones and closes it after choosing a page', async () => {
+    renderAt('/')
+    const button = screen.getByRole('button', { name: 'القائمة' })
+    expect(button).toHaveAttribute('aria-expanded', 'false')
+
+    await userEvent.click(button)
+    expect(screen.getByRole('button', { name: 'إغلاق القائمة' })).toHaveAttribute('aria-expanded', 'true')
+
+    const menu = screen.getByRole('navigation', { name: 'القائمة الرئيسية' })
+    await userEvent.click(within(menu).getByRole('link', { name: /مساري التأهيلي/ }))
+    expect(screen.getByRole('button', { name: 'القائمة' })).toHaveAttribute('aria-expanded', 'false')
   })
 
   it('sends unknown addresses to the home page', () => {

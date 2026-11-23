@@ -268,12 +268,9 @@ function ProgressSummary({ items, progress }: { items: RoadmapItem[]; progress: 
         {progress.topics_passed} من {progress.topics_total} مواضيع ناجحة ·{' '}
         {progress.skills_ready} من {progress.skills_total} مهارات بالمستوى المطلوب
       </p>
-      <div className="flex flex-wrap gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         {counts.map((count) => (
-          <div
-            key={count.label}
-            className="flex min-w-40 flex-1 flex-col gap-1 rounded-2xl bg-sunken p-4"
-          >
+          <div key={count.label} className="flex flex-col gap-1 rounded-2xl bg-sunken p-4">
             <span className="font-display text-3xl font-extrabold">{count.value}</span>
             <span className="text-faint">{count.label}</span>
           </div>
