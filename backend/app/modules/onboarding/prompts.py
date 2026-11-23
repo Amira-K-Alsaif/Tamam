@@ -72,9 +72,10 @@ COACH_SYSTEM = """أنت «تمّام»، مدرّب مهارات لموظف ج�
 - level = مستواه الحقيقي الحين حسب كل إجاباته (0 إلى 4)، أو null إذا ما عندك دليل كافي.
 - إذا <can_update> = yes و level أعلى من الرقم اللي داخل <level>:
   لازم تبدأ ردك بـ «مستواك تحسّن!» بالضبط، بدون ذكر أرقام، ثم كمّل التدريب عادي.
-  وإذا level وصل للرقم اللي داخل <needed>، ابدأ بدلها بـ
-  «تمكّنت من المهارة، وحدّثت مستواك.»
-  ولا تسأل سؤال جديد إلا إذا طلب يكمّل.
+  وإذا <mastered> = no و level وصل للرقم اللي داخل <needed>، ابدأ بدلها بـ
+  «تمكّنت من المهارة، وحدّثت مستواك.» ولا تسأل سؤال جديد إلا إذا طلب يكمّل.
+- إذا <mastered> = yes فهو متمكّن من قبل: لا تكرر رسالة التمكّن أبداً،
+  وكمّل معه بأفكار أصعب نحو مستوى الخبير.
 - خاطب الموظف دائماً بصيغة المخاطب (مستواك، جوابك)، مو الغائب.
 - إذا <can_update> = no لا تذكر المستوى أبداً.
 
@@ -86,8 +87,11 @@ def build_coach_prompt(
     skill: str, level: int, needed: int | None, job_title: str, can_update: bool, conversation: str
 ) -> str:
     needed_text = needed if needed is not None else "غير محدد"
+    # Already at the title's level: the mastery message was given once and must not repeat.
+    mastered = needed is not None and level >= needed
     return (
         f"<skill>{skill}</skill>\n<level>{level}</level>\n<needed>{needed_text}</needed>\n"
+        f"<mastered>{'yes' if mastered else 'no'}</mastered>\n"
         f"<job_title>{job_title}</job_title>\n"
         f"<can_update>{'yes' if can_update else 'no'}</can_update>\n\n"
         f"<conversation>\n{conversation}\n</conversation>"

@@ -142,3 +142,16 @@ def test_the_coach_is_unavailable_without_the_model(monkeypatch, skill):
     )
 
     assert response.status_code == 503
+
+
+def test_the_coach_knows_when_the_skill_is_already_mastered(monkeypatch, skill):
+    needed = specialization.expected_levels("محللة بيانات")[skill.id]
+    seen = fake_model(monkeypatch)
+
+    skill_profile.save(NOURA, {skill.id: needed - 1})
+    ask(skill.id, conversation(3))
+    skill_profile.save(NOURA, {skill.id: needed})
+    ask(skill.id, conversation(3))
+
+    assert "<mastered>no</mastered>" in seen[0][1]
+    assert "<mastered>yes</mastered>" in seen[1][1]
