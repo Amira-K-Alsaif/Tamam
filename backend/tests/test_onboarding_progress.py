@@ -1,8 +1,11 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import app
 from app.modules.onboarding.mock_data import DEMO_EMPLOYEE_IDS
 from app.modules.onboarding.service import build_progress, build_roadmap, build_team
+
+pytestmark = pytest.mark.usefixtures("employees_assessed")
 
 client = TestClient(app)
 

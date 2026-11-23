@@ -130,3 +130,23 @@ def test_the_client_talks_to_openrouter_with_minimal_reasoning(monkeypatch):
     assert client.extra_body == {"reasoning": {"effort": "minimal"}}
     assert client.max_tokens == 8192
     llm._client.cache_clear()
+
+
+def test_fast_replies_try_the_lighter_model_first(monkeypatch):
+    asked = use_models(
+        monkeypatch,
+        {"light-model": Fails(ModelAPIError("503")), "main-model": Answers("من الأساسي")},
+    )
+    monkeypatch.setattr(get_settings(), "llm_fast_model", "light-model")
+
+    assert llm.generate("system", "question", fast=True) == "من الأساسي"
+    assert asked == ["light-model", "main-model"]
+
+
+def test_ordinary_replies_skip_the_lighter_model(monkeypatch):
+    asked = use_models(monkeypatch, {"main-model": Answers("من الأساسي")})
+    monkeypatch.setattr(get_settings(), "llm_fast_model", "light-model")
+
+    llm.generate("system", "question")
+
+    assert asked == ["main-model"]

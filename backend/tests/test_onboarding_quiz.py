@@ -7,6 +7,8 @@ from app.ai import llm
 from app.main import app
 from app.modules.onboarding import quiz, service
 
+pytestmark = pytest.mark.usefixtures("employees_assessed")
+
 client = TestClient(app)
 
 # Two questions quoted from data/company/documents/infosec.md, and one with an invented quote.
@@ -42,7 +44,7 @@ FAKE_MODEL_REPLY = json.dumps(
 
 @pytest.fixture(autouse=True)
 def fake_model(monkeypatch):
-    monkeypatch.setattr(llm, "generate", lambda system, user: FAKE_MODEL_REPLY)
+    monkeypatch.setattr(llm, "generate", lambda system, user, **_: FAKE_MODEL_REPLY)
     yield
     quiz.clear_quizzes()
     service.clear_quiz_scores()
@@ -51,7 +53,7 @@ def fake_model(monkeypatch):
 def test_quiz_keeps_only_questions_quoted_from_the_document():
     body = client.get("/api/onboarding/lessons/infosec/quiz").json()
 
-    assert body["topic"] == "أمن المعلومات"
+    assert body["topic"] == "سياسة أمن المعلومات"
     assert len(body["questions"]) == 2
     assert body["questions"][0]["source"]["section_title"] == "قواعد عامة"
     assert "answer" not in body["questions"][0]
@@ -59,14 +61,14 @@ def test_quiz_keeps_only_questions_quoted_from_the_document():
 
 def test_passing_the_quiz_takes_the_lesson_off_the_roadmap():
     lessons = [i for w in service.build_roadmap("emp-004").weeks for i in w.items]
-    assert "أمن المعلومات" in {i.topic for i in lessons}
+    assert "سياسة أمن المعلومات" in {i.topic for i in lessons}
 
     client.get("/api/onboarding/lessons/infosec/quiz")
     result = client.post("/api/onboarding/lessons/infosec/attempt", json={"answers": [1, 0]}).json()
 
     assert result["score"] == 100 and result["passed"]
     lessons = [i for w in service.build_roadmap("emp-004").weeks for i in w.items]
-    assert "أمن المعلومات" not in {i.topic for i in lessons}
+    assert "سياسة أمن المعلومات" not in {i.topic for i in lessons}
 
 
 def test_a_failed_retake_updates_the_score():
@@ -79,7 +81,7 @@ def test_a_failed_retake_updates_the_score():
         i
         for w in service.build_roadmap("emp-004").weeks
         for i in w.items
-        if i.topic == "أمن المعلومات"
+        if i.topic == "سياسة أمن المعلومات"
     )
     assert lesson.score == 50
 
@@ -111,7 +113,7 @@ def test_quiz_errors():
 
 
 def test_quiz_is_unavailable_without_the_model(monkeypatch):
-    def not_configured(system, user):
+    def not_configured(system, user, **_):
         raise llm.LLMNotConfiguredError("no key")
 
     monkeypatch.setattr(llm, "generate", not_configured)

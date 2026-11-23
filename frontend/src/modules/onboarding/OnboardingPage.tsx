@@ -19,6 +19,9 @@ import type {
 } from '../../lib/api'
 import { moduleById } from '../modules'
 import { LessonQuiz } from './LessonQuiz'
+import { SkillCoach } from './SkillCoach'
+import { StartingAssessment } from './StartingAssessment'
+import { taskCount, weekName } from './weeks'
 
 const ACCESS_BADGES: Record<AccessStatus, { status: Status; label: string }> = {
   active: { status: 'done', label: 'مفعّلة' },
@@ -26,9 +29,16 @@ const ACCESS_BADGES: Record<AccessStatus, { status: Status; label: string }> = {
   missing: { status: 'missing', label: 'ناقصة' },
 }
 
-const KIND_TONES = { access: 'teal', person: 'blue', lesson: 'mint' } as const
+const KIND_TONES = { access: 'teal', person: 'blue', lesson: 'mint', skill: 'mint' } as const
 
-const SECTION_TITLES = { access: 'صلاحيات ناقصة', person: 'أشخاص تقابلهم', lesson: 'دروس' } as const
+const SECTION_TITLES = {
+  access: 'صلاحيات ناقصة',
+  person: 'أشخاص تقابلهم',
+  lesson: 'دروس عن الشركة',
+  skill: 'مهارات تطوّرينها',
+} as const
+
+type CoachedSkill = { id: number; name: string }
 
 type PageData = {
   employeeId: string
@@ -46,8 +56,10 @@ export default function OnboardingPage() {
   const [data, setData] = useState<PageData | null>(null)
   const [failedId, setFailedId] = useState<string | null>(null)
   const [selectedWeek, setSelectedWeek] = useState(1)
-  // Bumped after a quiz is answered, so the roadmap, progress, and badges reload.
+  // Bumped after a quiz or the assessment is answered, so the roadmap, progress, and badges reload.
   const [reloadKey, setReloadKey] = useState(0)
+  // The skill whose coach window is open, over the page; one at a time.
+  const [coached, setCoached] = useState<CoachedSkill | null>(null)
 
   // Until auth exists, the page shows the first demo employee unless another is chosen.
   const employeeId = chosenId ?? demoEmployees[0]?.id ?? null
@@ -93,6 +105,7 @@ export default function OnboardingPage() {
       onChange={(id) => {
         setChosenId(id)
         setSelectedWeek(1)
+        setCoached(null)
       }}
     />
   )
@@ -118,6 +131,25 @@ export default function OnboardingPage() {
   }
 
   const { me, roadmap, progress, team } = data
+
+  // Every employee starts with the assessment: the path is drawn from its result.
+  if (!roadmap.assessed) {
+    return (
+      <>
+        <PageHeader title={info.title} description={`أهلاً ${me.full_name} · ${me.job_title}.`} actions={switcher} />
+        <StartingAssessment
+          key={me.id}
+          employeeId={me.id}
+          onDone={() => {
+            setSelectedWeek(1)
+            setReloadKey((key) => key + 1)
+          }}
+        />
+        {team.length > 0 && <TeamSection team={team} />}
+      </>
+    )
+  }
+
   const allItems = roadmap.weeks.flatMap((week) => week.items)
   const week = roadmap.weeks.find((w) => w.week === selectedWeek) ?? roadmap.weeks[0]
 
@@ -128,6 +160,9 @@ export default function OnboardingPage() {
         description={`أهلاً ${me.full_name} · ${me.job_title}. هذا كل اللي ناقصك، مرتّب بالأسابيع.`}
         actions={switcher}
       />
+      {roadmap.drawn_by === 'ai' && (
+        <p className="m-0 text-sm text-mint">رتّب تمّام دروسك ومهاراتك من نتيجة تقييمك الأولي.</p>
+      )}
 
       <ProgressSummary items={allItems} progress={progress} />
       <BadgesSection badges={progress.badges} />
@@ -152,26 +187,39 @@ export default function OnboardingPage() {
                   role="tab"
                   aria-selected={selected}
                   onClick={() => setSelectedWeek(w.week)}
-                  className={`cursor-pointer rounded-full border px-4 py-1.5 font-body ${
+                  className={`flex cursor-pointer items-center gap-2 rounded-full border px-4 py-1.5 font-body ${
                     selected ? 'border-mint bg-raised text-ink' : 'border-line bg-surface text-muted'
                   }`}
                 >
-                  الأسبوع {w.week} · {w.items.length}
+                  {weekName(w.week)}
+                  <span className="text-xs text-faint">{taskCount(w.items.length)}</span>
                 </button>
               )
             })}
           </div>
 
-          {(['access', 'person', 'lesson'] as const).map((kind) => (
+          {(['access', 'person', 'lesson', 'skill'] as const).map((kind) => (
             <ItemsSection
               key={kind}
               title={SECTION_TITLES[kind]}
               items={week.items.filter((i) => i.kind === kind)}
               employeeId={me.id}
               onQuizAnswered={() => setReloadKey((key) => key + 1)}
+              onCoach={setCoached}
             />
           ))}
         </>
+      )}
+
+      {coached && (
+        <SkillCoach
+          key={`${me.id}-${coached.id}`}
+          skillId={coached.id}
+          skillName={coached.name}
+          employeeId={me.id}
+          onLevelChanged={() => setReloadKey((key) => key + 1)}
+          onClose={() => setCoached(null)}
+        />
       )}
     </>
   )
@@ -189,8 +237,8 @@ function DemoSwitcher({
   if (employees.length === 0) return null
   return (
     <label className="flex items-center gap-2 text-sm text-muted">
-      عرض تجريبي كـ
       <select
+        aria-label="الموظف"
         value={value ?? ''}
         onChange={(event) => onChange(event.target.value)}
         className="rounded-full border border-line bg-surface px-3 py-1.5 font-body text-ink"
@@ -210,13 +258,15 @@ function ProgressSummary({ items, progress }: { items: RoadmapItem[]; progress: 
     { label: 'صلاحيات ناقصة', value: items.filter((i) => i.kind === 'access').length },
     { label: 'أشخاص تقابلهم', value: items.filter((i) => i.kind === 'person').length },
     { label: 'دروس', value: items.filter((i) => i.kind === 'lesson').length },
+    { label: 'مهارات تطوّرينها', value: items.filter((i) => i.kind === 'skill').length },
   ]
   return (
     <Card>
       <ProgressBar label="تقدّمك في المسار" value={progress.percent} />
       <p className="m-0 text-sm text-faint">
         {progress.access_active} من {progress.access_total} صلاحيات مفعّلة ·{' '}
-        {progress.topics_passed} من {progress.topics_total} مواضيع ناجحة
+        {progress.topics_passed} من {progress.topics_total} مواضيع ناجحة ·{' '}
+        {progress.skills_ready} من {progress.skills_total} مهارات بالمستوى المطلوب
       </p>
       <div className="flex flex-wrap gap-4">
         {counts.map((count) => (
@@ -300,11 +350,13 @@ function ItemsSection({
   items,
   employeeId,
   onQuizAnswered,
+  onCoach,
 }: {
   title: string
   items: RoadmapItem[]
   employeeId: string
   onQuizAnswered: () => void
+  onCoach: (skill: CoachedSkill) => void
 }) {
   const [openQuiz, setOpenQuiz] = useState<string | null>(null)
   if (items.length === 0) return null
@@ -331,6 +383,21 @@ function ItemsSection({
                 >
                   افتحي بطاقته في خريطة الشركة
                 </ButtonLink>
+              )}
+              {item.kind === 'skill' && item.level !== null && item.expected_level !== null && (
+                <ProgressBar
+                  label={`مستواك ${item.level} من 4، والمطلوب ${item.expected_level}`}
+                  value={(item.level / item.expected_level) * 100}
+                />
+              )}
+              {item.kind === 'skill' && item.skill_id !== null && (
+                <Button
+                  variant="ai"
+                  className="self-start"
+                  onClick={() => onCoach({ id: item.skill_id as number, name: item.title })}
+                >
+                  تدرّبي مع تمّام
+                </Button>
               )}
               {item.kind === 'lesson' && item.score !== null && (
                 <ProgressBar label="درجتك في التقييم" value={item.score} />

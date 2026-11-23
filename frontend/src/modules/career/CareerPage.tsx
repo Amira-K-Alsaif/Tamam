@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
 import { PageHeader } from '../../components/PageHeader'
@@ -21,12 +21,10 @@ import { GapRadar } from './GapRadar'
 const percent = new Intl.NumberFormat('ar-SA', { style: 'percent', maximumFractionDigits: 0 })
 const PHASE_LABEL = { '30': 'أول ٣٠ يوم', '60': 'من ٣١ إلى ٦٠ يوم', '90': 'من ٦١ إلى ٩٠ يوم' } as const
 const ACTION_LABEL: Record<PlanAction['type'], string> = {
-  course: 'دورة',
-  project: 'تطبيق عملي',
-  mentoring: 'توجيه',
-  shadowing: 'مرافقة',
+  self_study: 'تعلّم ذاتي',
+  practice: 'تمارين',
+  project: 'مشروع صغير',
   certification: 'شهادة',
-  reading: 'قراءة',
 }
 const PRIORITY = { high: 'أولوية عالية', medium: 'أولوية متوسطة', low: 'أولوية منخفضة' } as const
 
@@ -49,7 +47,8 @@ export default function CareerPage() {
   const [result, setResult] = useState<Load<GapAnalysis>>({ state: 'idle' })
   const [plan, setPlan] = useState<Load<DevelopmentPlan>>({ state: 'idle' })
   const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
-  const userChose = useRef(false)
+  // Whose measured skill levels the gap uses, from the onboarding assessment and CV.
+  const [employeeId, setEmployeeId] = useState<string | undefined>(undefined)
 
   useEffect(() => {
     getTitles()
@@ -62,13 +61,12 @@ export default function CareerPage() {
     let cancelled = false
     getMe()
       .then(async (me) => {
+        if (!cancelled) setEmployeeId(me.id)
         try {
           const match = await matchTitle(me.job_title)
           if (cancelled) return
-          if (!userChose.current) {
-            setCurrentId(match.id)
-            setTargetId(match.next_title_id)
-          }
+          setCurrentId(match.id)
+          setTargetId(match.next_title_id)
           setProfileTitle({ state: 'matched', jobTitle: me.job_title })
         } catch (err) {
           if (!(err instanceof ApiError && err.status === 404)) throw err
@@ -88,21 +86,14 @@ export default function CareerPage() {
     [titles],
   )
 
-  function chooseCurrent(id: number) {
-    userChose.current = true
-    setCurrentId(id)
-    setTargetId(byId.get(id)?.next_title_id ?? null)
-    setResult({ state: 'idle' })
-  }
-
   function analyze() {
     if (currentId === null || targetId === null) return
     setResult({ state: 'loading' })
     setPlan({ state: 'loading' })
-    getGapAnalysis(currentId, targetId)
+    getGapAnalysis(currentId, targetId, employeeId)
       .then((data) => setResult({ state: 'done', data }))
       .catch(() => setResult({ state: 'error' }))
-    getPlan(currentId, targetId)
+    getPlan(currentId, targetId, employeeId)
       .then((data) => setPlan({ state: 'done', data }))
       .catch(() => setPlan({ state: 'error' }))
   }
@@ -111,7 +102,7 @@ export default function CareerPage() {
     <>
       <PageHeader
         title="مساري المهني"
-        description="اختاري منصبك الحالي والمنصب اللي تبين توصلين له، ونقارنك بإعلانات الوظائف في السوق."
+        description="اختاري المنصب اللي تبين توصلين له، ونقارن مهاراتك بإعلانات الوظائف في السوق."
       />
 
       {titles.state === 'loading' && <p className="m-0 text-muted">نجهّز المسميات الوظيفية…</p>}
@@ -125,23 +116,12 @@ export default function CareerPage() {
         <Card>
           <ProfileTitleNote profileTitle={profileTitle} />
           <div className="grid items-end gap-4 sm:grid-cols-3">
-            <label className="flex flex-col gap-2 text-sm text-muted">
-              المنصب الحالي
-              <select
-                className={selectClass}
-                value={currentId ?? ''}
-                onChange={(e) => chooseCurrent(Number(e.target.value))}
-              >
-                <option value="" disabled>
-                  اختاري…
-                </option>
-                {titles.data.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.name_ar}
-                  </option>
-                ))}
-              </select>
-            </label>
+            <div className="flex flex-col gap-2 text-sm text-muted">
+              منصبك الحالي
+              <span className="flex h-11 items-center rounded-full border border-line bg-sunken px-4 text-base text-ink">
+                {currentId === null ? '—' : (byId.get(currentId)?.name_ar ?? '—')}
+              </span>
+            </div>
             <label className="flex flex-col gap-2 text-sm text-muted">
               المنصب المستهدف
               <select
@@ -159,7 +139,7 @@ export default function CareerPage() {
                   .filter((t) => t.id !== currentId)
                   .map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.name_ar} ({t.postings_count} إعلان)
+                      {t.name_ar}
                     </option>
                   ))}
               </select>
@@ -183,7 +163,12 @@ export default function CareerPage() {
       {result.state === 'done' && (
         <>
           <GapResult result={result.data} titles={byId} />
-          <PlanCard plan={plan} />
+          {/* Keyed so the ticks reload when the employee or the titles change. */}
+          <PlanCard
+            key={`tamam.plan.${employeeId ?? 'guest'}.${currentId}.${targetId}`}
+            plan={plan}
+            progressKey={`tamam.plan.${employeeId ?? 'guest'}.${currentId}.${targetId}`}
+          />
         </>
       )}
     </>
@@ -194,11 +179,11 @@ function ProfileTitleNote({ profileTitle }: { profileTitle: ProfileTitle }) {
   if (profileTitle.state === 'loading') return null
   const text =
     profileTitle.state === 'matched'
-      ? `اخترنا منصبك الحالي من ملفك: «${profileTitle.jobTitle}». تقدرين تغيّرينه.`
+      ? null
       : profileTitle.state === 'unmatched'
-        ? `منصبك في ملفك «${profileTitle.jobTitle}» ما عندنا له إعلانات وظائف للحين، اختاري أقرب منصب له.`
-        : 'ما قدرنا نقرأ ملفك، اختاري منصبك الحالي بنفسك.'
-  return <p className="m-0 text-sm text-muted">{text}</p>
+        ? `منصبك في ملفك «${profileTitle.jobTitle}» ما عندنا له إعلانات وظائف للحين، فما نقدر نقارنه بالسوق.`
+        : 'ما قدرنا نقرأ ملفك. حدّثي الصفحة وحاولي مرة ثانية.'
+  return text && <p className="m-0 text-sm text-warning">{text}</p>
 }
 
 function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number, JobTitle> }) {
@@ -214,8 +199,8 @@ function GapResult({ result, titles }: { result: GapAnalysis; titles: Map<number
           <p className="m-0 text-muted">
             مبني على {evidence_postings} إعلان وظيفي لمنصب «{target?.name_ar}».{' '}
             {result.level_source === 'employee_profile'
-              ? 'مستواك مأخوذ من ملف مهاراتك.'
-              : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق، لين يجهز ملف مهاراتك.'}
+              ? 'مستواك مأخوذ من تقييمك الأولي وسيرتك الذاتية، والمهارات اللي ما قسناها مقدّرة من السوق.'
+              : 'قدّرنا مستواك من المهارات المعتادة لمنصبك الحالي في السوق. خلّصي التقييم الأولي في مساري التأهيلي عشان نقيس مستواك الحقيقي.'}
           </p>
           {target?.esco_occupation_uri && (
             <p className="m-0 mt-2 text-xs text-faint">
@@ -282,10 +267,43 @@ function SkillList({ title, status, skills }: { title: string; status: Status; s
   )
 }
 
-function PlanCard({ plan }: { plan: Load<DevelopmentPlan> }) {
+// Finished actions are kept in this browser, per employee and pair of titles.
+function loadDone(key: string): string[] {
+  try {
+    return JSON.parse(window.localStorage.getItem(key) ?? '[]') as string[]
+  } catch {
+    return []
+  }
+}
+
+function saveDone(key: string, done: string[]) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(done))
+  } catch {
+    // Not saved: the ticks still work on this visit.
+  }
+}
+
+function actionId(phase: string, action: PlanAction): string {
+  return `${phase}-${action.skill_id}-${action.type}`
+}
+
+function PlanCard({ plan, progressKey }: { plan: Load<DevelopmentPlan>; progressKey: string }) {
+  const [done, setDone] = useState<string[]>(() => loadDone(progressKey))
+
+  function toggle(id: string) {
+    const next = done.includes(id) ? done.filter((d) => d !== id) : [...done, id]
+    setDone(next)
+    saveDone(progressKey, next)
+  }
+
   return (
     <Card title="خطة التطوير">
-      {plan.state === 'loading' && <p className="m-0 text-muted">نجهّز خطتك…</p>}
+      {plan.state === 'loading' && (
+        <p role="status" className="m-0 text-muted">
+          تمّام يكتب خطتك…
+        </p>
+      )}
       {plan.state === 'error' && (
         <p role="alert" className="m-0 text-danger">
           ما قدرنا نجهّز الخطة. جرّبي التحليل مرة ثانية.
@@ -295,29 +313,63 @@ function PlanCard({ plan }: { plan: Load<DevelopmentPlan> }) {
         <p className="m-0 text-muted">عندك كل المهارات اللي يطلبها السوق لهذا المنصب، ما تحتاجين خطة 🎉</p>
       )}
       {plan.state === 'done' && plan.data.phases.length > 0 && (
-        <ol className="m-0 flex list-none flex-col gap-6 p-0">
-          {plan.data.phases.map((phase) => (
-            <li key={phase.phase} className="flex flex-col gap-3">
-              <div className="flex flex-col">
-                <span className="text-sm text-mint">{PHASE_LABEL[phase.phase]}</span>
-                <span className="font-display">{phase.goal_ar}</span>
-              </div>
-              <ul className="m-0 flex list-none flex-col gap-3 p-0">
-                {phase.actions.map((action) => (
-                  <li key={`${action.skill_id}-${action.type}`} className="flex items-start gap-3">
-                    <StatusBadge status="in-progress" label={ACTION_LABEL[action.type]} />
+        <>
+          <p className="m-0 text-sm text-muted">
+            {plan.data.written_by === 'ai' ? 'كتبها تمّام لك من فجوتك. ' : ''}
+            كل خطوة تنفّذينها بنفسك، وأشّري عليها إذا خلّصتيها.
+          </p>
+          <ol className="m-0 flex list-none flex-col gap-6 p-0">
+            {plan.data.phases.map((phase) => {
+              const finished = phase.actions.filter((a) => done.includes(actionId(phase.phase, a))).length
+              return (
+                <li key={phase.phase} className="flex flex-col gap-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <span className="flex flex-col">
-                      <span>{action.title_ar}</span>
-                      <span className="text-xs text-faint">
-                        {action.effort_hours} ساعة · {action.success_metric_ar}
-                      </span>
+                      <span className="text-sm text-mint">{PHASE_LABEL[phase.phase]}</span>
+                      <span className="font-display">{phase.goal_ar}</span>
                     </span>
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ol>
+                    <span className="text-xs text-faint">
+                      {finished} من {phase.actions.length} خلّصتيها
+                    </span>
+                  </div>
+                  <ul className="m-0 flex list-none flex-col gap-3 p-0">
+                    {phase.actions.map((action) => {
+                      const id = actionId(phase.phase, action)
+                      const isDone = done.includes(id)
+                      return (
+                        <li
+                          key={id}
+                          className={`flex flex-col gap-2 rounded-2xl border p-4 ${
+                            isDone ? 'border-mint/35 bg-sunken' : 'border-line bg-sunken'
+                          }`}
+                        >
+                          <div className="flex flex-wrap items-start justify-between gap-2">
+                            <strong className={isDone ? 'text-muted line-through' : ''}>{action.title_ar}</strong>
+                            <StatusBadge status={isDone ? 'done' : 'in-progress'} label={ACTION_LABEL[action.type]} />
+                          </div>
+                          {action.steps_ar.length > 0 && (
+                            <ol className="m-0 flex list-decimal flex-col gap-1 ps-5 text-sm text-soft">
+                              {action.steps_ar.map((step) => (
+                                <li key={step}>{step}</li>
+                              ))}
+                            </ol>
+                          )}
+                          <span className="text-xs text-faint">
+                            {action.effort_hours} ساعة · لما تخلّصين يكون عندك: {action.success_metric_ar}
+                          </span>
+                          <label className="flex cursor-pointer items-center gap-2 self-start text-sm text-muted">
+                            <input type="checkbox" checked={isDone} onChange={() => toggle(id)} />
+                            خلّصتها
+                          </label>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </li>
+              )
+            })}
+          </ol>
+        </>
       )}
     </Card>
   )

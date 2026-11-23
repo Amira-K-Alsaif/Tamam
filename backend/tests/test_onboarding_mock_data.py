@@ -1,6 +1,5 @@
 from app.modules.onboarding.mock_data import (
     ACCESS_ITEMS,
-    ASSESSMENT_RESULTS,
     CURRENT_EMPLOYEE_ID,
     EMPLOYEE_ACCESS,
     EMPLOYEES,
@@ -22,5 +21,3 @@ def test_references_point_to_existing_records():
     for row in EMPLOYEE_ACCESS:
         assert row.employee_id in employee_ids
         assert row.access_item_id in access_ids
-    for result in ASSESSMENT_RESULTS:
-        assert result.employee_id in employee_ids

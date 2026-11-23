@@ -41,7 +41,7 @@ export type EmployeeProfile = {
 export type AccessStatus = 'active' | 'requested' | 'missing'
 
 export type RoadmapItem = {
-  kind: 'lesson' | 'access' | 'person'
+  kind: 'lesson' | 'skill' | 'access' | 'person'
   title: string
   reason: string
   week: number
@@ -54,11 +54,20 @@ export type RoadmapItem = {
   employee_id: string | null
   topic: string | null
   document_id: string | null
+  skill_id: number | null
+  level: number | null
+  expected_level: number | null
 }
 
 export type RoadmapWeek = { week: number; items: RoadmapItem[] }
 
-export type Roadmap = { employee_id: string; weeks: RoadmapWeek[] }
+// `assessed` is false until the starting assessment is taken; `drawn_by` says who ordered the gaps.
+export type Roadmap = {
+  employee_id: string
+  assessed: boolean
+  drawn_by: 'ai' | 'rules'
+  weeks: RoadmapWeek[]
+}
 
 // What /api/onboarding/me returns: the profile plus the manager's name (null only for the CEO).
 export type CurrentEmployee = EmployeeProfile & { manager_name: string | null }
@@ -84,6 +93,8 @@ export type Progress = {
   access_total: number
   topics_passed: number
   topics_total: number
+  skills_ready: number
+  skills_total: number
   percent: number
   badges: Badge[]
 }
@@ -134,6 +145,46 @@ export function answerLessonQuiz(
 ): Promise<QuizResult> {
   const path = `/api/onboarding/lessons/${encodeURIComponent(documentId)}/attempt`
   return apiPost<QuizResult>(`${path}${asEmployee(employeeId)}`, { answers })
+}
+
+// The starting assessment: questions on the company's policies, and the employee's own level
+// in each skill of their specialization (option index = level 0-4, no right answer, no source).
+export type AssessmentQuestion = {
+  kind: 'company' | 'skill'
+  topic: string
+  question: string
+  options: string[]
+  source: QuizQuestion['source'] | null
+  skill_id: number | null
+}
+
+export type Assessment = { questions: AssessmentQuestion[] }
+
+export type AssessmentOutcome = {
+  topics: { topic: string; document_id: string; score: number; passed: boolean }[]
+  skills: { skill_id: number; label_ar: string; level: number; expected_level: number | null }[]
+  correct: (boolean | null)[]
+  correct_options: (number | null)[]
+}
+
+export function getAssessment(employeeId?: string): Promise<Assessment> {
+  return apiGet<Assessment>(`/api/onboarding/assessment${asEmployee(employeeId)}`)
+}
+
+export function answerAssessment(answers: number[], employeeId?: string): Promise<AssessmentOutcome> {
+  return apiPost<AssessmentOutcome>(`/api/onboarding/assessment/attempt${asEmployee(employeeId)}`, { answers })
+}
+
+// The skill coach. The conversation is sent each time; the server keeps only the level.
+export type CoachMessage = { role: 'employee' | 'coach'; text: string }
+
+// A level the coach changed during the conversation, once the employee had shown it.
+export type LevelChange = { previous_level: number; level: number; needed_level: number | null }
+
+export type CoachReply = { text: string; level_change: LevelChange | null }
+
+export function coachReply(skillId: number, messages: CoachMessage[], employeeId?: string): Promise<CoachReply> {
+  return apiPost<CoachReply>(`/api/onboarding/skills/${skillId}/coach${asEmployee(employeeId)}`, { messages })
 }
 
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {

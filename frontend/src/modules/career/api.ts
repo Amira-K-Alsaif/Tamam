@@ -39,10 +39,12 @@ export type GapAnalysis = {
   radar: GapSkill[]
 }
 
+// Every action is one the employee does alone.
 export type PlanAction = {
   skill_id: number
-  type: 'course' | 'project' | 'mentoring' | 'shadowing' | 'certification' | 'reading'
+  type: 'self_study' | 'practice' | 'project' | 'certification'
   title_ar: string
+  steps_ar: string[]
   effort_hours: number
   success_metric_ar: string
 }
@@ -53,24 +55,30 @@ export type DevelopmentPlan = {
   readiness_score: number
   low_evidence: boolean
   phases: { phase: '30' | '60' | '90'; goal_ar: string; actions: PlanAction[] }[]
+  // Who wrote the actions: the model for this gap, or the rule templates.
+  written_by: 'ai' | 'rules'
 }
 
 export function getTitles(): Promise<JobTitle[]> {
   return apiGet<JobTitle[]>('/api/career/titles')
 }
 
-export function getGapAnalysis(currentTitleId: number, targetTitleId: number): Promise<GapAnalysis> {
+// With employeeId, the employee's measured skill levels replace the market estimate.
+export function getGapAnalysis(currentTitleId: number, targetTitleId: number, employeeId?: string): Promise<GapAnalysis> {
   const query = new URLSearchParams({
     current_title_id: String(currentTitleId),
     target_title_id: String(targetTitleId),
+    ...(employeeId ? { employee_id: employeeId } : {}),
   })
   return apiGet<GapAnalysis>(`/api/career/gap-analysis?${query}`)
 }
 
-export function getPlan(currentTitleId: number, targetTitleId: number): Promise<DevelopmentPlan> {
+// With employeeId, the employee's measured skill levels replace the market estimate.
+export function getPlan(currentTitleId: number, targetTitleId: number, employeeId?: string): Promise<DevelopmentPlan> {
   const query = new URLSearchParams({
     current_title_id: String(currentTitleId),
     target_title_id: String(targetTitleId),
+    ...(employeeId ? { employee_id: employeeId } : {}),
   })
   return apiGet<DevelopmentPlan>(`/api/career/plan?${query}`)
 }

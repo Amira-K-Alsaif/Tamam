@@ -7,18 +7,15 @@ recorded, so the roadmap reorders as quizzes are retaken.
 
 import json
 import re
-from functools import lru_cache
-from pathlib import Path
 
 from pydantic import BaseModel, Field, ValidationError
 
 from app.ai import llm
 from app.ai.arabic import normalize_arabic
 
-from . import mock_data, prompts, service
+from . import documents, prompts, service
+from .documents import load_document, topic_for
 from .schemas import Quiz, QuizQuestion, QuizResult, SourceCitation
-
-COMPANY_DIR = Path(__file__).resolve().parents[4] / "data" / "company"
 
 _FENCE = re.compile(r"^```(?:json)?\s*|\s*```$")
 
@@ -43,33 +40,13 @@ class _LLMQuiz(BaseModel):
 _quizzes: dict[str, tuple[Quiz, list[int]]] = {}
 
 
-def topic_for(document_id: str) -> str:
-    for topic, doc_id in mock_data.TOPIC_DOCUMENTS.items():
-        if doc_id == document_id:
-            return topic
-    raise LookupError(f"No lesson for document: {document_id}")
-
-
-@lru_cache
-def _titles() -> dict[str, str]:
-    manifest = json.loads((COMPANY_DIR / "manifest.json").read_text(encoding="utf-8"))
-    return {document["id"]: document["title"] for document in manifest}
-
-
-def load_document(document_id: str) -> tuple[str, str]:
-    """The document's title and Markdown text."""
-    title = _titles().get(document_id)
-    if title is None:
-        raise LookupError(f"Unknown document: {document_id}")
-    markdown = (COMPANY_DIR / "documents" / f"{document_id}.md").read_text(encoding="utf-8")
-    return title, markdown
-
-
 def _comparable(text: str) -> str:
     return " ".join(normalize_arabic(text).split())
 
 
-def parse_quiz(raw: str, document_id: str, title: str, markdown: str) -> tuple[Quiz, list[int]]:
+def parse_questions(
+    raw: str, document_id: str, title: str, markdown: str
+) -> tuple[list[QuizQuestion], list[int]]:
     """Keeps only questions whose answer index is valid and whose quote is really in the text."""
     try:
         parsed = _LLMQuiz.model_validate(json.loads(_FENCE.sub("", raw.strip())))
@@ -100,25 +77,57 @@ def parse_quiz(raw: str, document_id: str, title: str, markdown: str) -> tuple[Q
         key.append(item.answer)
     if not questions:
         raise QuizUnavailableError("No question could be traced to the document")
-    quiz = Quiz(
-        topic=topic_for(document_id),
-        document_id=document_id,
-        document_title=title,
-        questions=questions,
-    )
-    return quiz, key
+    return questions, key
+
+
+def generate_questions(document_id: str, count: int) -> tuple[list[QuizQuestion], list[int]]:
+    """Asks the model for `count` questions on the document, keeping only traceable ones."""
+    title, markdown = load_document(document_id)
+    try:
+        raw = llm.generate(prompts.build_system(count), prompts.build_user_prompt(title, markdown))
+    except (llm.LLMNotConfiguredError, llm.LLMUnavailableError) as error:
+        raise QuizUnavailableError(str(error)) from error
+    return parse_questions(raw, document_id, title, markdown)
+
+
+# The first saved questions of a policy go in the starting assessment, the rest in its lesson.
+ASSESSMENT_QUESTIONS = 2
+
+
+def _saved(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    rows = documents.bank().get(document_id, [])
+    questions = [QuizQuestion(**{k: v for k, v in row.items() if k != "answer"}) for row in rows]
+    return questions, [row["answer"] for row in rows]
+
+
+def assessment_questions(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    """From the saved bank, so the assessment opens at once; generated if the bank lacks it."""
+    questions, key = _saved(document_id)
+    if len(questions) >= ASSESSMENT_QUESTIONS:
+        return questions[:ASSESSMENT_QUESTIONS], key[:ASSESSMENT_QUESTIONS]
+    return generate_questions(document_id, ASSESSMENT_QUESTIONS)
+
+
+def lesson_questions(document_id: str) -> tuple[list[QuizQuestion], list[int]]:
+    """Saved questions the assessment did not ask, or new ones if none are left."""
+    questions, key = _saved(document_id)
+    if len(questions) > ASSESSMENT_QUESTIONS:
+        return questions[ASSESSMENT_QUESTIONS:], key[ASSESSMENT_QUESTIONS:]
+    return generate_questions(document_id, prompts.QUESTION_COUNT)
 
 
 def get_quiz(document_id: str) -> Quiz:
-    """The lesson's quiz, generated once per server run from its policy document."""
-    topic_for(document_id)
+    """The lesson's quiz on its policy, kept for this server run."""
+    topic = topic_for(document_id)
     if document_id not in _quizzes:
-        title, markdown = load_document(document_id)
-        try:
-            raw = llm.generate(prompts.SYSTEM, prompts.build_user_prompt(title, markdown))
-        except (llm.LLMNotConfiguredError, llm.LLMUnavailableError) as error:
-            raise QuizUnavailableError(str(error)) from error
-        _quizzes[document_id] = parse_quiz(raw, document_id, title, markdown)
+        questions, key = lesson_questions(document_id)
+        quiz = Quiz(
+            topic=topic,
+            document_id=document_id,
+            document_title=questions[0].source.document_title,
+            questions=questions,
+        )
+        _quizzes[document_id] = (quiz, key)
     return _quizzes[document_id][0]
 
 

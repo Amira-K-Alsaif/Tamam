@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     llm_model: str = "google/gemini-3.6-flash"
     # Answers when the main model is overloaded or out of quota. Empty turns it off.
     llm_fallback_model: str = "google/gemini-3.7-flash"
+    # Lighter and about twice as fast: drawing the roadmap took 2 s instead of 3-5 s.
+    llm_fast_model: str = "google/gemini-3.5-flash-lite"
     # The company whose documents Tamam answers from. The assistant introduces itself with it.
     company_name: str = "شركة نخلة للتقنية"
     # Needs the `rag` extra installed. Off by default so the server starts without it.

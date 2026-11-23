@@ -2,8 +2,12 @@
 
 from fastapi import APIRouter, HTTPException, Query
 
-from . import mock_data, quiz, service
+from . import assessment, coach, mock_data, quiz, service
 from .schemas import (
+    Assessment,
+    AssessmentOutcome,
+    CoachReply,
+    CoachRequest,
     CurrentEmployee,
     EmployeeProfile,
     Progress,
@@ -59,6 +63,26 @@ def get_demo_employees() -> list[EmployeeProfile]:
     return [service.get_employee(i) for i in mock_data.DEMO_EMPLOYEE_IDS]
 
 
+@router.get("/assessment", response_model=Assessment)
+def get_assessment(employee_id: str | None = EmployeeId) -> Assessment:
+    """The employee's starting assessment: their company and their specialization. No answers."""
+    try:
+        return assessment.get_assessment(_resolve(employee_id))
+    except quiz.QuizUnavailableError as error:
+        raise HTTPException(status_code=503, detail="Assessment unavailable") from error
+
+
+@router.post("/assessment/attempt", response_model=AssessmentOutcome)
+def answer_assessment(body: QuizAnswers, employee_id: str | None = EmployeeId) -> AssessmentOutcome:
+    """Grades the assessment, records policy scores and skill levels, and draws the roadmap."""
+    try:
+        return assessment.grade_assessment(_resolve(employee_id), body.answers)
+    except LookupError as error:
+        raise HTTPException(status_code=404, detail="Open the assessment first") from error
+    except ValueError as error:
+        raise HTTPException(status_code=422, detail="One answer per question") from error
+
+
 @router.get("/lessons/{document_id}/quiz", response_model=Quiz)
 def get_lesson_quiz(document_id: str) -> Quiz:
     """A short quiz on the lesson, generated from its policy document. No answers inside."""
@@ -82,3 +106,19 @@ def answer_lesson_quiz(
         raise HTTPException(status_code=404, detail="Open the quiz first") from error
     except ValueError as error:
         raise HTTPException(status_code=422, detail="One answer per question") from error
+
+
+@router.post("/skills/{skill_id}/coach", response_model=CoachReply)
+def coach_reply(
+    skill_id: int, body: CoachRequest, employee_id: str | None = EmployeeId
+) -> CoachReply:
+    """The coach's next message, and the level it changed once the employee has shown it.
+
+    The conversation is sent each time and not stored; only the level is.
+    """
+    try:
+        return coach.reply(_resolve(employee_id), skill_id, body.messages)
+    except LookupError as error:
+        raise HTTPException(status_code=404, detail="Not one of your skills") from error
+    except coach.CoachUnavailableError as error:
+        raise HTTPException(status_code=503, detail="Coach unavailable") from error
