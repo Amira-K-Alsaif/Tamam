@@ -55,6 +55,39 @@ body {
   line-height: 1.8;
 }
 
+/*
+ * Thin, dark scrollbars on the page and on every scrolling panel (the coach chat, long lists),
+ * instead of the browser's wide light ones. Current browsers read the two standard properties;
+ * the ::-webkit rules give older Safari the same look.
+ */
+html {
+  color-scheme: dark;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-line-strong) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--color-line-strong) padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-faint);
+}
+
 /* In the base layer so a component can replace it, e.g. with a focus style on its container. */
 @layer base {
   :focus-visible {
