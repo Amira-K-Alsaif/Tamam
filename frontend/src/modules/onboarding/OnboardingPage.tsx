@@ -19,6 +19,7 @@ import type {
 } from '../../lib/api'
 import { moduleById } from '../modules'
 import { LessonQuiz } from './LessonQuiz'
+import { SkillCoach } from './SkillCoach'
 import { StartingAssessment } from './StartingAssessment'
 import { taskCount, weekName } from './weeks'
 
@@ -339,6 +340,7 @@ function ItemsSection({
   onQuizAnswered: () => void
 }) {
   const [openQuiz, setOpenQuiz] = useState<string | null>(null)
+  const [openCoach, setOpenCoach] = useState<number | null>(null)
   if (items.length === 0) return null
   return (
     <Card title={title}>
@@ -370,6 +372,20 @@ function ItemsSection({
                   value={(item.level / item.expected_level) * 100}
                 />
               )}
+              {item.kind === 'skill' &&
+                item.skill_id !== null &&
+                (openCoach === item.skill_id ? (
+                  <SkillCoach
+                    skillId={item.skill_id}
+                    skillName={item.title}
+                    employeeId={employeeId}
+                    onLevelChanged={onQuizAnswered}
+                  />
+                ) : (
+                  <Button variant="ai" className="self-start" onClick={() => setOpenCoach(item.skill_id)}>
+                    تدرّبي مع تمّام
+                  </Button>
+                ))}
               {item.kind === 'lesson' && item.score !== null && (
                 <ProgressBar label="درجتك في التقييم" value={item.score} />
               )}

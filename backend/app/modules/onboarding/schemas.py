@@ -217,3 +217,27 @@ class AssessmentOutcome(BaseModel):
     # None for the self-rated skill questions, which have no right answer.
     correct: list[bool | None]
     correct_options: list[int | None]
+
+
+class CoachMessage(BaseModel):
+    role: Literal["employee", "coach"]
+    text: str = Field(max_length=2000)
+
+
+class CoachRequest(BaseModel):
+    """The conversation so far; empty to start it. It is not stored on the server."""
+
+    messages: list[CoachMessage] = Field(max_length=40)
+
+
+class CoachReply(BaseModel):
+    text: str
+
+
+class LevelCheck(BaseModel):
+    """The coach's judgement of the employee's level from their answers."""
+
+    level: int = Field(ge=0, le=4)
+    previous_level: int = Field(ge=0, le=4)
+    expected_level: int | None
+    reason: str
