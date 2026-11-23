@@ -19,12 +19,6 @@ export async function apiGet<T>(path: string): Promise<T> {
   return (await response.json()) as T
 }
 
-export type HealthResponse = { status: 'ok' }
-
-export function getHealth(): Promise<HealthResponse> {
-  return apiGet<HealthResponse>('/api/health')
-}
-
 // Onboarding (module 5). Shapes match backend/app/modules/onboarding/schemas.py.
 
 export type EmployeeProfile = {
