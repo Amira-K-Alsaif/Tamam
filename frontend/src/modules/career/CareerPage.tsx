@@ -139,7 +139,7 @@ export default function CareerPage() {
                   .filter((t) => t.id !== currentId)
                   .map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.name_ar} ({t.postings_count} إعلان)
+                      {t.name_ar}
                     </option>
                   ))}
               </select>
