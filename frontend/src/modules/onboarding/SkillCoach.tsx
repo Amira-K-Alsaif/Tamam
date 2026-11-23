@@ -199,10 +199,7 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
       </div>
 
       <div className="flex flex-col gap-2 border-t border-line px-3 py-3">
-        <form
-          onSubmit={submit}
-          className="flex items-center gap-2 rounded-full border border-mint/35 bg-sunken ps-4 pe-1.5 focus-within:border-mint"
-        >
+        <form onSubmit={submit} className="flex items-center gap-2">
           <label htmlFor={`coach-answer-${skillId}`} className="sr-only">
             جوابك
           </label>
@@ -212,13 +209,13 @@ export function SkillCoach({ skillId, skillName, employeeId, onLevelChanged, onC
             onChange={(event) => setDraft(event.target.value)}
             maxLength={2000}
             placeholder="اكتبي جوابك…"
-            className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-ink outline-none"
+            className="min-w-0 flex-1 rounded-full border border-mint/35 bg-sunken px-4 py-2.5 text-sm text-ink outline-none focus:border-mint"
           />
           <button
             type="submit"
             aria-label="أرسلي"
             disabled={!draft.trim() || waiting}
-            className="flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-full bg-aurora text-night disabled:opacity-50"
+            className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-aurora text-night disabled:opacity-50"
           >
             {/* Points left: "forward" in a right-to-left layout. */}
             <ArrowLeft aria-hidden className="size-4" />
