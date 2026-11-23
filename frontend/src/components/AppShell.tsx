@@ -1,19 +1,9 @@
 import { House } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router'
 import logo from '../assets/logo-white.png'
-import { getHealth } from '../lib/api'
 import { MOCK_EMPLOYEE } from '../lib/mockEmployee'
 import { MODULES } from '../modules/modules'
-
-type BackendState = 'checking' | 'online' | 'offline'
-
-const BACKEND_LABEL: Record<BackendState, string> = {
-  checking: 'جارٍ التحقق من الخادم…',
-  online: 'الخادم متصل',
-  offline: 'الخادم غير متصل',
-}
 
 function SideLink({ to, label, icon: Icon }: { to: string; label: string; icon: LucideIcon }) {
   return (
@@ -37,14 +27,6 @@ function SideLink({ to, label, icon: Icon }: { to: string; label: string; icon: 
 }
 
 export function AppShell() {
-  const [backend, setBackend] = useState<BackendState>('checking')
-
-  useEffect(() => {
-    getHealth()
-      .then(() => setBackend('online'))
-      .catch(() => setBackend('offline'))
-  }, [])
-
   const employeeModules = MODULES.filter((m) => !m.adminOnly)
   const adminModules = MODULES.filter((m) => m.adminOnly)
 
@@ -70,9 +52,6 @@ export function AppShell() {
           </div>
         )}
         <div className="mt-auto flex flex-col gap-3">
-          <p role="status" className={`m-0 px-3.5 text-xs ${backend === 'online' ? 'text-mint' : 'text-faint'}`}>
-            {BACKEND_LABEL[backend]}
-          </p>
           <div className="flex items-center gap-3 rounded-2xl bg-surface p-3">
             <span className="flex size-10 items-center justify-center rounded-full bg-aurora font-semibold text-night">
               {MOCK_EMPLOYEE.firstName[0]}

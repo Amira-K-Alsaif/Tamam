@@ -48,18 +48,11 @@ describe('App', () => {
     expect(screen.getByRole('heading', { level: 1, name: /صباح الخير/ })).toBeInTheDocument()
   })
 
-  it('shows the backend as online when the health check succeeds', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn(async () => new Response(JSON.stringify({ status: 'ok' }), { status: 200 })),
-    )
+  it('does not show a server status in the menu', () => {
+    const fetchMock = vi.fn()
+    vi.stubGlobal('fetch', fetchMock)
     renderAt('/')
-    expect(await screen.findByText('الخادم متصل')).toBeInTheDocument()
-  })
-
-  it('shows the backend as offline when the health check fails', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('', { status: 500 })))
-    renderAt('/')
-    expect(await screen.findByText('الخادم غير متصل')).toBeInTheDocument()
+    expect(screen.queryByText(/الخادم/)).not.toBeInTheDocument()
+    expect(fetchMock).not.toHaveBeenCalledWith(expect.stringContaining('/api/health'))
   })
 })
