@@ -1,6 +1,6 @@
 """Extract the procedure catalog from the fictional company's procedure documents.
 
-Calls the real language model, so it needs TAMAM_GOOGLE_API_KEY in backend/.env.
+Calls the real language model, so it needs TAMAM_OPENROUTER_API_KEY in backend/.env.
 Review data/company/procedures.json before committing it.
 """
 

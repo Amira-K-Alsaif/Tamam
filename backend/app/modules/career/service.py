@@ -94,7 +94,7 @@ def employee_levels(
     """The employee's measured levels, with the market estimate for skills not measured yet.
 
     `measured` comes from the employee skill profile (docs/team.md), written by onboarding
-    from the CV and the starting assessment.
+    from the starting assessment and the skill coach.
     """
     estimate = {
         row["skill_id"]: proxy_level(row["frequency"])

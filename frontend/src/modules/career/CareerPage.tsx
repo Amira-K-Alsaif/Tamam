@@ -47,7 +47,7 @@ export default function CareerPage() {
   const [result, setResult] = useState<Load<GapAnalysis>>({ state: 'idle' })
   const [plan, setPlan] = useState<Load<DevelopmentPlan>>({ state: 'idle' })
   const [profileTitle, setProfileTitle] = useState<ProfileTitle>({ state: 'loading' })
-  // Whose measured skill levels the gap uses, from the onboarding assessment and CV.
+  // Whose measured skill levels the gap uses, from the onboarding assessment and skill coach.
   const [employeeId, setEmployeeId] = useState<string | undefined>(undefined)
 
   useEffect(() => {

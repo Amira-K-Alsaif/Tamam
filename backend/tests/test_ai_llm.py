@@ -81,7 +81,7 @@ def test_a_used_up_quota_becomes_a_tamam_error(monkeypatch):
         llm.generate("system", "question")
 
 
-@pytest.mark.parametrize(("fallback", "main_retries"), [("backup-model", 0), ("", 2)])
+@pytest.mark.parametrize(("fallback", "main_retries"), [("backup-model", 0), ("", 1)])
 def test_the_main_model_retries_only_when_nothing_comes_after_it(
     monkeypatch, fallback, main_retries
 ):
@@ -92,7 +92,7 @@ def test_the_main_model_retries_only_when_nothing_comes_after_it(
 
     assert llm._client("main-model").max_retries == main_retries
     if fallback:
-        assert llm._client("backup-model").max_retries == 2
+        assert llm._client("backup-model").max_retries == 1
     llm._client.cache_clear()
 
 

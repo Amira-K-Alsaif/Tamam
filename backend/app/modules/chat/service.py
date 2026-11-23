@@ -47,8 +47,12 @@ def find_chunks(question: str) -> list[Chunk]:
 
 
 def rewrite(question: str) -> str:
-    """The question in the documents' formal terms, or the question itself if none came back."""
-    reply = llm.generate(REWRITE_PROMPT, build_rewrite_prompt(question)).strip()
+    """The question in the documents' formal terms, or the question itself if none came back.
+
+    A one-line rewrite needs no large model: the fast one took 1.5-2 s where the main one
+    sometimes stalled for over 10 s.
+    """
+    reply = llm.generate(REWRITE_PROMPT, build_rewrite_prompt(question), fast=True).strip()
     return reply.splitlines()[0].strip() if reply else question
 
 
