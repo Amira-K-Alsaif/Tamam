@@ -1,8 +1,8 @@
-"""A simple 30/60/90-day development plan built from the gap analysis.
+"""The rule-based 30/60/90-day development plan, used when the model cannot write one.
 
-Rule-based on purpose: every action names a skill the target title's postings ask for, and
-its reason is the market share already shown in the gap, so the plan invents nothing.
-Skills the employee lacks come first, the most requested first, then skills to improve.
+Every action names a skill the target title's postings ask for and is one the employee can do
+alone, without anyone else's time. Skills the employee lacks come first, the most requested
+first, then skills to improve. plan_ai.py writes the tailored plan; this is its fallback.
 """
 
 from .repository import CareerRepository
@@ -14,30 +14,49 @@ HOURS_TO_IMPROVE = 10
 
 # How each kind of skill is usually built: (first action, second action).
 ACTIONS_BY_CATEGORY: dict[str, tuple[ActionType, ActionType]] = {
-    "technical": ("course", "project"),
-    "tool": ("course", "project"),
-    "soft": ("mentoring", "shadowing"),
-    "domain": ("reading", "shadowing"),
-    "language": ("course", "project"),
+    "technical": ("self_study", "project"),
+    "tool": ("self_study", "project"),
+    "soft": ("practice", "project"),
+    "domain": ("self_study", "practice"),
+    "language": ("self_study", "practice"),
 }
 # Skills that are themselves a credential.
 CERTIFICATION_SKILLS = {"cpa_cma"}
 
 TITLES: dict[ActionType, str] = {
-    "course": "دورة تدريبية في «{skill}»",
-    "project": "تطبيق «{skill}» في مهمة حقيقية في فريقك",
-    "mentoring": "جلسات توجيه مع مديرك أو زميل خبير في «{skill}»",
-    "shadowing": "مرافقة شخص بمنصب «{target}» وهو يمارس «{skill}»",
-    "reading": "قراءة سياسات الشركة ومراجعها عن «{skill}»",
+    "self_study": "تعلّمي أساسيات «{skill}» بنفسك",
+    "practice": "تمارين قصيرة على «{skill}» في مهامك اليومية",
+    "project": "مشروع صغير يطبّق «{skill}» على مهمة من شغلك",
     "certification": "شهادة مهنية في «{skill}»",
 }
 
+STEPS: dict[ActionType, list[str]] = {
+    "self_study": [
+        "حدّدي ٣ مفاهيم أساسية في «{skill}» تحتاجينها لمنصب «{target}»",
+        "خصّصي وقت ثابت كل أسبوع لتعلّمها",
+        "اكتبي مثال من شغلك على كل مفهوم",
+    ],
+    "practice": [
+        "اختاري موقف يتكرر في شغلك يحتاج «{skill}»",
+        "طبّقي المهارة فيه مرة كل أسبوع",
+        "سجّلي وش نجح ووش تغيّرين المرة الجاية",
+    ],
+    "project": [
+        "اختاري مهمة صغيرة من شغلك تحتاج «{skill}»",
+        "نفّذيها من البداية للنهاية بنفسك",
+        "راجعيها مقابل ما يطلبه منصب «{target}»",
+    ],
+    "certification": [
+        "اقرئي متطلبات الشهادة ومحاورها",
+        "حطّي جدول مذاكرة أسبوعي",
+        "قدّمي على الاختبار",
+    ],
+}
+
 METRICS: dict[ActionType, str] = {
-    "course": "إنهاء الدورة وتطبيق تمرين واحد على الأقل",
-    "project": "مهمة مسلّمة يراجعها مديرك",
-    "mentoring": "٣ جلسات موثّقة بملاحظات",
-    "shadowing": "ملخص مكتوب لما تعلّمته من موقفين",
-    "reading": "ملخص صفحة واحدة تراجعه مع مديرك",
+    "self_study": "ملخص صفحة بأهم ما تعلّمتِه مع مثال من شغلك",
+    "practice": "٤ مواقف طبّقتي فيها المهارة مع ملاحظاتك",
+    "project": "مخرج واحد مكتمل تقدرين تعرضينه",
     "certification": "اجتياز الاختبار",
 }
 
@@ -63,7 +82,7 @@ def _actions(skill: GapSkill, is_new: bool, skill_row: dict, target: str) -> lis
     if skill_row["key"] in CERTIFICATION_SKILLS:
         types: list[ActionType] = ["certification"]
     else:
-        first, second = ACTIONS_BY_CATEGORY.get(skill_row["category"], ("reading", "project"))
+        first, second = ACTIONS_BY_CATEGORY.get(skill_row["category"], ("self_study", "practice"))
         # A skill the employee already has needs practice, not another introduction.
         types = [first, second] if is_new else [second]
     return [
@@ -71,6 +90,7 @@ def _actions(skill: GapSkill, is_new: bool, skill_row: dict, target: str) -> lis
             skill_id=skill.skill_id,
             type=t,
             title_ar=TITLES[t].format(skill=skill.label_ar, target=target),
+            steps_ar=[step.format(skill=skill.label_ar, target=target) for step in STEPS[t]],
             effort_hours=hours // len(types),
             success_metric_ar=METRICS[t],
         )

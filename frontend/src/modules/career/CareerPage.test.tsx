@@ -38,12 +38,20 @@ const PLAN: DevelopmentPlan = {
   target_title_id: 8,
   readiness_score: 42,
   low_evidence: false,
+  written_by: 'ai',
   phases: [
     {
       phase: '30',
       goal_ar: 'بناء الأساس في «قيادة الفرق»',
       actions: [
-        { skill_id: 3, type: 'mentoring', title_ar: 'جلسات توجيه في «قيادة الفرق»', effort_hours: 10, success_metric_ar: '٣ جلسات موثّقة' },
+        {
+          skill_id: 3,
+          type: 'practice',
+          title_ar: 'قودي اجتماع الفريق الأسبوعي بنفسك',
+          steps_ar: ['جهّزي جدول الاجتماع', 'وزّعي المهام'],
+          effort_hours: 10,
+          success_metric_ar: '٤ اجتماعات بملاحظاتك',
+        },
       ],
     },
   ],
@@ -179,5 +187,29 @@ describe('CareerPage', () => {
     vi.stubGlobal('fetch', vi.fn(() => Promise.reject(new Error('offline'))))
     render(<CareerPage />)
     expect(await screen.findByRole('alert')).toHaveTextContent('ما قدرنا نجيب المسميات')
+  })
+})
+
+describe('CareerPage plan', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    window.localStorage.clear()
+  })
+
+  it('shows each step with how to do it, and remembers what is finished', async () => {
+    stubApi()
+    const user = userEvent.setup()
+    render(<CareerPage />)
+    await user.click(await readyToAnalyze())
+
+    expect(await screen.findByText('قودي اجتماع الفريق الأسبوعي بنفسك')).toBeInTheDocument()
+    expect(screen.getByText('جهّزي جدول الاجتماع')).toBeInTheDocument()
+    expect(screen.getByText(/كتبها تمّام لك من فجوتك/)).toBeInTheDocument()
+    expect(screen.getByText('0 من 1 خلّصتيها')).toBeInTheDocument()
+
+    await user.click(screen.getByLabelText('خلّصتها'))
+
+    expect(screen.getByText('1 من 1 خلّصتيها')).toBeInTheDocument()
+    expect(window.localStorage.getItem('tamam.plan.emp-004.7.8')).toBe(JSON.stringify(['30-3-practice']))
   })
 })

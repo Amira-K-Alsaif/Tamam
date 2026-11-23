@@ -1,9 +1,24 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from app.ai import llm
 from app.main import app
-from app.modules.career import repository, service
+from app.modules.career import plan_ai, repository, service
 from app.modules.career.repository import get_repository
+
+
+@pytest.fixture(autouse=True)
+def no_plan_model(monkeypatch):
+    """Normal tests never call the real model: the plan route falls back to the rule plan."""
+
+    def not_configured(system, user, **_):
+        raise llm.LLMNotConfiguredError("no key in tests")
+
+    monkeypatch.setattr(llm, "generate", not_configured)
+    plan_ai.clear()
+    yield
+    plan_ai.clear()
+
 
 client = TestClient(app)
 ACCOUNTANT, FINANCE_MANAGER = 7, 8

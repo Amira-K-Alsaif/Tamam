@@ -39,10 +39,12 @@ export type GapAnalysis = {
   radar: GapSkill[]
 }
 
+// Every action is one the employee does alone.
 export type PlanAction = {
   skill_id: number
-  type: 'course' | 'project' | 'mentoring' | 'shadowing' | 'certification' | 'reading'
+  type: 'self_study' | 'practice' | 'project' | 'certification'
   title_ar: string
+  steps_ar: string[]
   effort_hours: number
   success_metric_ar: string
 }
@@ -53,6 +55,8 @@ export type DevelopmentPlan = {
   readiness_score: number
   low_evidence: boolean
   phases: { phase: '30' | '60' | '90'; goal_ar: string; actions: PlanAction[] }[]
+  // Who wrote the actions: the model for this gap, or the rule templates.
+  written_by: 'ai' | 'rules'
 }
 
 export function getTitles(): Promise<JobTitle[]> {

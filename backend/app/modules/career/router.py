@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.modules.onboarding import skill_profile
 
-from . import plan, service
+from . import plan, plan_ai, service
 from .repository import get_repository
 from .schemas import DevelopmentPlan, GapAnalysis, JobTitle, TitleSkill
 
@@ -65,7 +65,7 @@ def development_plan(
     target_title_id: int = Query(),
     employee_id: str | None = EmployeeId,
 ) -> DevelopmentPlan:
-    """A 30/60/90-day plan for the skills the gap analysis found missing or weak."""
+    """A 30/60/90-day plan, carried out alone, for the skills the gap found missing or weak."""
     if current_title_id == target_title_id:
         raise HTTPException(400, "اختاري منصباً مستهدفاً مختلفاً عن منصبك الحالي")
     repo = get_repository()
@@ -74,4 +74,5 @@ def development_plan(
         gap = service.analyze_gap(repo, current_title_id, target_title_id, skills)
     except service.TitleNotFoundError as e:
         raise HTTPException(404, "المسمى الوظيفي غير موجود") from e
-    return plan.build_plan(repo, gap)
+    # The model writes a plan for this gap; the rule templates stand in when it cannot.
+    return plan_ai.write_plan(repo, gap) or plan.build_plan(repo, gap)

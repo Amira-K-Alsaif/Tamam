@@ -61,15 +61,17 @@ class GapAnalysis(BaseModel):
     radar: list[GapSkill]
 
 
-ActionType = Literal["course", "project", "mentoring", "shadowing", "certification", "reading"]
+# Every action is one the employee can do alone, without anyone's time.
+ActionType = Literal["self_study", "practice", "project", "certification"]
 
 
 class PlanAction(BaseModel):
     skill_id: int
     type: ActionType
     title_ar: str
+    steps_ar: list[str] = Field(default_factory=list)  # How to do it, in order
     effort_hours: int = Field(ge=1)
-    success_metric_ar: str
+    success_metric_ar: str  # What exists when it is done
 
 
 class PlanPhase(BaseModel):
@@ -86,3 +88,5 @@ class DevelopmentPlan(BaseModel):
     readiness_score: float = Field(ge=0, le=100)
     low_evidence: bool
     phases: list[PlanPhase]
+    # Who wrote the actions: the model for this employee's gap, or the rule templates.
+    written_by: Literal["ai", "rules"] = "rules"
