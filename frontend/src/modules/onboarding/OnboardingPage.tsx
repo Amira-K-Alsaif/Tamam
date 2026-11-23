@@ -38,6 +38,8 @@ const SECTION_TITLES = {
   skill: 'مهارات تطوّرينها',
 } as const
 
+type CoachedSkill = { id: number; name: string }
+
 type PageData = {
   employeeId: string
   me: EmployeeProfile
@@ -56,6 +58,8 @@ export default function OnboardingPage() {
   const [selectedWeek, setSelectedWeek] = useState(1)
   // Bumped after a quiz or the assessment is answered, so the roadmap, progress, and badges reload.
   const [reloadKey, setReloadKey] = useState(0)
+  // The skill whose coach window is open, over the page; one at a time.
+  const [coached, setCoached] = useState<CoachedSkill | null>(null)
 
   // Until auth exists, the page shows the first demo employee unless another is chosen.
   const employeeId = chosenId ?? demoEmployees[0]?.id ?? null
@@ -101,6 +105,7 @@ export default function OnboardingPage() {
       onChange={(id) => {
         setChosenId(id)
         setSelectedWeek(1)
+        setCoached(null)
       }}
     />
   )
@@ -200,9 +205,21 @@ export default function OnboardingPage() {
               items={week.items.filter((i) => i.kind === kind)}
               employeeId={me.id}
               onQuizAnswered={() => setReloadKey((key) => key + 1)}
+              onCoach={setCoached}
             />
           ))}
         </>
+      )}
+
+      {coached && (
+        <SkillCoach
+          key={`${me.id}-${coached.id}`}
+          skillId={coached.id}
+          skillName={coached.name}
+          employeeId={me.id}
+          onLevelChanged={() => setReloadKey((key) => key + 1)}
+          onClose={() => setCoached(null)}
+        />
       )}
     </>
   )
@@ -333,14 +350,15 @@ function ItemsSection({
   items,
   employeeId,
   onQuizAnswered,
+  onCoach,
 }: {
   title: string
   items: RoadmapItem[]
   employeeId: string
   onQuizAnswered: () => void
+  onCoach: (skill: CoachedSkill) => void
 }) {
   const [openQuiz, setOpenQuiz] = useState<string | null>(null)
-  const [openCoach, setOpenCoach] = useState<number | null>(null)
   if (items.length === 0) return null
   return (
     <Card title={title}>
@@ -372,20 +390,15 @@ function ItemsSection({
                   value={(item.level / item.expected_level) * 100}
                 />
               )}
-              {item.kind === 'skill' &&
-                item.skill_id !== null &&
-                (openCoach === item.skill_id ? (
-                  <SkillCoach
-                    skillId={item.skill_id}
-                    skillName={item.title}
-                    employeeId={employeeId}
-                    onLevelChanged={onQuizAnswered}
-                  />
-                ) : (
-                  <Button variant="ai" className="self-start" onClick={() => setOpenCoach(item.skill_id)}>
-                    تدرّبي مع تمّام
-                  </Button>
-                ))}
+              {item.kind === 'skill' && item.skill_id !== null && (
+                <Button
+                  variant="ai"
+                  className="self-start"
+                  onClick={() => onCoach({ id: item.skill_id as number, name: item.title })}
+                >
+                  تدرّبي مع تمّام
+                </Button>
+              )}
               {item.kind === 'lesson' && item.score !== null && (
                 <ProgressBar label="درجتك في التقييم" value={item.score} />
               )}
