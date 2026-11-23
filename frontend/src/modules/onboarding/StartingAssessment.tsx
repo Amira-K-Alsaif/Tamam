@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { Button } from '../../components/Button'
 import { Card } from '../../components/Card'
@@ -83,44 +83,47 @@ function QuestionsStep({ employeeId, onDone }: { employeeId: string; onDone: () 
         const newSection = index === 0 || previous.kind !== question.kind
         const newTopic = newSection || previous.topic !== question.topic
         return (
-          <fieldset key={`${question.topic}-${question.question}`} className="m-0 flex flex-col gap-2 border-0 p-0">
-            {newSection && <h3 className="m-0 font-display text-lg">{SECTION_TITLES[question.kind]}</h3>}
+          // Headings sit outside the fieldset: a browser always draws a legend first in its fieldset.
+          <Fragment key={`${question.topic}-${question.question}`}>
+            {newSection && <h3 className="m-0 mt-2 font-display text-lg">{SECTION_TITLES[question.kind]}</h3>}
             {newTopic && question.kind === 'company' && (
               <p className="m-0 text-sm font-semibold text-mint">{question.topic}</p>
             )}
-            <legend className="mb-2 font-semibold">
-              {index + 1}. {question.question}
-            </legend>
-            {question.options.map((option, optionIndex) => {
-              // Self-rated skill questions have no right answer, so only company ones are marked.
-              const isRight = outcome !== null && outcome.correct_options[index] === optionIndex
-              const isWrongPick =
-                outcome !== null && question.kind === 'company' && answers[index] === optionIndex && !isRight
-              return (
-                <label
-                  key={option}
-                  className={`flex cursor-pointer items-center gap-2 rounded-xl px-3 py-1.5 ${
-                    isRight ? 'bg-mint/12 text-mint' : isWrongPick ? 'bg-danger/16 text-danger' : ''
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name={`assessment-${index}`}
-                    checked={answers[index] === optionIndex}
-                    disabled={outcome !== null}
-                    onChange={() => setAnswers({ ...answers, [index]: optionIndex })}
-                  />
-                  {option}
-                  {isRight && outcome && <span className="text-xs">الجواب الصحيح</span>}
-                </label>
-              )
-            })}
-            {outcome && question.source && (
-              <p className="m-0 text-xs text-faint">
-                المصدر: {question.source.document_title} · {question.source.section_title} · «{question.source.quote}»
-              </p>
-            )}
-          </fieldset>
+            <fieldset className="m-0 flex flex-col gap-2 border-0 p-0">
+              <legend className="mb-2 font-semibold">
+                {index + 1}. {question.question}
+              </legend>
+              {question.options.map((option, optionIndex) => {
+                // Self-rated skill questions have no right answer, so only company ones are marked.
+                const isRight = outcome !== null && outcome.correct_options[index] === optionIndex
+                const isWrongPick =
+                  outcome !== null && question.kind === 'company' && answers[index] === optionIndex && !isRight
+                return (
+                  <label
+                    key={option}
+                    className={`flex cursor-pointer items-center gap-2 rounded-xl px-3 py-1.5 ${
+                      isRight ? 'bg-mint/12 text-mint' : isWrongPick ? 'bg-danger/16 text-danger' : ''
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name={`assessment-${index}`}
+                      checked={answers[index] === optionIndex}
+                      disabled={outcome !== null}
+                      onChange={() => setAnswers({ ...answers, [index]: optionIndex })}
+                    />
+                    {option}
+                    {isRight && outcome && <span className="text-xs">الجواب الصحيح</span>}
+                  </label>
+                )
+              })}
+              {outcome && question.source && (
+                <p className="m-0 text-xs text-faint">
+                  المصدر: {question.source.document_title} · {question.source.section_title} · «{question.source.quote}»
+                </p>
+              )}
+            </fieldset>
+          </Fragment>
         )
       })}
 
